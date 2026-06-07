@@ -2164,3 +2164,22 @@ body.public-mode .section-header {
     height: 100%;
     border: 0;
 }
+
+/* Navigation hiding utility for embedding seamless widgets */
+body.hide-nav .app-header {
+    display: none !important;
+}
+
+body.hide-nav .app-container {
+    grid-template-columns: 1fr !important;
+}
+
+body.hide-nav .app-main {
+    padding: 2rem !important;
+}
+
+@media (max-width: 900px) {
+    body.hide-nav .app-main {
+        padding: 1rem !important;
+    }
+}

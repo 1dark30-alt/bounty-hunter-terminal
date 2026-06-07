@@ -331,9 +331,24 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Check for navigation hide parameter
+    const hideNav = urlParams.get('hide_nav') === 'true';
+    if (hideNav) {
+        document.body.classList.add("hide-nav");
+    }
+
     loadState();
     setupEventListeners();
     renderApp();
+
+    // Check for tab parameter to switch tab on load
+    const startTab = urlParams.get('tab');
+    if (startTab) {
+        const tabBtn = document.querySelector(`.nav-tab[data-tab="tab-${startTab}"]`);
+        if (tabBtn) {
+            tabBtn.click();
+        }
+    }
     
     if (isPublicMode) {
         showToast("Bounty Hunters Guild Public Terminal Mode", "success");

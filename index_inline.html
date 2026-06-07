@@ -2177,6 +2177,25 @@ body.public-mode .section-header {
     border: 0;
 }
 
+/* Navigation hiding utility for embedding seamless widgets */
+body.hide-nav .app-header {
+    display: none !important;
+}
+
+body.hide-nav .app-container {
+    grid-template-columns: 1fr !important;
+}
+
+body.hide-nav .app-main {
+    padding: 2rem !important;
+}
+
+@media (max-width: 900px) {
+    body.hide-nav .app-main {
+        padding: 1rem !important;
+    }
+}
+
 </style>
     <!-- html2canvas library for exporting graphics -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -3043,9 +3062,24 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Check for navigation hide parameter
+    const hideNav = urlParams.get('hide_nav') === 'true';
+    if (hideNav) {
+        document.body.classList.add("hide-nav");
+    }
+
     loadState();
     setupEventListeners();
     renderApp();
+
+    // Check for tab parameter to switch tab on load
+    const startTab = urlParams.get('tab');
+    if (startTab) {
+        const tabBtn = document.querySelector(`.nav-tab[data-tab="tab-${startTab}"]`);
+        if (tabBtn) {
+            tabBtn.click();
+        }
+    }
     
     if (isPublicMode) {
         showToast("Bounty Hunters Guild Public Terminal Mode", "success");
