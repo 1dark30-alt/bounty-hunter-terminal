@@ -427,22 +427,22 @@
         {
           "division": "Lower Columbia",
           "target": {
-            "id": "97000198",
-            "name": "Adam Yaws",
+            "id": "97000141",
+            "name": "Rigel Ross",
             "team": "Bull Elk"
           },
-          "status": "pending",
-          "claimedBy": null,
+          "status": "claimed",
+          "claimedBy": "97000198",
           "reward": 100
         },
         {
           "division": "St Helens &",
           "target": {
-            "id": "97000138",
-            "name": "Harold Jennings",
-            "team": "Rack Wreckers"
+            "id": "97000339",
+            "name": "Steve Linn",
+            "team": "Unacceptable"
           },
-          "status": "pending",
+          "status": "escaped",
           "claimedBy": null,
           "reward": 100
         }
@@ -454,9 +454,36 @@
         {
           "division": "Lower Columbia",
           "target": {
-            "id": "97000184",
-            "name": "Crystal Crawford",
-            "team": "Friends"
+            "id": "97000141",
+            "name": "Rigel Ross",
+            "team": "Bull Elk"
+          },
+          "status": "claimed",
+          "claimedBy": "97000205",
+          "reward": 100
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97000142",
+            "name": "James Mier",
+            "team": "Rack Wreckers"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 100
+        }
+      ]
+    },
+    {
+      "weekNumber": 3,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000210",
+            "name": "Lorna Padgett",
+            "team": "Bull Elk"
           },
           "status": "pending",
           "claimedBy": null,
@@ -465,9 +492,121 @@
         {
           "division": "St Helens &",
           "target": {
-            "id": "97000057",
-            "name": "Margaret Moen",
-            "team": "One More Shot"
+            "id": "97000310",
+            "name": "Karen McDaniel",
+            "team": "Felt Junkies"
+          },
+          "status": "escaped",
+          "claimedBy": null,
+          "reward": 100
+        }
+      ]
+    },
+    {
+      "weekNumber": 4,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000198",
+            "name": "Adam Yaws",
+            "team": "Bull Elk"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 100
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97020560",
+            "name": "William Polk",
+            "team": "Wrong Hole"
+          },
+          "status": "claimed",
+          "claimedBy": "97000345",
+          "reward": 100
+        }
+      ]
+    },
+    {
+      "weekNumber": 5,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000187",
+            "name": "Alex McKenzie",
+            "team": "Paw Patrol"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 100
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97004026",
+            "name": "Ryan Hall",
+            "team": "Misfit Q's"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 100
+        }
+      ]
+    },
+    {
+      "weekNumber": 6,
+      "bounties": []
+    },
+    {
+      "weekNumber": 7,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000213",
+            "name": "Mistee Messing",
+            "team": "Paw Patrol"
+          },
+          "status": "claimed",
+          "claimedBy": "97000198",
+          "reward": 100
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97019743",
+            "name": "Gerald Ellis",
+            "team": "Felt Junkies"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 100
+        }
+      ]
+    },
+    {
+      "weekNumber": 8,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000139",
+            "name": "Maksym Dervevianko",
+            "team": "Legion of Doom"
+          },
+          "status": "claimed",
+          "claimedBy": "97000198",
+          "reward": 100
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97000148",
+            "name": "Michael Johnston",
+            "team": "Pocket Pounders"
           },
           "status": "pending",
           "claimedBy": null,
