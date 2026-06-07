@@ -470,34 +470,7 @@
             "team": "Pocket Pounders"
           },
           "status": "claimed",
-          "claimedBy": "97000016",
-          "reward": 100
-        }
-      ]
-    },
-    {
-      "weekNumber": 3,
-      "bounties": [
-        {
-          "division": "Lower Columbia",
-          "target": {
-            "id": "97000141",
-            "name": "Rigel Ross",
-            "team": "Bull Elk"
-          },
-          "status": "pending",
-          "claimedBy": null,
-          "reward": 100
-        },
-        {
-          "division": "St Helens &",
-          "target": {
-            "id": "97000161",
-            "name": "Phillip Barton",
-            "team": "Rack Wreckers"
-          },
-          "status": "pending",
-          "claimedBy": null,
+          "claimedBy": "97000155",
           "reward": 100
         }
       ]
