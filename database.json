@@ -597,8 +597,8 @@
             "name": "Maksym Dervevianko",
             "team": "Legion of Doom"
           },
-          "status": "pending",
-          "claimedBy": null,
+          "status": "claimed",
+          "claimedBy": "97000198",
           "reward": 100
         },
         {
