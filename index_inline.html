@@ -1,0 +1,4420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bounty Hunters Guild Terminal</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- App Styles -->
+    <style>
+:root {
+    /* Color Palette (Star Wars / Mandalorian Hologram Board Theme) */
+    --bg-primary: #04090c;
+    --bg-secondary: #081116;
+    --bg-card: rgba(8, 22, 30, 0.55);
+    --bg-card-hover: rgba(14, 34, 46, 0.75);
+    
+    --border-color: rgba(0, 240, 255, 0.15);
+    --border-color-hover: rgba(0, 240, 255, 0.4);
+    
+    --accent-cyan: #00f0ff;          /* Holographic Blue-Cyan Primary */
+    --accent-cyan-rgb: 0, 240, 255;
+    --accent-pink: #ff3355;          /* Carbonite Captured Red */
+    --accent-pink-rgb: 255, 51, 85;
+    --accent-green: #39ff14;         /* Hyperspace Jump Green */
+    --accent-green-rgb: 57, 255, 20;
+    --accent-gold: #ffb700;          /* Republic Credit Gold */
+    --accent-gold-rgb: 255, 183, 0;
+    --accent-purple: #8b5cf6;        /* Guild Purple Trim */
+    --accent-purple-rgb: 139, 92, 246;
+    
+    --text-primary: #e2f1f5;         /* Ice blue white */
+    --text-secondary: #8da4b0;       /* Cool steel secondary text */
+    --text-muted: #496370;           /* Damped cyan-gray */
+    
+    /* Layout & Shadow constants */
+    --card-radius: 4px;              /* Blocky metallic cockpit panels */
+    --shadow-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.7);
+    --shadow-holo: 0 0 15px rgba(0, 240, 255, 0.25), inset 0 0 15px rgba(0, 240, 255, 0.1);
+    --text-holo: 0 0 8px rgba(0, 240, 255, 0.5);
+    --font-primary: 'Chakra Petch', sans-serif;
+    --font-display: 'Share Tech Mono', monospace;
+    --transition-speed: 0.2s;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* CRT Holo Hologram Overlay */
+.crt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.02), rgba(0, 255, 0, 0.005), rgba(255, 0, 0, 0.005));
+    background-size: 100% 4px, 6px 100%;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.45;
+}
+
+.crt-overlay::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(to bottom, transparent, rgba(0, 240, 255, 0.06) 50%, rgba(0, 240, 255, 0.12) 80%, transparent);
+    animation: scanline-sweep 10s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes scanline-sweep {
+    0% { transform: translateY(-120px); }
+    100% { transform: translateY(100vh); }
+}
+
+/* Glowing Background Starfield & Coordinates Grid */
+.glow-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    background-color: var(--bg-primary);
+    background-image: 
+        /* Technical Star Grid Coordinates - Hologram Cyan */
+        linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.015) 1px, transparent 1px),
+        /* Nebulae Glows */
+        radial-gradient(circle at 20% 30%, rgba(var(--accent-purple-rgb), 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(var(--accent-cyan-rgb), 0.03) 0%, transparent 55%),
+        /* Stars */
+        radial-gradient(1.5px 1.5px at 10% 20%, #ffffff 100%, transparent),
+        radial-gradient(1px 1px at 30% 40%, #ffffff 80%, transparent),
+        radial-gradient(2px 2px at 50% 15%, #ffffff 100%, transparent),
+        radial-gradient(1px 1px at 70% 60%, rgba(255,255,255,0.7) 100%, transparent),
+        radial-gradient(1.5px 1.5px at 85% 25%, #ffffff 100%, transparent),
+        radial-gradient(2px 2px at 90% 80%, rgba(var(--accent-cyan-rgb), 0.4) 100%, transparent),
+        radial-gradient(1px 1px at 40% 75%, #ffffff 100%, transparent);
+    background-size: 80px 80px, 80px 80px, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+    opacity: 0.95;
+    animation: backgroundTwinkle 120s linear infinite;
+}
+
+.glow-bg::before {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60vw;
+    height: 80vh;
+    background: radial-gradient(ellipse at bottom, rgba(0, 240, 255, 0.07) 0%, rgba(0, 240, 255, 0.01) 45%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 100%, 0% 100%);
+    mask-image: linear-gradient(to top, rgba(0,0,0,1) 15%, rgba(0,0,0,0.1) 75%, rgba(0,0,0,0) 100%);
+    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 15%, rgba(0,0,0,0.1) 75%, rgba(0,0,0,0) 100%);
+    animation: projection-pulse 8s ease-in-out infinite alternate;
+}
+
+@keyframes projection-pulse {
+    0% { opacity: 0.8; transform: translateX(-50%) scaleX(0.98); }
+    100% { opacity: 1.1; transform: translateX(-50%) scaleX(1.02); }
+}
+
+@keyframes backgroundTwinkle {
+    0% { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0; }
+    50% { opacity: 0.85; }
+    100% { background-position: 80px 160px, 80px 160px, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0; }
+}
+
+/* Global Typography */
+h1, h2, h3, h4 {
+    font-family: var(--font-primary);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-shadow: var(--text-holo);
+}
+
+p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    font-family: var(--font-primary);
+}
+
+/* Layout Grid */
+.app-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+}
+
+@media (max-width: 900px) {
+    .app-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+    }
+}
+
+/* Sidebar Styling */
+.app-header {
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    z-index: 10;
+}
+
+@media (max-width: 900px) {
+    .app-header {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.2rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    animation: holo-flicker 10s infinite;
+}
+
+.logo-icon {
+    font-size: 2rem;
+    text-shadow: 0 0 10px rgba(var(--accent-cyan-rgb), 0.5);
+}
+
+.logo-text h1 {
+    font-size: 1.3rem;
+    background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent-cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.05em;
+}
+
+.logo-text p {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+}
+
+.nav-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+@media (max-width: 900px) {
+    .nav-tabs {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+    }
+}
+
+.nav-tab {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.9rem 1.2rem;
+    text-align: left;
+    border-radius: var(--card-radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 900px) {
+    .nav-tab {
+        padding: 0.6rem 0.9rem;
+        font-size: 0.85rem;
+    }
+    .tab-text {
+        display: none; /* Icon-only on very small screens if necessary, or just small text */
+    }
+    @media (min-width: 600px) {
+        .tab-text {
+            display: inline;
+        }
+    }
+}
+
+.nav-tab:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+    color: var(--text-primary);
+}
+
+.nav-tab.active {
+    background-color: rgba(var(--accent-cyan-rgb), 0.12);
+    border: 1px solid rgba(var(--accent-cyan-rgb), 0.5);
+    color: var(--accent-cyan);
+    text-shadow: 0 0 12px rgba(var(--accent-cyan-rgb), 0.6);
+    box-shadow: 0 0 15px rgba(var(--accent-cyan-rgb), 0.15), inset 0 0 8px rgba(var(--accent-cyan-rgb), 0.1);
+}
+
+/* Audio Control Panel */
+.audio-control-panel {
+    margin-top: auto;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+@media (max-width: 900px) {
+    .audio-control-panel {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: none;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.4rem;
+    }
+}
+
+.audio-label {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+}
+
+@media (max-width: 900px) {
+    .audio-label {
+        display: none;
+    }
+}
+
+.audio-toggle-btn {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-color);
+    border-radius: var(--card-radius);
+    padding: 0.6rem 1rem;
+    color: var(--text-secondary);
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    transition: all var(--transition-speed);
+}
+
+.audio-toggle-btn:hover {
+    border-color: rgba(var(--accent-cyan-rgb), 0.4);
+    color: var(--text-primary);
+}
+
+.audio-toggle-btn.active {
+    border-color: rgba(var(--accent-cyan-rgb), 0.25);
+    color: var(--accent-cyan);
+    background-color: rgba(var(--accent-cyan-rgb), 0.05);
+    box-shadow: inset 0 0 8px rgba(var(--accent-cyan-rgb), 0.1);
+}
+
+.audio-toggle-btn.active .status-indicator {
+    color: var(--accent-cyan);
+    text-shadow: 0 0 8px rgba(var(--accent-cyan-rgb), 0.5);
+}
+
+.audio-toggle-btn .status-indicator {
+    color: var(--text-muted);
+}
+
+.audio-toggle-btn.active .wave {
+    animation: wave-pulse 1.5s infinite ease-in-out;
+}
+
+.audio-toggle-btn.active .wave-2 {
+    animation-delay: 0.4s;
+}
+
+@keyframes wave-pulse {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+
+/* Main Area */
+.app-main {
+    padding: 3rem;
+    overflow-y: auto;
+    max-height: 100vh;
+}
+
+@media (max-width: 900px) {
+    .app-main {
+        padding: 1.5rem;
+        max-height: none;
+    }
+}
+
+/* Tab Content Transitions */
+.tab-content {
+    display: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.tab-content.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.section-header h2 {
+    font-size: 2rem;
+    margin-bottom: 0.4rem;
+}
+
+/* Buttons */
+.btn {
+    font-family: var(--font-primary);
+    font-weight: 600;
+    padding: 0.7rem 1.4rem;
+    border-radius: var(--card-radius);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all var(--transition-speed) ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+.btn-large {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border-radius: var(--card-radius);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-cyan) 0%, rgba(var(--accent-cyan-rgb), 0.7) 100%);
+    color: #04080e;
+    box-shadow: 0 4px 15px rgba(var(--accent-cyan-rgb), 0.25);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(var(--accent-cyan-rgb), 0.4);
+}
+
+.btn-secondary {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--border-color-hover);
+}
+
+.btn-accent {
+    background: linear-gradient(135deg, var(--accent-purple) 0%, rgba(var(--accent-purple-rgb), 0.7) 100%);
+    color: var(--text-primary);
+    box-shadow: 0 4px 15px rgba(var(--accent-purple-rgb), 0.25);
+}
+
+.btn-accent:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(var(--accent-purple-rgb), 0.4);
+}
+
+.btn-danger {
+    background-color: var(--accent-pink);
+    color: var(--text-primary);
+    box-shadow: 0 4px 15px rgba(var(--accent-pink-rgb), 0.2);
+}
+
+.btn-danger:hover {
+    background-color: #e6004c;
+    transform: translateY(-2px);
+}
+
+.btn-danger-outline {
+    background: transparent;
+    border: 1px solid rgba(var(--accent-pink-rgb), 0.4);
+    color: #ff3377;
+}
+
+.btn-danger-outline:hover {
+    background-color: rgba(var(--accent-pink-rgb), 0.1);
+    border-color: var(--accent-pink);
+}
+
+.btn-icon {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    width: 36px;
+    height: 36px;
+    border-radius: var(--card-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all var(--transition-speed);
+}
+
+.btn-icon:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--accent-cyan);
+}
+
+/* Input Fields & Custom Selects */
+input[type="text"], input[type="number"], select {
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    font-size: 0.95rem;
+    padding: 0.7rem 1rem;
+    border-radius: var(--card-radius);
+    outline: none;
+    transition: all var(--transition-speed) ease;
+}
+
+input:focus, select:focus {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 0 2px rgba(var(--accent-cyan-rgb), 0.15);
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Custom Select Dropdowns */
+.week-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--bg-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--card-radius);
+    border: 1px solid var(--border-color);
+}
+
+.week-controls label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.custom-select-wrapper select {
+    padding-right: 2rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    cursor: pointer;
+}
+
+/* Cards & Containers */
+.card {
+    background-color: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--card-radius);
+    padding: 1.8rem;
+    box-shadow: var(--shadow-glow);
+    transition: all var(--transition-speed) ease;
+    position: relative;
+}
+
+.card::before, .card::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-style: solid;
+    border-color: rgba(var(--accent-cyan-rgb), 0.35);
+    pointer-events: none;
+    transition: border-color var(--transition-speed);
+}
+
+.card::before {
+    top: -1px;
+    left: -1px;
+    border-width: 2px 0 0 2px;
+}
+
+.card::after {
+    bottom: -1px;
+    right: -1px;
+    border-width: 0 2px 2px 0;
+}
+
+.card:hover {
+    border-color: var(--border-color-hover);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+}
+
+.card:hover::before, .card:hover::after {
+    border-color: var(--accent-cyan);
+}
+
+/* Empty State Styles */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    max-width: 500px;
+    margin: 2rem auto;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    filter: drop-shadow(0 0 15px rgba(var(--accent-cyan-rgb), 0.2));
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+}
+
+.pulse-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    border: 2px solid var(--accent-cyan);
+    top: 0;
+    left: 0;
+    animation: pulse 2s infinite;
+    pointer-events: none;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.98); opacity: 0.8; }
+    50% { transform: scale(1.08); opacity: 0; }
+    100% { transform: scale(0.98); opacity: 0; }
+}
+
+/* Active State Actions Bar */
+.actions-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+/* Bounty Grid & Cards */
+.bounty-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.bounty-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: holo-flicker 12s infinite;
+}
+
+.bounty-card:hover {
+    transform: translateY(-5px);
+    background-color: var(--bg-card-hover);
+}
+
+/* Status specific card outlines */
+.bounty-card.status-pending {
+    border-top: 4px solid var(--accent-cyan);
+}
+.bounty-card.status-claimed {
+    border-top: 4px solid var(--accent-pink);
+}
+.bounty-card.status-escaped {
+    border-top: 4px solid var(--accent-green);
+}
+.bounty-card.status-unclaimed {
+    border-top: 4px solid var(--accent-gold);
+    background-color: rgba(25, 20, 5, 0.45);
+    box-shadow: 0 0 15px rgba(var(--accent-gold-rgb), 0.15), inset 0 0 15px rgba(var(--accent-gold-rgb), 0.05);
+}
+.bounty-card.status-unclaimed::before, .bounty-card.status-unclaimed::after {
+    border-color: rgba(var(--accent-gold-rgb), 0.35) !important;
+}
+.bounty-card.status-unclaimed:hover::before, .bounty-card.status-unclaimed:hover::after {
+    border-color: var(--accent-gold) !important;
+}
+
+/* Card Header */
+.bounty-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.division-tag {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background-color: rgba(255, 255, 255, 0.04);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.status-badge.status-pending {
+    background-color: rgba(var(--accent-cyan-rgb), 0.1);
+    color: var(--accent-cyan);
+    border: 1px solid rgba(var(--accent-cyan-rgb), 0.2);
+}
+
+.status-badge.status-claimed {
+    background-color: rgba(var(--accent-pink-rgb), 0.1);
+    color: #ff3377;
+    border: 1px solid rgba(var(--accent-pink-rgb), 0.2);
+}
+
+.status-badge.status-escaped {
+    background-color: rgba(var(--accent-green-rgb), 0.1);
+    color: var(--accent-green);
+    border: 1px solid rgba(var(--accent-green-rgb), 0.2);
+}
+
+/* Card Body */
+.bounty-card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 80px;
+}
+
+.bounty-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
+
+.bounty-target {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.bounty-card.status-claimed .bounty-target {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+/* Reward Block */
+.reward-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.reward-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.reward-value {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+}
+
+.claim-details {
+    text-align: right;
+}
+
+.claim-hunter {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+/* Card Footer Actions */
+.bounty-card-footer {
+    display: flex;
+    gap: 0.8rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 1rem;
+}
+
+.bounty-card-footer button {
+    flex-grow: 1;
+}
+
+/* Tables (Leaderboard) */
+.table-container {
+    overflow-x: auto;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.leaderboard-table th, .leaderboard-table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.leaderboard-table th {
+    font-family: var(--font-primary);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+}
+
+.leaderboard-table td {
+    font-family: var(--font-display);
+    font-size: 1rem;
+}
+
+.leaderboard-table tbody tr {
+    transition: background-color var(--transition-speed);
+}
+
+.leaderboard-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.leaderboard-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.num-col {
+    text-align: right;
+}
+
+/* Leaderboard Subtabs */
+.leaderboard-tabs {
+    display: flex;
+    background-color: var(--bg-secondary);
+    padding: 0.3rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.sub-tab {
+    background: transparent;
+    border: none;
+    font-family: var(--font-primary);
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+
+.sub-tab.active {
+    background-color: var(--bg-primary);
+    color: var(--accent-cyan);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.sub-tab-content {
+    display: none;
+}
+
+.sub-tab-content.active {
+    display: block;
+}
+
+/* Ranks styling */
+.rank-badge {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+}
+
+.rank-1 {
+    background: radial-gradient(circle, #ffe066 0%, #d4af37 100%);
+    color: #3d3000;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+}
+.rank-2 {
+    background: radial-gradient(circle, #e2e8f0 0%, #cbd5e1 100%);
+    color: #1e293b;
+    box-shadow: 0 0 10px rgba(203, 213, 225, 0.3);
+}
+.rank-3 {
+    background: radial-gradient(circle, #edc69b 0%, #c18f5d 100%);
+    color: #3b230f;
+    box-shadow: 0 0 8px rgba(193, 143, 93, 0.3);
+}
+.rank-other {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+/* Roster Editor Layout */
+.rosters-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+@media (max-width: 800px) {
+    .rosters-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.8rem;
+}
+
+.add-div-input-group {
+    background-color: rgba(0, 0, 0, 0.15);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.add-div-input-group input {
+    width: 100%;
+}
+
+.add-div-input-group .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.divisions-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.division-item {
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all var(--transition-speed);
+}
+
+.division-item:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+    border-color: var(--border-color);
+}
+
+.division-item.active {
+    background-color: rgba(var(--accent-purple-rgb), 0.08);
+    border: 1px solid rgba(var(--accent-purple-rgb), 0.25);
+    color: var(--text-primary);
+}
+
+.div-count-pill {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.division-item.active .div-count-pill {
+    background-color: rgba(var(--accent-purple-rgb), 0.2);
+    color: var(--text-primary);
+}
+
+/* Players Roster Panel */
+.div-panel-header {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.title-edit-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+}
+
+.title-edit-group h3 {
+    font-size: 1.5rem;
+}
+
+.player-input-row {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.player-input-row input {
+    flex-grow: 1;
+}
+
+.players-list-container h4 {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+}
+
+.players-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.8rem;
+}
+
+.player-item {
+    background-color: rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border-color);
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color var(--transition-speed);
+}
+
+.player-item:hover {
+    border-color: var(--border-color-hover);
+}
+
+.player-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+}
+
+.btn-delete-player {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0.2rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color var(--transition-speed);
+}
+
+.btn-delete-player:hover {
+    color: var(--accent-pink);
+}
+
+/* Settings Grid */
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+}
+
+@media (max-width: 600px) {
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.settings-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.settings-card h3 {
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.settings-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Modals */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(4, 7, 13, 0.85);
+    backdrop-filter: blur(8px);
+}
+
+.modal-container {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border-radius: var(--card-radius);
+    width: 90%;
+    max-width: 800px;
+    z-index: 10;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: holo-flicker 15s infinite;
+}
+
+.modal-container::before, .modal-container::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-style: solid;
+    border-color: var(--accent-cyan);
+    pointer-events: none;
+    z-index: 12;
+}
+
+.modal-container::before {
+    top: -1px;
+    left: -1px;
+    border-width: 3px 0 0 3px;
+}
+
+.modal-container::after {
+    bottom: -1px;
+    right: -1px;
+    border-width: 0 3px 3px 0;
+}
+
+.modal.active .modal-container {
+    transform: scale(1);
+}
+
+.modal-container.modal-sm {
+    max-width: 480px;
+}
+
+.modal-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h2 {
+    font-size: 1.4rem;
+    background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent-cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.modal-header p {
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+}
+
+.modal-body {
+    padding: 2rem;
+    overflow-y: auto;
+    max-height: 70vh;
+}
+
+.modal-footer {
+    padding: 1.2rem 2rem;
+    border-top: 1px solid var(--border-color);
+    background-color: rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+/* Form Groups */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.form-group select, .form-group input {
+    width: 100%;
+}
+
+.hunter-selection-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.hunter-selection-row select, .hunter-selection-row input {
+    flex: 1;
+    min-width: 140px;
+}
+
+.or-divider {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+/* Roulette Target Acquisition CSS */
+.roulette-tracks-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.roulette-track-item {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+@media (max-width: 600px) {
+    .roulette-track-item {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+}
+
+.roulette-div-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent-purple);
+}
+
+/* Spinning Viewport window */
+.roulette-viewport {
+    position: relative;
+    height: 54px;
+    border-radius: 4px;
+    border: 2px solid rgba(var(--accent-cyan-rgb), 0.3);
+    background-color: rgba(6, 12, 8, 0.95);
+    background-image: 
+        radial-gradient(circle, rgba(var(--accent-cyan-rgb), 0.08) 0%, transparent 80%),
+        linear-gradient(rgba(var(--accent-cyan-rgb), 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(var(--accent-cyan-rgb), 0.03) 1px, transparent 1px);
+    background-size: 100% 100%, 15px 15px, 15px 15px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 10px rgba(var(--accent-cyan-rgb), 0.2);
+}
+
+/* Center indicator (Targeting Reticle Crosshair) */
+.roulette-viewport::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    background: linear-gradient(to bottom, var(--accent-cyan), rgba(var(--accent-cyan-rgb), 0.3));
+    z-index: 5;
+    pointer-events: none;
+    box-shadow: 0 0 12px rgba(var(--accent-cyan-rgb), 0.75);
+}
+
+/* Add horizontal crosshair guidelines */
+.roulette-viewport::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(var(--accent-cyan-rgb), 0.2);
+    z-index: 4;
+    pointer-events: none;
+}
+
+.roulette-strip {
+    display: flex;
+    position: absolute;
+    left: 0;
+    height: 100%;
+    align-items: center;
+    will-change: transform;
+}
+
+.roulette-item {
+    flex-shrink: 0;
+    width: 200px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+}
+
+.roulette-item.selected-roll {
+    color: var(--accent-cyan);
+    font-size: 1.4rem;
+    text-shadow: 0 0 15px rgba(var(--accent-cyan-rgb), 0.5);
+    background-color: rgba(var(--accent-cyan-rgb), 0.03);
+}
+
+/* Share Card Styling (optimized for Canvas export) */
+.share-container {
+    max-width: 580px;
+}
+
+.share-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.share-card-graphic {
+    width: 480px;
+    background-color: #0b0f19;
+    border: 1px solid rgba(var(--accent-cyan-rgb), 0.3);
+    border-radius: 16px;
+    padding: 2.2rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+}
+
+.graphic-glow {
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(var(--accent-purple-rgb), 0.15) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.share-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.graphic-logo {
+    font-size: 2.5rem;
+    filter: drop-shadow(0 0 10px rgba(var(--accent-cyan-rgb), 0.5));
+}
+
+.graphic-title-group .graphic-sub {
+    font-family: var(--font-primary);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    color: var(--accent-cyan);
+}
+
+.graphic-title-group h2 {
+    font-size: 1.6rem;
+    margin-top: 0.1rem;
+    color: var(--text-primary);
+}
+
+.share-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.share-bounty-row {
+    background-color: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.share-row-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.share-div-tag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+
+.share-target-name {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.share-bounty-row.claimed .share-target-name {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.share-row-right {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.3rem;
+}
+
+.share-status-tag {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.share-status-tag.pending {
+    background-color: rgba(var(--accent-cyan-rgb), 0.15);
+    color: var(--accent-cyan);
+}
+
+.share-status-tag.claimed {
+    background-color: rgba(var(--accent-pink-rgb), 0.15);
+    color: #ff3377;
+}
+
+.share-status-tag.escaped {
+    background-color: rgba(var(--accent-green-rgb), 0.15);
+    color: var(--accent-green);
+}
+
+.share-reward {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent-gold);
+}
+
+.share-card-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.share-card-footer .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.share-card-footer .meta-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+}
+
+.share-card-footer .meta-val {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.share-card-footer .branding {
+    text-align: right;
+}
+
+.share-card-footer .branding .meta-val {
+    color: var(--accent-purple);
+}
+
+/* Toast System */
+.toast-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    z-index: 200;
+}
+
+.toast {
+    background-color: var(--bg-secondary);
+    border-left: 4px solid var(--accent-cyan);
+    border-top: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 1.5rem;
+    border-radius: 4px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    min-width: 280px;
+    max-width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.toast.toast-error {
+    border-left-color: var(--accent-pink);
+}
+
+.toast.toast-success {
+    border-left-color: var(--accent-green);
+}
+
+.toast-content {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.toast-close {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Utility hidden helper */
+.hidden {
+    display: none !important;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Division-wise Leaderboard Headers */
+.division-board-header {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    margin-top: 2.2rem;
+    margin-bottom: 1.2rem;
+    color: var(--accent-purple);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-left: 4px solid var(--accent-purple);
+    padding-left: 0.8rem;
+    text-shadow: 0 0 10px rgba(var(--accent-purple-rgb), 0.15);
+}
+
+@keyframes holo-flicker {
+    0% { opacity: 0.97; filter: contrast(1) brightness(1); }
+    1% { opacity: 0.86; filter: contrast(1.15) brightness(1.2); }
+    2% { opacity: 0.99; filter: contrast(1) brightness(1); }
+    40% { opacity: 1; }
+    41% { opacity: 0.91; filter: brightness(1.25); }
+    42% { opacity: 1; }
+    85% { opacity: 0.98; }
+    86% { opacity: 0.83; filter: contrast(0.9) brightness(0.9); }
+    87% { opacity: 0.99; }
+    100% { opacity: 0.97; }
+}
+
+/* Wanted Posters Terminal Styling */
+.wanted-posters-modal-container {
+    max-width: 900px !important;
+}
+
+.posters-flex-container {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.poster-preview-card {
+    flex: 1;
+    min-width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.poster-preview-card h3 {
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.05em;
+}
+
+.wanted-poster-box {
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 1. Cyber Hologram Poster (1:1 Square) */
+.poster-cyber {
+    width: 380px;
+    height: 380px;
+    background-color: #030a0f;
+    border: 2px solid var(--accent-cyan);
+    padding: 1.5rem;
+    justify-content: space-between;
+    box-shadow: 0 0 20px rgba(var(--accent-cyan-rgb), 0.2), inset 0 0 15px rgba(var(--accent-cyan-rgb), 0.1);
+}
+
+.poster-cyber-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+}
+
+.poster-cyber-border-accents::before, .poster-cyber-border-accents::after {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border: 2px solid var(--accent-cyan);
+    pointer-events: none;
+}
+.poster-cyber-border-accents::before {
+    top: 6px;
+    left: 6px;
+    border-right: none;
+    border-bottom: none;
+}
+.poster-cyber-border-accents::after {
+    bottom: 6px;
+    right: 6px;
+    border-left: none;
+    border-top: none;
+}
+
+.poster-cyber-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid rgba(var(--accent-cyan-rgb), 0.3);
+    padding-bottom: 0.4rem;
+}
+
+.poster-cyber-header .agency-label {
+    font-family: var(--font-display);
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+}
+
+.poster-cyber-header .alert-label {
+    font-family: var(--font-primary);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 8px rgba(var(--accent-cyan-rgb), 0.5);
+}
+
+.poster-cyber-photo-container {
+    height: 110px;
+    width: 110px;
+    border: 1px solid rgba(var(--accent-cyan-rgb), 0.4);
+    background-color: rgba(var(--accent-cyan-rgb), 0.03);
+    align-self: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-reticle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.reticle-svg {
+    animation: spin-reticle 20s linear infinite;
+}
+
+@keyframes spin-reticle {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.poster-avatar-placeholder {
+    width: 60px;
+    height: 60px;
+    filter: drop-shadow(0 0 5px rgba(var(--accent-cyan-rgb), 0.4));
+}
+
+.poster-cyber-info {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.poster-cyber-info .w-label {
+    font-family: var(--font-display);
+    font-size: 0.55rem;
+    color: var(--accent-gold);
+    letter-spacing: 0.1em;
+}
+
+.poster-cyber-name {
+    font-family: var(--font-primary);
+    font-size: 1.6rem;
+    color: var(--text-primary);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+}
+
+.poster-cyber-meta-row {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    font-size: 0.75rem;
+    font-family: var(--font-display);
+}
+
+.poster-cyber-meta-row .meta-lbl {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.poster-cyber-meta-row .meta-val {
+    color: var(--accent-cyan);
+}
+
+.poster-cyber-crime-box {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(var(--accent-cyan-rgb), 0.15);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    margin-top: 0.2rem;
+}
+
+.poster-cyber-crime-box .crime-header {
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    color: var(--accent-gold);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.15rem;
+}
+
+.poster-cyber-crime {
+    font-family: var(--font-primary);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.3;
+}
+
+.poster-cyber-footer {
+    border-top: 1px dashed rgba(var(--accent-cyan-rgb), 0.3);
+    padding-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.poster-cyber-footer .reward-title {
+    font-family: var(--font-display);
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+}
+
+.poster-cyber-footer .reward-amount {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+    text-shadow: 0 0 8px rgba(var(--accent-gold-rgb), 0.4);
+}
+
+.poster-cyber-footer .status-disclaimer {
+    font-family: var(--font-display);
+    font-size: 0.5rem;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+}
+
+/* 2. Red Security Hologram Poster (3:4 Vertical) */
+.poster-red-holo {
+    width: 360px;
+    height: 480px;
+    background-color: #0d0404;
+    border: 2px solid var(--accent-pink);
+    padding: 1.8rem;
+    justify-content: space-between;
+    box-shadow: 0 0 20px rgba(var(--accent-pink-rgb), 0.2), inset 0 0 15px rgba(var(--accent-pink-rgb), 0.1);
+}
+
+.poster-red-holo-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(rgba(255, 51, 85, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 51, 85, 0.02) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+}
+
+.poster-red-holo-border-accents::before, .poster-red-holo-border-accents::after {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border: 2px solid var(--accent-pink);
+    pointer-events: none;
+}
+.poster-red-holo-border-accents::before {
+    top: 6px;
+    left: 6px;
+    border-right: none;
+    border-bottom: none;
+}
+.poster-red-holo-border-accents::after {
+    bottom: 6px;
+    right: 6px;
+    border-left: none;
+    border-top: none;
+}
+
+.poster-red-holo-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid rgba(var(--accent-pink-rgb), 0.3);
+    padding-bottom: 0.5rem;
+}
+
+.poster-red-holo-header .agency-label-red {
+    font-family: var(--font-display);
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+}
+
+.poster-red-holo-header .alert-label-red {
+    font-family: var(--font-primary);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent-pink);
+    letter-spacing: 0.06em;
+    text-shadow: 0 0 8px rgba(var(--accent-pink-rgb), 0.6);
+}
+
+.poster-red-holo-photo-container {
+    height: 140px;
+    width: 130px;
+    border: 1px solid rgba(var(--accent-pink-rgb), 0.4);
+    background-color: rgba(var(--accent-pink-rgb), 0.03);
+    align-self: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-reticle-red {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.reticle-svg-red {
+    animation: pulse-reticle-red 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-reticle-red {
+    0% { transform: scale(0.95); opacity: 0.7; }
+    100% { transform: scale(1.05); opacity: 1; }
+}
+
+.poster-avatar-placeholder-red {
+    width: 70px;
+    height: 70px;
+    filter: drop-shadow(0 0 5px rgba(var(--accent-pink-rgb), 0.4));
+}
+
+.poster-red-holo-info {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.poster-red-holo-info .w-label-red {
+    font-family: var(--font-display);
+    font-size: 0.55rem;
+    color: var(--accent-gold);
+    letter-spacing: 0.1em;
+}
+
+.poster-red-holo-name {
+    font-family: var(--font-primary);
+    font-size: 1.8rem;
+    color: var(--text-primary);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+}
+
+.poster-red-holo-sub {
+    font-family: var(--font-primary);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.poster-red-holo-team {
+    color: var(--accent-pink);
+}
+
+.poster-red-holo-div-tag {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    font-weight: bold;
+}
+
+.poster-red-holo-division {
+    color: var(--accent-pink);
+}
+
+.poster-red-holo-crime-box {
+    background-color: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(var(--accent-pink-rgb), 0.15);
+    padding: 0.5rem 0.8rem;
+    border-radius: 4px;
+}
+
+.crime-header-red {
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    color: var(--accent-gold);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.2rem;
+    text-align: left;
+}
+
+.poster-red-holo-crime {
+    font-family: var(--font-primary);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.35;
+}
+
+.poster-red-holo-footer {
+    border-top: 1px dashed rgba(var(--accent-pink-rgb), 0.3);
+    padding-top: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.p-reward-title-red {
+    font-family: var(--font-display);
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+}
+
+.p-reward-amount-red {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+    text-shadow: 0 0 8px rgba(var(--accent-gold-rgb), 0.4);
+}
+
+.p-disclaimer-red {
+    font-family: var(--font-display);
+    font-size: 0.48rem;
+    color: var(--text-muted);
+    letter-spacing: 0.01em;
+    line-height: 1.25;
+    text-align: center;
+}
+
+</style>
+    <!-- html2canvas library for exporting graphics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="glow-bg"></div>
+    <div class="crt-overlay"></div>
+    
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <header class="app-header">
+            <div class="logo">
+                <span class="logo-icon">
+                    <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="var(--accent-cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-svg-icon">
+                        <circle cx="12" cy="12" r="10" stroke-dasharray="3 3"></circle>
+                        <path d="M12 2v20M2 12h20"></path>
+                        <circle cx="12" cy="12" r="3" fill="var(--accent-cyan)" opacity="0.4"></circle>
+                    </svg>
+                </span>
+                <div class="logo-text">
+                    <h1>GUILD BOARD</h1>
+                    <p>SECTOR TARGET TRACKING</p>
+                </div>
+            </div>
+            <nav class="nav-tabs">
+                <button class="nav-tab active" data-tab="tab-bounties">
+                    <span class="tab-icon">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <circle cx="12" cy="11" r="3"/>
+                        </svg>
+                    </span>
+                    <span class="tab-text">Active Contracts</span>
+                </button>
+                <button class="nav-tab" data-tab="tab-leaderboard">
+                    <span class="tab-icon">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34M12 2a4 4 0 0 0-4 4v5c0 2.2 1.8 4 4 4s4-1.8 4-4V6a4 4 0 0 0-4-4z"/>
+                        </svg>
+                    </span>
+                    <span class="tab-text">Guild Standings</span>
+                </button>
+                <button class="nav-tab" data-tab="tab-rosters">
+                    <span class="tab-icon">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </span>
+                    <span class="tab-text">Sector Registry</span>
+                </button>
+                <button class="nav-tab" data-tab="tab-settings">
+                    <span class="tab-icon">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        </svg>
+                    </span>
+                    <span class="tab-text">Terminal Settings</span>
+                </button>
+            </nav>
+            <div class="audio-control-panel">
+                <span class="audio-label">COMMS FEED</span>
+                <button id="comms-audio-btn" class="audio-toggle-btn active" title="Toggle audio feedback">
+                    <svg class="speaker-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path class="wave wave-1" d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                        <path class="wave wave-2" d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    </svg>
+                    <span class="status-indicator">ONLINE</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Work Area -->
+        <main class="app-main">
+            
+            <!-- SECTION: BOUNTIES -->
+            <section id="tab-bounties" class="tab-content active">
+                <div class="section-header">
+                    <div>
+                        <h2>Sector Contract Pucks</h2>
+                        <p>Track active targets, bounty credits, and capture logs by division.</p>
+                    </div>
+                    <div class="week-controls">
+                        <label for="week-select">Cycle:</label>
+                        <div class="custom-select-wrapper">
+                            <select id="week-select">
+                                <!-- Dynamically populated -->
+                            </select>
+                        </div>
+                        <button id="add-week-btn" class="btn btn-secondary">+ New Cycle</button>
+                    </div>
+                </div>
+
+                <!-- Roll State: No Bounties Rolled Yet -->
+                <div id="no-bounties-state" class="empty-state card hidden">
+                    <div class="empty-icon">
+                        <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="var(--accent-cyan)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="empty-state-svg">
+                            <circle cx="12" cy="12" r="10" stroke-dasharray="3 3"></circle>
+                            <circle cx="12" cy="12" r="6"></circle>
+                            <circle cx="12" cy="12" r="2" fill="var(--accent-cyan)"></circle>
+                            <path d="M12 2v20M2 12h20"></path>
+                        </svg>
+                    </div>
+                    <h3>No Guild Pucks Activated For This Cycle</h3>
+                    <p>Initialize tracking fob database scan to select random targets for each division.</p>
+                    <button id="roll-bounties-trigger" class="btn btn-primary btn-large">
+                        <span class="pulse-ring"></span>
+                        Scan Sector for Targets
+                    </button>
+                </div>
+
+                <!-- Active State: Bounty Cards Grid -->
+                <div id="active-bounties-state" class="hidden">
+                    <div class="actions-bar">
+                        <button id="export-card-btn" class="btn btn-accent">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.3rem;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Compile Guild Report
+                        </button>
+                        <button id="reroll-week-btn" class="btn btn-danger-outline">Re-Scan All Contracts</button>
+                    </div>
+                    
+                    <div class="bounty-grid" id="bounty-cards-container">
+                        <!-- Dynamically populated card structure -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: LEADERBOARD -->
+            <section id="tab-leaderboard" class="tab-content">
+                <div class="section-header">
+                    <div>
+                        <h2>Guild Ranks & Ledger</h2>
+                        <p>Total credits earned by Hunters and credit values survived by Target players.</p>
+                    </div>
+                    <div class="leaderboard-tabs">
+                        <button class="sub-tab active" data-subtab="hunter-board">Hunter Standings</button>
+                        <button class="sub-tab" data-subtab="target-board">Survival Standings</button>
+                    </div>
+                </div>
+
+                <!-- Hunters Board -->
+                <div id="hunter-board" class="sub-tab-content active">
+                    <!-- Dynamic division tables will be populated here -->
+                </div>
+
+                <!-- Targets Board -->
+                <div id="target-board" class="sub-tab-content">
+                    <!-- Dynamic division tables will be populated here -->
+                </div>
+            </section>
+
+            <!-- SECTION: ROSTERS -->
+            <section id="tab-rosters" class="tab-content">
+                <div class="section-header">
+                    <div>
+                        <h2>Sector Registry</h2>
+                        <p>Configure rosters to draw bounties from. At least one player per division is required to roll.</p>
+                    </div>
+                </div>
+
+                <div class="rosters-layout">
+                    <!-- Left Panel: Divisions list -->
+                    <div class="divisions-sidebar card">
+                        <div class="sidebar-header">
+                            <h3>Divisions</h3>
+                            <button id="add-div-btn" class="btn-icon" title="Add Division">+</button>
+                        </div>
+                        <div class="add-div-input-group hidden" id="add-div-form">
+                            <input type="text" id="new-div-name" placeholder="e.g., Outer Rim">
+                            <div class="form-actions">
+                                <button id="save-div-btn" class="btn btn-primary btn-sm">Save</button>
+                                <button id="cancel-div-btn" class="btn btn-secondary btn-sm">Cancel</button>
+                            </div>
+                        </div>
+                        <ul class="divisions-list" id="divisions-ul">
+                            <!-- Dynamic divisions list -->
+                        </ul>
+                    </div>
+
+                    <!-- Right Panel: Players list in selected division -->
+                    <div class="players-panel card">
+                        <div id="no-div-selected" class="empty-state">
+                            <div class="empty-icon">
+                                <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="var(--text-muted)" stroke-width="1.5">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="9" cy="7" r="4"/>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                </svg>
+                            </div>
+                            <p>Select or create a division to manage targets.</p>
+                        </div>
+                        <div id="div-players-view" class="hidden">
+                            <div class="div-panel-header">
+                                <div class="title-edit-group">
+                                    <h3 id="current-division-title">Division Name</h3>
+                                    <button id="delete-div-btn" class="btn btn-danger-outline btn-sm">Delete Division</button>
+                                </div>
+                                <div class="player-input-row">
+                                    <input type="text" id="new-player-name" placeholder="Player Name" style="flex: 2;">
+                                    <input type="text" id="new-player-id" placeholder="Player ID (e.g. 97000137)" style="flex: 1.5;">
+                                    <input type="text" id="new-player-team" placeholder="Team Name (e.g. Friends)" style="flex: 2;">
+                                    <button id="add-player-btn" class="btn btn-primary">Add Player</button>
+                                </div>
+                            </div>
+                            <div class="players-list-container">
+                                <h4>Targets Count: <span id="player-count">0</span></h4>
+                                <div class="table-container" style="margin-top: 1rem;">
+                                    <table class="leaderboard-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Player ID</th>
+                                                <th>Name</th>
+                                                <th>Team</th>
+                                                <th width="80px" style="text-align: right;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="players-tbody">
+                                            <!-- Dynamic players list -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: SETTINGS -->
+            <section id="tab-settings" class="tab-content">
+                <div class="section-header">
+                    <div>
+                        <h2>Terminal Settings</h2>
+                        <p>Import/Export database backups, load preset databases, or clear terminal memory.</p>
+                    </div>
+                </div>
+
+                <div class="settings-grid">
+                    <!-- Backup & Restore -->
+                    <div class="card settings-card">
+                        <h3>
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.5rem;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                            Database Backup & Restore
+                        </h3>
+                        <p>Save your leagues, history, and leaderboards to a file on your computer, or restore a previous save.</p>
+                        <div class="settings-actions">
+                            <button id="export-db-btn" class="btn btn-secondary">Export Data (JSON)</button>
+                            <label for="import-db-input" class="btn btn-primary cursor-pointer">
+                                Import Data (JSON)
+                                <input type="file" id="import-db-input" accept=".json" style="display: none;">
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sandbox Actions -->
+                    <div class="card settings-card">
+                        <h3>
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.5rem;"><path d="M10 2v7.31L3.75 20a1 1 0 0 0 .85 1.5h14.8a1 1 0 0 0 .85-1.5L14 9.31V2zM8.5 2h7M7 16h10"/></svg>
+                            Sandbox Controls
+                        </h3>
+                        <p>Reset the state or inject clean pre-configured mock divisions, players, and weekly history to see the hub in action.</p>
+                        <div class="settings-actions">
+                            <button id="load-presets-btn" class="btn btn-accent">Load Demo Presets</button>
+                            <button id="clear-db-btn" class="btn btn-danger">Wipe Database</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL: BOUNTY DRAWING ROULETTE -->
+    <div id="roulette-modal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent-cyan)" stroke-width="2" style="vertical-align: middle; margin-right: 0.5rem;"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="3" fill="var(--accent-cyan)" opacity="0.3"/></svg>
+                    TARGET COORDINATE ACQUISITION
+                </h2>
+                <p>Locking in tracking fob targets across active divisions...</p>
+            </div>
+            <div class="modal-body">
+                <!-- Roulette wheels will be generated here -->
+                <div class="roulette-tracks-container" id="roulette-tracks"></div>
+            </div>
+            <div class="modal-footer hidden" id="roulette-modal-footer">
+                <button id="confirm-roll-btn" class="btn btn-accent btn-large">Confirm Targets</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: EDIT BOUNTY OUTCOME -->
+    <div id="bounty-edit-modal" class="modal hidden">
+        <div class="modal-overlay" id="edit-modal-overlay"></div>
+        <div class="modal-container modal-sm">
+            <div class="modal-header">
+                <h2>Log Capture Report</h2>
+                <p id="edit-bounty-subtitle">Division: Outer Rim | Target: Player A</p>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="bounty-status-select">Contract Status</label>
+                    <select id="bounty-status-select">
+                        <option value="pending">Hunting (Active Puck)</option>
+                        <option value="claimed">Captured (Carbonite Claims)</option>
+                        <option value="escaped">Evaded (Jumped to Hyperspace)</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="hunter-select-group">
+                    <label for="bounty-hunter-select">Claimed By (Guild Hunter)</label>
+                    <div class="hunter-selection-row">
+                        <select id="bounty-hunter-select">
+                            <!-- Populated with players from rosters -->
+                        </select>
+                        <span class="or-divider">OR</span>
+                        <input type="text" id="bounty-hunter-custom" placeholder="Type custom name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="bounty-reward-input">Bounty Value (Beskar Credits)</label>
+                    <input type="number" id="bounty-reward-input" min="0" value="100">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save-bounty-btn" class="btn btn-primary">Save Outcome</button>
+                <button id="cancel-bounty-edit" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: SHARE CARD DISPLAY -->
+    <div id="share-card-modal" class="modal hidden">
+        <div class="modal-overlay" id="share-modal-overlay"></div>
+        <div class="modal-container share-container">
+            <div class="modal-header">
+                <h2>Share Weekly Standings</h2>
+                <p>Download or copy the generated graphic to post on your channels.</p>
+            </div>
+            <div class="modal-body share-body">
+                <!-- The actual DOM node that will be screenshotted -->
+                <div id="share-card-graphic" class="share-card-graphic">
+                    <div class="graphic-glow"></div>
+                    <div class="share-card-header">
+                        <div class="graphic-logo">
+                            <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="var(--accent-cyan)" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" stroke-dasharray="3 3"></circle>
+                                <path d="M12 2v20M2 12h20"></path>
+                            </svg>
+                        </div>
+                        <div class="graphic-title-group">
+                            <span class="graphic-sub">BOUNTY BOARD SECTOR REPORT</span>
+                            <h2 id="share-week-title">CYCLE 1 SUMMARY</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="share-card-list" id="share-bounties-list">
+                        <!-- Dynamic list of bounties -->
+                    </div>
+
+                    <div class="share-card-footer">
+                        <div class="meta-item">
+                            <span class="meta-label">DISPATCH</span>
+                            <span class="meta-val" id="share-meta-summary">2 CLAIMS / 1 ESCAPED</span>
+                        </div>
+                        <div class="meta-item branding">
+                            <span class="meta-label">GUILD CENTRAL</span>
+                            <span class="meta-val">UNDERWORLD NET</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="download-graphic-btn" class="btn btn-accent">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.3rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                    Download Report
+                </button>
+                <button id="close-share-btn" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: WANTED POSTER GENERATOR -->
+    <div id="wanted-posters-modal" class="modal hidden">
+        <div class="modal-overlay" id="wanted-modal-overlay"></div>
+        <div class="modal-container wanted-posters-modal-container">
+            <div class="modal-header">
+                <h2>Wanted Poster Dispatch</h2>
+                <p>Generate wanted posters for pool playing skills to share on Facebook or the Website.</p>
+            </div>
+            <div class="modal-body wanted-posters-body">
+                <div class="posters-flex-container">
+                    
+                    <!-- Poster A: Cyber Hologram Slate (Facebook 1:1) -->
+                    <div class="poster-preview-card">
+                        <h3>Facebook Format (1:1)</h3>
+                        <div id="poster-cyber-element" class="wanted-poster-box poster-cyber">
+                            <div class="poster-cyber-grid"></div>
+                            <div class="poster-cyber-border-accents"></div>
+                            <div class="poster-cyber-header">
+                                <span class="agency-label">UNDERWORLD NETWORK DETECT</span>
+                                <span class="alert-label">GUILD BOUNTY ALERT</span>
+                            </div>
+                            <div class="poster-cyber-photo-container">
+                                <div class="photo-reticle">
+                                    <svg viewBox="0 0 100 100" width="80" height="80" class="reticle-svg">
+                                        <circle cx="50" cy="50" r="45" stroke="var(--accent-cyan)" stroke-width="1" fill="none" stroke-dasharray="2 3"></circle>
+                                        <circle cx="50" cy="50" r="30" stroke="var(--accent-cyan)" stroke-width="1" fill="none"></circle>
+                                        <line x1="50" y1="0" x2="50" y2="100" stroke="var(--accent-cyan)" stroke-width="0.5"></line>
+                                        <line x1="0" y1="50" x2="100" y2="50" stroke="var(--accent-cyan)" stroke-width="0.5"></line>
+                                    </svg>
+                                </div>
+                                <svg class="poster-avatar-placeholder" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" opacity="0.3" stroke-width="1">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                            </div>
+                            <div class="poster-cyber-info">
+                                <div class="w-label">TARGET PUCK REGISTERED</div>
+                                <h1 class="poster-cyber-name">RIGEL ROSS</h1>
+                                <div class="poster-cyber-meta-row">
+                                    <div>
+                                        <span class="meta-lbl">TEAM:</span>
+                                        <span class="meta-val poster-cyber-team">Bull Elk</span>
+                                    </div>
+                                    <div>
+                                        <span class="meta-lbl">SECTOR:</span>
+                                        <span class="meta-val poster-cyber-division">Lower Columbia</span>
+                                    </div>
+                                </div>
+                                <div class="poster-cyber-crime-box">
+                                    <span class="crime-header">WANTED FOR:</span>
+                                    <p class="poster-cyber-crime">Illegal spin application (extreme English) on the cue ball.</p>
+                                </div>
+                            </div>
+                            <div class="poster-cyber-footer">
+                                <div class="reward-title">BOUNTY REWARD VALUE</div>
+                                <div class="reward-amount poster-cyber-reward">₵100 CREDITS</div>
+                                <div class="status-disclaimer">WANTED DEAD OR IN CARBONITE BY THE GUILD BOARD</div>
+                            </div>
+                        </div>
+                        <button id="download-cyber-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.3rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                            Download PNG (FB Square)
+                        </button>
+                    </div>
+
+                    <!-- Poster B: Imperial Security Hologram (Website 3:4) -->
+                    <div class="poster-preview-card">
+                        <h3>Website Format (3:4)</h3>
+                        <div id="poster-red-holo-element" class="wanted-poster-box poster-red-holo">
+                            <div class="poster-red-holo-grid"></div>
+                            <div class="poster-red-holo-border-accents"></div>
+                            <div class="poster-red-holo-header">
+                                <span class="agency-label-red">IMPERIAL SECURITY REGISTRY</span>
+                                <span class="alert-label-red">GUILD DEATH MARK</span>
+                            </div>
+                            <div class="poster-red-holo-photo-container">
+                                <div class="photo-reticle-red">
+                                    <svg viewBox="0 0 100 100" width="80" height="80" class="reticle-svg-red">
+                                        <circle cx="50" cy="50" r="45" stroke="var(--accent-pink)" stroke-width="1" fill="none" stroke-dasharray="3 3"></circle>
+                                        <line x1="50" y1="0" x2="50" y2="100" stroke="var(--accent-pink)" stroke-width="0.5"></line>
+                                        <line x1="0" y1="50" x2="100" y2="50" stroke="var(--accent-pink)" stroke-width="0.5"></line>
+                                    </svg>
+                                </div>
+                                <svg class="poster-avatar-placeholder-red" viewBox="0 0 24 24" fill="none" stroke="var(--accent-pink)" opacity="0.3" stroke-width="1">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                            </div>
+                            <div class="poster-red-holo-info">
+                                <div class="w-label-red">TARGET IDENTITY CONFIRMED</div>
+                                <h2 class="poster-red-holo-name">RIGEL ROSS</h2>
+                                <div class="poster-red-holo-sub">OPERATING WITH THE <span class="poster-red-holo-team">BULL ELK</span> FACTION</div>
+                                <div class="poster-red-holo-div-tag">SECTOR: <span class="poster-red-holo-division">LOWER COLUMBIA</span></div>
+                                <div class="poster-red-holo-crime-box">
+                                    <span class="crime-header-red">Pool Crime Registry:</span>
+                                    <p class="poster-red-holo-crime">Lethal trick shots and rack-wrecking.</p>
+                                </div>
+                            </div>
+                            <div class="poster-red-holo-footer">
+                                <div class="p-reward-title-red">REWARD FOR APPREHENSION</div>
+                                <div class="p-reward-amount-red poster-red-holo-reward">₵100 GALACTIC CREDITS</div>
+                                <div class="p-disclaimer-red">TERMINATE OR APPREHEND. AUTHORED BY GALACTIC EMPIRE UNDERWORLD DISPATCH.</div>
+                            </div>
+                        </div>
+                        <button id="download-red-holo-btn" class="btn btn-accent" style="width: 100%; margin-top: 1rem;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.3rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                            Download PNG (Web Portrait)
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="close-wanted-btn" class="btn btn-secondary">Close Terminal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- App Script -->
+    <script>
+// Audio Feedback System using Web Audio API
+class GuildSoundSystem {
+    constructor() {
+        this.ctx = null;
+        this.enabled = true; // default enabled
+    }
+
+    init() {
+        if (this.ctx) return;
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+            this.ctx = new AudioContextClass();
+        }
+    }
+
+    playClick() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1000, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(700, this.ctx.currentTime + 0.05);
+
+        gain.gain.setValueAtTime(0.03, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.05);
+    }
+
+    playBeep() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(880, this.ctx.currentTime);
+
+        gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
+
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.08);
+    }
+
+    playLock() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(600, now);
+        osc1.frequency.setValueAtTime(800, now + 0.06);
+
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(300, now);
+        osc2.frequency.setValueAtTime(400, now + 0.06);
+
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+
+        osc1.start();
+        osc2.start();
+        osc1.stop(now + 0.2);
+        osc2.stop(now + 0.2);
+    }
+
+    playSuccess() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, now); // C5
+        osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+        osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+        osc.frequency.setValueAtTime(1046.50, now + 0.24); // C6
+
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+        osc.start();
+        osc.stop(now + 0.4);
+    }
+
+    playWarning() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.linearRampToValueAtTime(160, now + 0.3);
+
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+        osc.start();
+        osc.stop(now + 0.35);
+    }
+
+    playRadarSweep() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.exponentialRampToValueAtTime(350, now + 0.2);
+
+        gain.gain.setValueAtTime(0.03, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+
+        osc.start();
+        osc.stop(now + 0.2);
+    }
+}
+const sounds = new GuildSoundSystem();
+
+// Global Application State
+let state = {
+    divisions: {},
+    weeks: []
+};
+
+// Current view details
+let activeTab = 'tab-bounties';
+let selectedDivision = null; // Currently selected division on rosters tab
+let currentEditingBounty = null; // { weekIndex, bountyIndex }
+
+// Raw parsed Lower Columbia roster
+const LOWER_COLUMBIA_PLAYERS = [
+    // Friends
+    { id: "97000137", name: "Bill Ewan", team: "Friends" },
+    { id: "97024217", name: "John Nichols", team: "Friends" },
+    { id: "97000153", name: "Maryann Abbott", team: "Friends" },
+    { id: "97000174", name: "Edward Hatley", team: "Friends" },
+    { id: "97000149", name: "Shayne Wright", team: "Friends" },
+    { id: "97000184", name: "Crystal Crawford", team: "Friends" },
+    // Paw Patrol
+    { id: "97010394", name: "David Berkman", team: "Paw Patrol" },
+    { id: "97000205", name: "Bonnie Russell", team: "Paw Patrol" },
+    { id: "97000213", name: "Mistee Messing", team: "Paw Patrol" },
+    { id: "97000221", name: "Daniel Messing", team: "Paw Patrol" },
+    { id: "97000146", name: "Chase Billings", team: "Paw Patrol" },
+    { id: "97000159", name: "Joseph Manchester", team: "Paw Patrol" },
+    { id: "97000187", name: "Alex McKenzie", team: "Paw Patrol" },
+    // Bull Elk
+    { id: "97000113", name: "John Kraemer", team: "Bull Elk" },
+    { id: "97000196", name: "Chuy Puerta", team: "Bull Elk" },
+    { id: "97000237", name: "David Hall", team: "Bull Elk" },
+    { id: "97000328", name: "Andrew Hoggard", team: "Bull Elk" },
+    { id: "97000245", name: "Samuel McDaniel", team: "Bull Elk" },
+    { id: "97000141", name: "Rigel Ross", team: "Bull Elk" },
+    { id: "97000308", name: "Anthony Hoggard", team: "Bull Elk" },
+    { id: "97000199", name: "Nathan Pancheo", team: "Bull Elk" },
+    { id: "97000198", name: "Adam Yaws", team: "Bull Elk" },
+    { id: "97000210", name: "Lorna Padgett", team: "Bull Elk" },
+    // Hondo’s
+    { id: "97000269", name: "Betsy Crist", team: "Hondo’s" },
+    { id: "97000253", name: "Blake Mowrey", team: "Hondo’s" },
+    { id: "97000162", name: "Simo Ranta", team: "Hondo’s" },
+    { id: "97000179", name: "Ronald Kiepke", team: "Hondo’s" },
+    { id: "97000182", name: "Ronald Carter", team: "Hondo’s" },
+    { id: "97000194", name: "Ryan Applebee", team: "Hondo’s" },
+    // Legion of Doom
+    { id: "97000040", name: "Michael Wylie", team: "Legion of Doom" },
+    { id: "97000168", name: "Garrett Danel", team: "Legion of Doom" },
+    { id: "97000139", name: "Maksym Dervevianko", team: "Legion of Doom" },
+    { id: "97000177", name: "Desiree Payne", team: "Legion of Doom" },
+    { id: "97000192", name: "Gordon Scott", team: "Legion of Doom" },
+    { id: "97000190", name: "Christian Paniagua", team: "Legion of Doom" }
+];
+
+// Raw parsed St Helens & roster
+const ST_HELENS_PLAYERS = [
+    // Wrong Hole
+    { id: "97000847", name: "Alicia Lease", team: "Wrong Hole" },
+    { id: "97000171", name: "Shawn Etheredge", team: "Wrong Hole" },
+    { id: "97020560", name: "William Polk", team: "Wrong Hole" },
+    { id: "97000114", name: "Tom Lee", team: "Wrong Hole" },
+    { id: "97008640", name: "Douglas Miller", team: "Wrong Hole" },
+    { id: "97000242", name: "James Merrit", team: "Wrong Hole" },
+    // Unacceptable
+    { id: "97000337", name: "Michael Cenci", team: "Unacceptable" },
+    { id: "97000301", name: "Jim Mclain", team: "Unacceptable" },
+    { id: "97000339", name: "Steve Linn", team: "Unacceptable" },
+    { id: "97000348", name: "Greg Greer", team: "Unacceptable" },
+    { id: "97000332", name: "David Gastley", team: "Unacceptable" },
+    // Pocket Pounders
+    { id: "97000101", name: "Chris Johnston", team: "Pocket Pounders" },
+    { id: "97000048", name: "Brian Flannery", team: "Pocket Pounders" },
+    { id: "97000148", name: "Michael Johnston", team: "Pocket Pounders" },
+    { id: "97000064", name: "Robert Johnston", team: "Pocket Pounders" },
+    { id: "97000065", name: "Kathleen Duncan", team: "Pocket Pounders" },
+    { id: "97000135", name: "Lora Elliott", team: "Pocket Pounders" },
+    // Rack Wreckers
+    { id: "97000110", name: "Jake Trenton", team: "Rack Wreckers" },
+    { id: "97000142", name: "James Mier", team: "Rack Wreckers" },
+    { id: "97000134", name: "Shane Hayes", team: "Rack Wreckers" },
+    { id: "97000138", name: "Harold Jennings", team: "Rack Wreckers" },
+    { id: "97000104", name: "De Scorpian Broaddus", team: "Rack Wreckers" },
+    { id: "97000161", name: "Phillip Barton", team: "Rack Wreckers" },
+    { id: "97000160", name: "Benjamin Strobel", team: "Rack Wreckers" },
+    // One More Shot
+    { id: "97000312", name: "Clint Petty", team: "One More Shot" },
+    { id: "97000314", name: "Robert Wakeman", team: "One More Shot" },
+    { id: "97000057", name: "Margaret Moen", team: "One More Shot" },
+    { id: "97000303", name: "lrene Wakeman", team: "One More Shot" },
+    { id: "97000092", name: "Robert Montgomery", team: "One More Shot" },
+    { id: "97000045", name: "Jeffrey Hamilton", team: "One More Shot" },
+    { id: "97000307", name: "Colin Flanagan", team: "One More Shot" },
+    // Chalk is Cheap
+    { id: "97000155", name: "Andrea Parr", team: "Chalk is Cheap" },
+    { id: "97023367", name: "Kevin Long", team: "Chalk is Cheap" },
+    { id: "97022763", name: "Stephen Bradley", team: "Chalk is Cheap" },
+    { id: "97023502", name: "Diane Bradley", team: "Chalk is Cheap" },
+    { id: "97000088", name: "Ken Hile", team: "Chalk is Cheap" },
+    { id: "97000250", name: "Dan Baer", team: "Chalk is Cheap" },
+    // Felt Junkies
+    { id: "97000310", name: "Karen McDaniel", team: "Felt Junkies" },
+    { id: "97000331", name: "Louis Foust", team: "Felt Junkies" },
+    { id: "97019743", name: "Gerald Ellis", team: "Felt Junkies" },
+    { id: "97019589", name: "Kristine Rock", team: "Felt Junkies" },
+    { id: "97000345", name: "Brennen Brigham", team: "Felt Junkies" },
+    // Misfit Q's
+    { id: "97000122", name: "Kenneth Furman", team: "Misfit Q's" },
+    { id: "97000126", name: "Tammy Furman", team: "Misfit Q's" },
+    { id: "97000132", name: "Samuel Ortiz", team: "Misfit Q's" },
+    { id: "97000016", name: "Alma Davidson", team: "Misfit Q's" },
+    { id: "97004026", name: "Ryan Hall", team: "Misfit Q's" },
+    { id: "97000203", name: "Jeremy Arnold", team: "Misfit Q's" }
+];
+
+// Demo Mock Presets
+const DEMO_PRESETS = {
+    divisions: {
+        "Lower Columbia": [...LOWER_COLUMBIA_PLAYERS],
+        "St Helens &": [...ST_HELENS_PLAYERS]
+    },
+    weeks: [
+        {
+            weekNumber: 1,
+            bounties: [
+                { 
+                    division: "Lower Columbia", 
+                    target: { id: "97000137", name: "Bill Ewan", team: "Friends" }, 
+                    status: "claimed", 
+                    claimedBy: "97010394", // David Berkman
+                    reward: 100 
+                },
+                { 
+                    division: "St Helens &", 
+                    target: { id: "97000847", name: "Alicia Lease", team: "Wrong Hole" }, 
+                    status: "escaped", 
+                    claimedBy: null, 
+                    reward: 120 
+                }
+            ]
+        },
+        {
+            weekNumber: 2,
+            bounties: [
+                { 
+                    division: "Lower Columbia", 
+                    target: { id: "97000221", name: "Daniel Messing", team: "Paw Patrol" }, 
+                    status: "pending", 
+                    claimedBy: null, 
+                    reward: 100 
+                },
+                { 
+                    division: "St Helens &", 
+                    target: { id: "97000101", name: "Chris Johnston", team: "Pocket Pounders" }, 
+                    status: "pending", 
+                    claimedBy: null, 
+                    reward: 100 
+                }
+            ]
+        }
+    ]
+};
+
+// Initialize Application
+document.addEventListener("DOMContentLoaded", () => {
+    loadState();
+    setupEventListeners();
+    renderApp();
+    showToast("Bounty Hunters Guild Terminal Online", "success");
+});
+
+// Load state from localStorage or load empty defaults
+function loadState() {
+    const saved = localStorage.getItem("bounty_hunter_state");
+    if (saved) {
+        try {
+            state = JSON.parse(saved);
+            let migrated = false;
+
+            // Perform schema migration if they had string-based arrays in divisions
+            Object.keys(state.divisions).forEach(divName => {
+                state.divisions[divName] = state.divisions[divName].map((p, idx) => {
+                    if (typeof p === 'string') {
+                        migrated = true;
+                        return { id: `T${Date.now()}-${idx}`, name: p, team: "Independent" };
+                    }
+                    return p;
+                });
+            });
+            
+            // Migrate week target structure as well
+            state.weeks.forEach(w => {
+                if (w.bounties) {
+                    w.bounties.forEach(b => {
+                        if (typeof b.target === 'string') {
+                            migrated = true;
+                            b.target = { id: `T-MIG`, name: b.target, team: "" };
+                        }
+                    });
+                }
+            });
+
+            // Clean up and delete any fake divisions
+            const fakeDivs = ["Cascade Division", "Neon Division", "Shadow Division", "Apex Division"];
+            fakeDivs.forEach(fd => {
+                if (state.divisions[fd]) {
+                    delete state.divisions[fd];
+                    migrated = true;
+                }
+            });
+            
+            // Delete bounties belonging to fake divisions
+            state.weeks.forEach(w => {
+                if (w.bounties) {
+                    const originalLength = w.bounties.length;
+                    w.bounties = w.bounties.filter(b => !fakeDivs.includes(b.division));
+                    if (w.bounties.length !== originalLength) {
+                        migrated = true;
+                    }
+                }
+            });
+
+            // Clean up team names (remove numeric prefixes like "85103 - ")
+            Object.keys(state.divisions).forEach(divName => {
+                state.divisions[divName].forEach(p => {
+                    if (p.team && /^\d+\s*-\s*/.test(p.team)) {
+                        p.team = p.team.replace(/^\d+\s*-\s*/, '');
+                        migrated = true;
+                    }
+                });
+            });
+            state.weeks.forEach(w => {
+                if (w.bounties) {
+                    w.bounties.forEach(b => {
+                        if (b.target && b.target.team && /^\d+\s*-\s*/.test(b.target.team)) {
+                            b.target.team = b.target.team.replace(/^\d+\s*-\s*/, '');
+                            migrated = true;
+                        }
+                    });
+                }
+            });
+
+            // Inject Lower Columbia division if it doesn't exist in saved data
+            if (!state.divisions["Lower Columbia"]) {
+                state.divisions["Lower Columbia"] = JSON.parse(JSON.stringify(LOWER_COLUMBIA_PLAYERS));
+                migrated = true;
+            }
+
+            // Inject St Helens & division if it doesn't exist in saved data
+            if (!state.divisions["St Helens &"]) {
+                state.divisions["St Helens &"] = JSON.parse(JSON.stringify(ST_HELENS_PLAYERS));
+                migrated = true;
+            } else {
+                // Force sync team names of pre-existing St Helens & division to cleaned defaults if they were partially cleaned
+                state.divisions["St Helens &"].forEach(p => {
+                    const match = ST_HELENS_PLAYERS.find(orig => orig.id === p.id);
+                    if (match && p.team !== match.team) {
+                        p.team = match.team;
+                        migrated = true;
+                    }
+                });
+            }
+
+            if (migrated) {
+                saveState();
+                console.log("Migrated local state database, cleaned team names and fake divisions.");
+            }
+        } catch (e) {
+            console.error("Error parsing saved state:", e);
+            initEmptyState();
+        }
+    } else {
+        // Load default mock presets containing user's division roster
+        state = JSON.parse(JSON.stringify(DEMO_PRESETS));
+        saveState();
+    }
+}
+
+function initEmptyState() {
+    state = {
+        divisions: {
+            "Lower Columbia": [...LOWER_COLUMBIA_PLAYERS],
+            "St Helens &": [...ST_HELENS_PLAYERS]
+        },
+        weeks: []
+    };
+    saveState();
+}
+
+function saveState() {
+    localStorage.setItem("bounty_hunter_state", JSON.stringify(state));
+}
+
+// Global UI Rendering Router
+function renderApp() {
+    renderRosterTab();
+    renderBountiesTab();
+    renderLeaderboardTab();
+}
+
+/* ==========================================================================
+   NAVIGATION
+   ========================================================================== */
+function setupEventListeners() {
+    // Comms Audio Toggle
+    const commsBtn = document.getElementById("comms-audio-btn");
+    if (commsBtn) {
+        // Load default preference
+        const savedAudioPref = localStorage.getItem("comms_audio_enabled");
+        if (savedAudioPref !== null) {
+            sounds.enabled = savedAudioPref === "true";
+            if (!sounds.enabled) {
+                commsBtn.classList.remove("active");
+                commsBtn.querySelector(".status-indicator").innerText = "OFFLINE";
+            }
+        }
+        
+        commsBtn.addEventListener("click", () => {
+            sounds.init(); // Initialize audio context on first user click
+            sounds.enabled = !sounds.enabled;
+            localStorage.setItem("comms_audio_enabled", sounds.enabled);
+            
+            if (sounds.enabled) {
+                commsBtn.classList.add("active");
+                commsBtn.querySelector(".status-indicator").innerText = "ONLINE";
+                sounds.playSuccess(); // chime to confirm online
+            } else {
+                commsBtn.classList.remove("active");
+                commsBtn.querySelector(".status-indicator").innerText = "OFFLINE";
+            }
+        });
+    }
+
+    // Navigation Tabs
+    document.querySelectorAll(".nav-tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+            sounds.playClick();
+            const target = tab.dataset.tab;
+            document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
+            document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+            
+            tab.classList.add("active");
+            const activeSec = document.getElementById(target);
+            activeSec.classList.add("active");
+            activeTab = target;
+
+            // Specific tab entry code
+            if (target === 'tab-leaderboard') {
+                renderLeaderboardTab();
+            } else if (target === 'tab-bounties') {
+                renderBountiesTab();
+            } else if (target === 'tab-rosters') {
+                renderRosterTab();
+            }
+        });
+    });
+
+    /* --- Bounties Event Listeners --- */
+    document.getElementById("week-select").addEventListener("change", (e) => {
+        sounds.playBeep();
+        renderBountiesTab();
+    });
+
+    document.getElementById("add-week-btn").addEventListener("click", () => {
+        sounds.playBeep();
+        const newWeekNum = state.weeks.length + 1;
+        state.weeks.push({
+            weekNumber: newWeekNum,
+            bounties: []
+        });
+        saveState();
+        showToast(`Week ${newWeekNum} Created!`, "success");
+        
+        // Refresh and select the new week
+        populateWeeksDropdown(newWeekNum);
+        renderBountiesTab();
+    });
+
+    document.getElementById("roll-bounties-trigger").addEventListener("click", () => {
+        triggerBountyRoulette();
+    });
+
+    document.getElementById("confirm-roll-btn").addEventListener("click", () => {
+        sounds.playSuccess();
+        confirmRolledBounties();
+    });
+
+    document.getElementById("reroll-week-btn").addEventListener("click", () => {
+        sounds.playWarning();
+        if (confirm("Are you sure you want to re-roll ALL bounties for this week? Current weekly claims and outcomes will be wiped.")) {
+            sounds.playBeep();
+            const selectEl = document.getElementById("week-select");
+            const weekIndex = parseInt(selectEl.value);
+            state.weeks[weekIndex].bounties = [];
+            saveState();
+            renderBountiesTab();
+            showToast("Bounties cleared. Ready for re-roll.", "success");
+        }
+    });
+
+    /* --- Roster Event Listeners --- */
+    document.getElementById("add-div-btn").addEventListener("click", () => {
+        sounds.playBeep();
+        document.getElementById("add-div-form").classList.remove("hidden");
+        document.getElementById("new-div-name").focus();
+    });
+
+    document.getElementById("cancel-div-btn").addEventListener("click", () => {
+        sounds.playBeep();
+        document.getElementById("add-div-form").classList.add("hidden");
+        document.getElementById("new-div-name").value = "";
+    });
+
+    document.getElementById("save-div-btn").addEventListener("click", () => {
+        const divName = document.getElementById("new-div-name").value.trim();
+        if (!divName) {
+            sounds.playWarning();
+            showToast("Division name cannot be empty", "error");
+            return;
+        }
+        if (state.divisions[divName]) {
+            sounds.playWarning();
+            showToast("A division with this name already exists", "error");
+            return;
+        }
+        sounds.playSuccess();
+        state.divisions[divName] = [];
+        selectedDivision = divName;
+        saveState();
+        document.getElementById("add-div-form").classList.add("hidden");
+        document.getElementById("new-div-name").value = "";
+        renderRosterTab();
+        showToast(`Division "${divName}" added!`, "success");
+    });
+
+    document.getElementById("delete-div-btn").addEventListener("click", () => {
+        sounds.playWarning();
+        if (confirm(`Are you sure you want to delete "${selectedDivision}" and all of its players? This will not retroactively delete past week history.`)) {
+            sounds.playBeep();
+            delete state.divisions[selectedDivision];
+            selectedDivision = Object.keys(state.divisions)[0] || null;
+            saveState();
+            renderRosterTab();
+            showToast("Division deleted", "success");
+        }
+    });
+
+    document.getElementById("add-player-btn").addEventListener("click", () => {
+        addPlayerToRoster();
+    });
+
+    document.getElementById("new-player-name").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") addPlayerToRoster();
+    });
+    document.getElementById("new-player-id").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") addPlayerToRoster();
+    });
+    document.getElementById("new-player-team").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") addPlayerToRoster();
+    });
+
+    /* --- Leaderboard Event Listeners --- */
+    document.querySelectorAll(".sub-tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+            sounds.playClick();
+            document.querySelectorAll(".sub-tab").forEach(t => t.classList.remove("active"));
+            document.querySelectorAll(".sub-tab-content").forEach(c => c.classList.remove("active"));
+            
+            tab.classList.add("active");
+            document.getElementById(tab.dataset.subtab).classList.add("active");
+        });
+    });
+
+    /* --- Modal Edit Events --- */
+    document.getElementById("cancel-bounty-edit").addEventListener("click", () => {
+        sounds.playBeep();
+        closeModal("bounty-edit-modal");
+    });
+    
+    document.getElementById("edit-modal-overlay").addEventListener("click", () => {
+        sounds.playBeep();
+        closeModal("bounty-edit-modal");
+    });
+
+    document.getElementById("bounty-status-select").addEventListener("change", (e) => {
+        sounds.playBeep();
+        const status = e.target.value;
+        const hunterGroup = document.getElementById("hunter-select-group");
+        if (status === "claimed") {
+            hunterGroup.classList.remove("hidden");
+        } else {
+            hunterGroup.classList.add("hidden");
+        }
+    });
+
+    document.getElementById("save-bounty-btn").addEventListener("click", () => {
+        saveBountyOutcome();
+    });
+
+    /* --- Share Card Events --- */
+    document.getElementById("export-card-btn").addEventListener("click", () => {
+        sounds.playBeep();
+        openShareCardModal();
+    });
+    
+    document.getElementById("close-share-btn").addEventListener("click", () => {
+        sounds.playBeep();
+        closeModal("share-card-modal");
+    });
+
+    document.getElementById("share-modal-overlay").addEventListener("click", () => {
+        sounds.playBeep();
+        closeModal("share-card-modal");
+    });
+
+    document.getElementById("download-graphic-btn").addEventListener("click", () => {
+        sounds.playSuccess();
+        downloadShareCardGraphic();
+    });
+
+    /* --- Wanted Posters Events --- */
+    document.getElementById("close-wanted-btn").addEventListener("click", () => {
+        sounds.playBeep();
+        closeModal("wanted-posters-modal");
+    });
+    
+    document.getElementById("wanted-modal-overlay").addEventListener("click", () => {
+        sounds.playBeep();
+        closeModal("wanted-posters-modal");
+    });
+
+    document.getElementById("download-cyber-btn").addEventListener("click", () => {
+        sounds.playSuccess();
+        downloadPoster("poster-cyber-element", "cyber-bounty-alert");
+    });
+
+    document.getElementById("download-red-holo-btn").addEventListener("click", () => {
+        sounds.playSuccess();
+        downloadPoster("poster-red-holo-element", "red-hologram-poster");
+    });
+
+    /* --- Settings Event Listeners --- */
+    document.getElementById("load-presets-btn").addEventListener("click", () => {
+        sounds.playWarning();
+        if (confirm("This will overwrite your current settings and history with demo mock data. Proceed?")) {
+            sounds.playSuccess();
+            state = JSON.parse(JSON.stringify(DEMO_PRESETS));
+            saveState();
+            selectedDivision = Object.keys(state.divisions)[0] || null;
+            populateWeeksDropdown(0);
+            renderApp();
+            showToast("Demo presets loaded successfully!", "success");
+        }
+    });
+
+    document.getElementById("clear-db-btn").addEventListener("click", () => {
+        sounds.playWarning();
+        if (confirm("WARNING: This will permanently delete all your rosters and weekly history. Are you absolutely sure?")) {
+            sounds.playSuccess();
+            initEmptyState();
+            selectedDivision = null;
+            populateWeeksDropdown();
+            renderApp();
+            showToast("All data wiped.", "error");
+        }
+    });
+
+    document.getElementById("export-db-btn").addEventListener("click", () => {
+        sounds.playBeep();
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+        const dlAnchorElem = document.createElement('a');
+        dlAnchorElem.setAttribute("href", dataStr);
+        dlAnchorElem.setAttribute("download", `bounty-hunter-database-${new Date().toISOString().split('T')[0]}.json`);
+        dlAnchorElem.click();
+        showToast("Database file exported!", "success");
+    });
+
+    document.getElementById("import-db-input").addEventListener("change", (e) => {
+        const fileReader = new FileReader();
+        fileReader.onload = function (event) {
+            try {
+                const parsed = JSON.parse(event.target.result);
+                if (parsed && typeof parsed.divisions === 'object' && Array.isArray(parsed.weeks)) {
+                    sounds.playSuccess();
+                    state = parsed;
+                    saveState();
+                    selectedDivision = Object.keys(state.divisions)[0] || null;
+                    populateWeeksDropdown();
+                    renderApp();
+                    showToast("Database imported successfully!", "success");
+                } else {
+                    sounds.playWarning();
+                    showToast("Invalid data structure in JSON file", "error");
+                }
+            } catch (error) {
+                sounds.playWarning();
+                showToast("Failed to parse JSON file", "error");
+            }
+        };
+        if (e.target.files[0]) {
+            fileReader.readAsText(e.target.files[0]);
+        }
+    });
+}
+
+// Global modal controls
+function openModal(id) {
+    const el = document.getElementById(id);
+    el.classList.remove("hidden");
+    el.classList.add("active");
+}
+
+function closeModal(id) {
+    const el = document.getElementById(id);
+    el.classList.remove("active");
+    el.classList.add("hidden");
+}
+
+/* ==========================================================================
+   TOAST NOTIFICATION SYSTEM
+   ========================================================================== */
+function showToast(message, type = "success") {
+    const container = document.getElementById("toast-container");
+    const toast = document.createElement("div");
+    toast.className = `toast ${type === 'error' ? 'toast-error' : 'toast-success'}`;
+    
+    let icon = "🔔";
+    if (type === 'success') icon = "✓";
+    if (type === 'error') icon = "⚠";
+
+    toast.innerHTML = `
+        <span class="toast-content">${icon} &nbsp;${message}</span>
+        <button class="toast-close">&times;</button>
+    `;
+
+    toast.querySelector(".toast-close").addEventListener("click", () => {
+        toast.remove();
+    });
+
+    container.appendChild(toast);
+
+    // Auto-remove after 4 seconds
+    setTimeout(() => {
+        toast.style.animation = "slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) reverse";
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+
+
+/* ==========================================================================
+   ROSTERS TAB
+   ========================================================================== */
+function renderRosterTab() {
+    const ul = document.getElementById("divisions-ul");
+    ul.innerHTML = "";
+
+    const divNames = Object.keys(state.divisions);
+    
+    // Select first division by default if none is selected
+    if (!selectedDivision && divNames.length > 0) {
+        selectedDivision = divNames[0];
+    }
+
+    divNames.forEach(name => {
+        const li = document.createElement("li");
+        li.className = `division-item ${name === selectedDivision ? 'active' : ''}`;
+        li.innerHTML = `
+            <span>${name}</span>
+            <span class="div-count-pill">${state.divisions[name].length}</span>
+        `;
+        li.addEventListener("click", () => {
+            selectedDivision = name;
+            renderRosterTab();
+        });
+        ul.appendChild(li);
+    });
+
+    const noDivView = document.getElementById("no-div-selected");
+    const playersView = document.getElementById("div-players-view");
+
+    if (selectedDivision) {
+        noDivView.classList.add("hidden");
+        playersView.classList.remove("hidden");
+        
+        document.getElementById("current-division-title").innerText = selectedDivision;
+        document.getElementById("player-count").innerText = state.divisions[selectedDivision].length;
+        
+        const tbody = document.getElementById("players-tbody");
+        tbody.innerHTML = "";
+        
+        state.divisions[selectedDivision].forEach((player, index) => {
+            const tr = document.createElement("tr");
+            
+            const pId = player.id || "N/A";
+            const pName = player.name || (typeof player === 'string' ? player : "Unknown");
+            const pTeam = player.team || "Independent";
+
+            tr.innerHTML = `
+                <td style="font-family: var(--font-display); font-size: 0.85rem; color: var(--accent-cyan); font-weight: bold;">${pId}</td>
+                <td style="font-weight: 600;">${pName}</td>
+                <td><span class="division-tag">${pTeam}</span></td>
+                <td style="text-align: right;">
+                    <button class="btn-delete-player" title="Remove Player" style="margin-left: auto;">&times;</button>
+                </td>
+            `;
+            tr.querySelector(".btn-delete-player").addEventListener("click", () => {
+                removePlayerFromRoster(index);
+            });
+            tbody.appendChild(tr);
+        });
+    } else {
+        noDivView.classList.remove("hidden");
+        playersView.classList.add("hidden");
+    }
+}
+
+function addPlayerToRoster() {
+    if (!selectedDivision) return;
+    const nameInput = document.getElementById("new-player-name");
+    const idInput = document.getElementById("new-player-id");
+    const teamInput = document.getElementById("new-player-team");
+
+    const name = nameInput.value.trim();
+    const id = idInput.value.trim() || `T-${Date.now()}`;
+    const team = teamInput.value.trim() || "Independent";
+
+    if (!name) {
+        showToast("Player name cannot be empty", "error");
+        return;
+    }
+    
+    // Check for ID collision
+    const idExists = state.divisions[selectedDivision].some(p => p.id === id);
+    if (idExists && id !== "N/A") {
+        showToast(`Player with ID ${id} already exists in this division`, "error");
+        return;
+    }
+
+    state.divisions[selectedDivision].push({ id, name, team });
+    saveState();
+    
+    // Reset inputs
+    nameInput.value = "";
+    idInput.value = "";
+    teamInput.value = "";
+    nameInput.focus();
+    
+    renderRosterTab();
+    showToast(`Player "${name}" added to "${selectedDivision}"`, "success");
+}
+
+function removePlayerFromRoster(index) {
+    if (!selectedDivision) return;
+    const playerObj = state.divisions[selectedDivision][index];
+    const pName = playerObj.name || playerObj;
+    state.divisions[selectedDivision].splice(index, 1);
+    saveState();
+    renderRosterTab();
+    showToast(`Removed player "${pName}"`, "success");
+}
+
+
+/* ==========================================================================
+   BOUNTIES TAB
+   ========================================================================== */
+function populateWeeksDropdown(selectedWeekNum = null) {
+    const dropdown = document.getElementById("week-select");
+    dropdown.innerHTML = "";
+
+    if (state.weeks.length === 0) {
+        state.weeks.push({ weekNumber: 1, bounties: [] });
+        saveState();
+    }
+
+    state.weeks.forEach((week, index) => {
+        const opt = document.createElement("option");
+        opt.value = index;
+        opt.innerText = `Week ${week.weekNumber}`;
+        if (selectedWeekNum !== null && week.weekNumber === selectedWeekNum) {
+            opt.selected = true;
+        } else if (selectedWeekNum === null && index === state.weeks.length - 1) {
+            opt.selected = true;
+        }
+        dropdown.appendChild(opt);
+    });
+}
+
+function renderBountiesTab() {
+    if (document.getElementById("week-select").children.length === 0) {
+        populateWeeksDropdown();
+    }
+
+    const selectEl = document.getElementById("week-select");
+    if (!selectEl.value) return;
+
+    const weekIndex = parseInt(selectEl.value);
+    const week = state.weeks[weekIndex];
+    
+    const noBountiesEl = document.getElementById("no-bounties-state");
+    const activeBountiesEl = document.getElementById("active-bounties-state");
+    const cardsContainer = document.getElementById("bounty-cards-container");
+    
+    cardsContainer.innerHTML = "";
+
+    if (!week.bounties || week.bounties.length === 0) {
+        noBountiesEl.classList.remove("hidden");
+        activeBountiesEl.classList.add("hidden");
+    } else {
+        noBountiesEl.classList.add("hidden");
+        activeBountiesEl.classList.remove("hidden");
+
+        const hasClaims = week.bounties.some(b => b.status === 'claimed');
+        if (!hasClaims) {
+            const summaryCard = document.createElement("div");
+            summaryCard.className = "bounty-card card status-unclaimed";
+            summaryCard.innerHTML = `
+                <div class="bounty-card-header">
+                    <span class="division-tag">SYSTEM DISPATCH</span>
+                    <span class="status-badge" style="background-color: rgba(var(--accent-gold-rgb), 0.1); color: var(--accent-gold); border: 1px solid rgba(var(--accent-gold-rgb), 0.2);">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle; margin-right: 0.2rem; display: inline-block;">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        NO SECURED CLAIMS
+                    </span>
+                </div>
+                <div class="bounty-card-body">
+                    <span class="bounty-label">Cycle ${week.weekNumber} Status</span>
+                    <h3 class="bounty-target" style="color: var(--accent-gold);">NO BOUNTIES SECURED</h3>
+                    <span style="font-family: var(--font-display); font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">All target tracking fobs for this cycle remain active or have evaded capture.</span>
+                </div>
+                <div class="reward-block" style="border-color: rgba(var(--accent-gold-rgb), 0.15);">
+                    <div class="reward-info">
+                        <span class="bounty-label">Total Credits Disbursed</span>
+                        <span class="reward-value" style="color: var(--text-secondary);">₵0 Credits</span>
+                    </div>
+                </div>
+            `;
+            cardsContainer.appendChild(summaryCard);
+        }
+
+        week.bounties.forEach((bounty, index) => {
+            const card = document.createElement("div");
+            card.className = `bounty-card card status-${bounty.status}`;
+            
+            let badgeIcon = `<svg class="status-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle; margin-right: 0.2rem; display: inline-block;"><circle cx="12" cy="12" r="8"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>`;
+            let statusText = "Hunting";
+            if (bounty.status === 'claimed') {
+                badgeIcon = `<svg class="status-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 0.2rem; display: inline-block;"><path d="M4 10a8 8 0 0 1 16 0v4a2 2 0 0 1-2 2h-1.382a1 1 0 0 0-.894.553l-.448.894a1 1 0 0 1-.894.553h-4.764a1 1 0 0 1-.894-.553l-.448-.894a1 1 0 0 0-.894-.553H6a2 2 0 0 1-2-2v-4z"/><circle cx="9" cy="10" r="1"/><circle cx="15" cy="10" r="1"/><path d="M8 15h8"/></svg>`;
+                statusText = "Captured";
+            } else if (bounty.status === 'escaped') {
+                badgeIcon = `<svg class="status-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 0.2rem; display: inline-block;"><path d="M13 3l8 8-8 8M3 11h18M3 7h6M3 15h4"/></svg>`;
+                statusText = "Evaded";
+            }
+
+            const targetName = bounty.target.name || (typeof bounty.target === 'string' ? bounty.target : "Unknown");
+            const targetTeam = bounty.target.team || "";
+            const targetId = bounty.target.id || "";
+
+            const targetDisplay = targetTeam ? 
+                `${targetName} <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal;">(${targetTeam})</span>` : 
+                targetName;
+
+            let claimInfoHTML = '';
+            if (bounty.status === 'claimed' && bounty.claimedBy) {
+                const fullHunterName = getPlayerFullName(bounty.claimedBy);
+                claimInfoHTML = `
+                    <div class="claim-details">
+                        <div class="bounty-label">Hunter</div>
+                        <div class="claim-hunter">${fullHunterName}</div>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="bounty-card-header">
+                    <span class="division-tag">${bounty.division}</span>
+                    <span class="status-badge status-${bounty.status}">${badgeIcon} ${statusText}</span>
+                </div>
+                <div class="bounty-card-body">
+                    <span class="bounty-label">Target Player</span>
+                    <h3 class="bounty-target">${targetDisplay}</h3>
+                    ${targetId && !targetId.startsWith('T-') ? `<span style="font-family: var(--font-display); font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">ID: ${targetId}</span>` : ''}
+                </div>
+                <div class="reward-block">
+                    <div class="reward-info">
+                        <span class="bounty-label">Bounty Reward</span>
+                        <span class="reward-value">₵${bounty.reward} Credits</span>
+                    </div>
+                    ${claimInfoHTML}
+                </div>
+                <div class="bounty-card-footer">
+                    <button class="btn btn-secondary btn-sm edit-bounty-btn">Resolve Outcome</button>
+                    <button class="btn btn-accent btn-sm wanted-poster-btn">Wanted Poster</button>
+                    <button class="btn btn-danger-outline btn-sm reroll-single-btn" title="Re-roll this Division's bounty">↻ Re-roll</button>
+                </div>
+            `;
+
+            // Card Action Hooks
+            card.querySelector(".edit-bounty-btn").addEventListener("click", () => {
+                triggerEditBountyModal(weekIndex, index);
+            });
+
+            card.querySelector(".wanted-poster-btn").addEventListener("click", () => {
+                triggerWantedPosterModal(bounty);
+            });
+
+            card.querySelector(".reroll-single-btn").addEventListener("click", () => {
+                if (confirm(`Re-roll bounty for "${bounty.division}"? This will pick a new random target.`)) {
+                    rerollSingleBounty(weekIndex, index);
+                }
+            });
+
+            cardsContainer.appendChild(card);
+        });
+    }
+}
+
+// Helper to look up player by ID or Name and return formatted details
+function getPlayerFullName(idOrName) {
+    if (!idOrName) return "";
+    
+    // Lookup by ID
+    for (let divName of Object.keys(state.divisions)) {
+        const found = state.divisions[divName].find(p => p.id === idOrName);
+        if (found) {
+            return `${found.name} (${found.team})`;
+        }
+    }
+    // Lookup by Name
+    for (let divName of Object.keys(state.divisions)) {
+        const found = state.divisions[divName].find(p => p.name === idOrName);
+        if (found) {
+            return `${found.name} (${found.team})`;
+        }
+    }
+    return idOrName; // Fallback to raw string (custom typed hunters)
+}
+
+// Helper player lookup returning full object
+function lookupPlayer(idOrName) {
+    if (!idOrName) return null;
+    for (let divName of Object.keys(state.divisions)) {
+        for (let p of state.divisions[divName]) {
+            if (p.id === idOrName || p.name === idOrName) {
+                return { ...p, division: divName };
+            }
+        }
+    }
+    return null;
+}
+
+/* ==========================================================================
+   RANDOM TARGET SELECTION (ROULETTE WHEEL MARQUEE)
+   ========================================================================== */
+let rolledBountiesCache = []; // Temporary holding before user clicks Confirm
+
+// Helper to gather player IDs that have already been resolved (claimed/escaped) as bounties
+function getExcludedPlayerIds(divName) {
+    const excluded = new Set();
+    state.weeks.forEach(week => {
+        if (!week.bounties) return;
+        week.bounties.forEach(b => {
+            if (b.division === divName && (b.status === "claimed" || b.status === "escaped")) {
+                const targetId = b.target.id || b.target; // support legacy strings
+                if (targetId) excluded.add(targetId);
+            }
+        });
+    });
+    return excluded;
+}
+
+function triggerBountyRoulette() {
+    const divNames = Object.keys(state.divisions);
+    
+    if (divNames.length === 0) {
+        showToast("Create a division and add players first!", "error");
+        return;
+    }
+
+    // Verify all divisions have at least 1 player
+    for (let d of divNames) {
+        if (state.divisions[d].length === 0) {
+            showToast(`Division "${d}" has no players. Add players to roll bounties.`, "error");
+            return;
+        }
+    }
+
+    rolledBountiesCache = [];
+    const tracksContainer = document.getElementById("roulette-tracks");
+    tracksContainer.innerHTML = "";
+    document.getElementById("roulette-modal-footer").classList.add("hidden");
+    
+    openModal("roulette-modal");
+
+    // We build the scrolling tracks for each division
+    divNames.forEach((divName, trackIdx) => {
+        const players = state.divisions[divName];
+        const excludedIds = getExcludedPlayerIds(divName);
+        
+        let availablePlayers = players.filter(p => !excludedIds.has(p.id));
+        if (availablePlayers.length === 0) {
+            // If all players have been targets, reset the pool and make everyone available again
+            availablePlayers = players;
+            showToast(`All players in "${divName}" have been targets. Pool reset.`, "success");
+        }
+        
+        // Randomly pick a target player object from available players
+        const targetIndex = Math.floor(Math.random() * availablePlayers.length);
+        const targetPlayer = availablePlayers[targetIndex];
+
+        // Cache the result
+        rolledBountiesCache.push({
+            division: divName,
+            target: targetPlayer, // store player object
+            status: "pending",
+            claimedBy: null,
+            reward: 100 // default points value
+        });
+
+        // Set up roulette wheel strip
+        const trackItem = document.createElement("div");
+        trackItem.className = "roulette-track-item";
+        
+        const trackLabel = document.createElement("div");
+        trackLabel.className = "roulette-div-name";
+        trackLabel.innerText = divName;
+        
+        const viewport = document.createElement("div");
+        viewport.className = "roulette-viewport";
+        viewport.id = `viewport-${trackIdx}`;
+
+        const strip = document.createElement("div");
+        strip.className = "roulette-strip";
+        strip.id = `strip-${trackIdx}`;
+
+        const totalItemsCount = 40;
+        
+        // Render all roster players on the spinning wheel visual
+        for (let i = 0; i < totalItemsCount; i++) {
+            const playerIdx = i % players.length;
+            const playerObj = players[playerIdx];
+            const pName = playerObj.name || playerObj;
+            
+            const item = document.createElement("div");
+            item.className = "roulette-item";
+            item.innerText = pName;
+            item.dataset.player = pName;
+            
+            if (i === 30) {
+                item.innerText = targetPlayer.name;
+                item.dataset.player = targetPlayer.name;
+                item.classList.add("target-node");
+            }
+            
+            strip.appendChild(item);
+        }
+
+        viewport.appendChild(strip);
+        trackItem.appendChild(trackLabel);
+        trackItem.appendChild(viewport);
+        tracksContainer.appendChild(trackItem);
+
+        strip.style.transform = `translateX(0px)`;
+    });
+
+    // Spin animation logic
+    setTimeout(() => {
+        // Play radar sweeps at intervals
+        let sweepInterval = setInterval(() => {
+            sounds.playRadarSweep();
+        }, 320);
+
+        divNames.forEach((divName, trackIdx) => {
+            const strip = document.getElementById(`strip-${trackIdx}`);
+            const viewport = document.getElementById(`viewport-${trackIdx}`);
+            const viewportWidth = viewport.offsetWidth;
+            
+            const finalX = (viewportWidth / 2) - ((30 * 200) + 100);
+
+            const spinDuration = 3000 + (trackIdx * 300);
+            strip.style.transition = `transform ${spinDuration}ms cubic-bezier(0.1, 0.8, 0.15, 1)`;
+            
+            strip.style.transform = `translateX(${finalX}px)`;
+
+            setTimeout(() => {
+                const targetNode = strip.querySelector(".target-node");
+                if (targetNode) {
+                    targetNode.classList.add("selected-roll");
+                    sounds.playLock(); // Play lock sound when single track finishes!
+                }
+            }, spinDuration);
+        });
+
+        const longestSpin = 3000 + ((divNames.length - 1) * 300);
+        setTimeout(() => {
+            clearInterval(sweepInterval);
+            sounds.playSuccess(); // Play success sound when all tracks lock!
+            document.getElementById("roulette-modal-footer").classList.remove("hidden");
+        }, longestSpin + 200);
+
+    }, 200);
+}
+
+function confirmRolledBounties() {
+    const selectEl = document.getElementById("week-select");
+    const weekIndex = parseInt(selectEl.value);
+    
+    state.weeks[weekIndex].bounties = JSON.parse(JSON.stringify(rolledBountiesCache));
+    saveState();
+    closeModal("roulette-modal");
+    renderBountiesTab();
+    showToast(`Bounties locked in for Week ${state.weeks[weekIndex].weekNumber}!`, "success");
+}
+
+function rerollSingleBounty(weekIndex, bountyIndex) {
+    const week = state.weeks[weekIndex];
+    const bounty = week.bounties[bountyIndex];
+    const players = state.divisions[bounty.division];
+
+    if (!players || players.length === 0) {
+        showToast("Roster empty. Cannot roll.", "error");
+        return;
+    }
+
+    const excludedIds = getExcludedPlayerIds(bounty.division);
+    
+    // Available: not resolved in past weeks and not the current target
+    let availablePlayers = players.filter(p => !excludedIds.has(p.id) && p.id !== bounty.target.id);
+    if (availablePlayers.length === 0) {
+        // Fallback to any player except the current target
+        availablePlayers = players.filter(p => p.id !== bounty.target.id);
+    }
+    if (availablePlayers.length === 0) {
+        // Fallback to only available roster option
+        availablePlayers = players;
+    }
+
+    const rndIdx = Math.floor(Math.random() * availablePlayers.length);
+    const newTarget = availablePlayers[rndIdx];
+
+    bounty.target = newTarget;
+    bounty.status = "pending";
+    bounty.claimedBy = null;
+    sounds.playBeep();
+    saveState();
+    renderBountiesTab();
+    showToast(`Bounty re-rolled to ${newTarget.name}`, "success");
+}
+
+
+/* ==========================================================================
+   EDIT OUTCOME MODAL
+   ========================================================================== */
+function triggerEditBountyModal(weekIndex, bountyIndex) {
+    currentEditingBounty = { weekIndex, bountyIndex };
+    
+    const bounty = state.weeks[weekIndex].bounties[bountyIndex];
+    const targetName = bounty.target.name || (typeof bounty.target === 'string' ? bounty.target : "Unknown");
+    const targetTeam = bounty.target.team ? ` (${bounty.target.team})` : "";
+    
+    document.getElementById("edit-bounty-subtitle").innerText = `Division: ${bounty.division} | Target: ${targetName}${targetTeam}`;
+    document.getElementById("bounty-status-select").value = bounty.status;
+    document.getElementById("bounty-reward-input").value = bounty.reward || 100;
+    
+    // Populate Hunter dropdown
+    const hunterSelect = document.getElementById("bounty-hunter-select");
+    hunterSelect.innerHTML = `<option value="">-- Select Active Player --</option>`;
+    
+    const allPlayers = [];
+    Object.keys(state.divisions).forEach(divName => {
+        state.divisions[divName].forEach(player => {
+            allPlayers.push({ ...player, division: divName });
+        });
+    });
+
+    allPlayers.sort((a, b) => a.name.localeCompare(b.name));
+    
+    allPlayers.forEach(p => {
+        const opt = document.createElement("option");
+        opt.value = p.id;
+        opt.innerText = `${p.name} (${p.team} | ${p.division})`;
+        if (bounty.claimedBy === p.id || bounty.claimedBy === p.name) {
+            opt.selected = true;
+        }
+        hunterSelect.appendChild(opt);
+    });
+
+    // Populate custom hunter text input if they typed a name not on roster
+    const isCustomHunter = bounty.claimedBy && !allPlayers.some(p => p.id === bounty.claimedBy);
+    const customHunterInput = document.getElementById("bounty-hunter-custom");
+    customHunterInput.value = isCustomHunter ? bounty.claimedBy : "";
+
+    // Toggle hunter select field visibility
+    const hunterGroup = document.getElementById("hunter-select-group");
+    if (bounty.status === "claimed") {
+        hunterGroup.classList.remove("hidden");
+    } else {
+        hunterGroup.classList.add("hidden");
+    }
+
+    openModal("bounty-edit-modal");
+}
+
+function saveBountyOutcome() {
+    if (!currentEditingBounty) return;
+    
+    const { weekIndex, bountyIndex } = currentEditingBounty;
+    const bounty = state.weeks[weekIndex].bounties[bountyIndex];
+    
+    const status = document.getElementById("bounty-status-select").value;
+    const reward = parseInt(document.getElementById("bounty-reward-input").value) || 0;
+    
+    bounty.status = status;
+    bounty.reward = reward;
+    
+    if (status === "claimed") {
+        const dropdownHunter = document.getElementById("bounty-hunter-select").value;
+        const customHunter = document.getElementById("bounty-hunter-custom").value.trim();
+        
+        const hunter = customHunter || dropdownHunter;
+        if (!hunter) {
+            showToast("Please select or type the claiming hunter's name.", "error");
+            return;
+        }
+        bounty.claimedBy = hunter;
+    } else {
+        bounty.claimedBy = null;
+    }
+
+    sounds.playSuccess();
+    saveState();
+    closeModal("bounty-edit-modal");
+    renderBountiesTab();
+    showToast("Bounty outcome updated!", "success");
+    currentEditingBounty = null;
+}
+
+
+/* ==========================================================================
+   LEADERBOARD CALCULATIONS
+   ========================================================================== */
+function renderLeaderboardTab() {
+    const hunterBoard = document.getElementById("hunter-board");
+    const targetBoard = document.getElementById("target-board");
+    
+    hunterBoard.innerHTML = "";
+    targetBoard.innerHTML = "";
+
+    const hunterStats = {}; // { divisionName: { playerKey: { name, team, claims, points } } }
+    const targetStats = {}; // { divisionName: { playerKey: { name, team, escapes, points } } }
+
+    // Initialize stats containers for all active roster divisions
+    Object.keys(state.divisions).forEach(divName => {
+        hunterStats[divName] = {};
+        targetStats[divName] = {};
+    });
+
+    // 1. Compile Stats
+    state.weeks.forEach(week => {
+        if (!week.bounties) return;
+        
+        week.bounties.forEach(bounty => {
+            const divName = bounty.division;
+            
+            // Ensure division key exists in stats
+            if (!hunterStats[divName]) hunterStats[divName] = {};
+            if (!targetStats[divName]) targetStats[divName] = {};
+
+            // Hunter Scoring Aggregation
+            if (bounty.status === "claimed" && bounty.claimedBy) {
+                const hunterId = bounty.claimedBy;
+                const hunterObj = lookupPlayer(hunterId);
+                const name = hunterObj ? hunterObj.name : hunterId;
+                const team = hunterObj ? hunterObj.team : "External";
+                const hunterDivision = hunterObj ? hunterObj.division : divName;
+
+                // Ensure the hunter stats division exists
+                if (!hunterStats[hunterDivision]) hunterStats[hunterDivision] = {};
+
+                const key = hunterId;
+                if (!hunterStats[hunterDivision][key]) {
+                    hunterStats[hunterDivision][key] = { name: name, team: team, claims: 0, points: 0 };
+                }
+                hunterStats[hunterDivision][key].claims += 1;
+                hunterStats[hunterDivision][key].points += bounty.reward;
+            }
+
+            // Target Survival Scoring Aggregation
+            const targetObj = bounty.target;
+            const targetId = targetObj.id || targetObj; // fallback
+            const targetName = targetObj.name || targetObj;
+            const targetTeam = targetObj.team || "Independent";
+
+            const key = targetId;
+            if (!targetStats[divName][key]) {
+                targetStats[divName][key] = { name: targetName, team: targetTeam, escapes: 0, points: 0 };
+            }
+            if (bounty.status === "escaped") {
+                targetStats[divName][key].escapes += 1;
+                targetStats[divName][key].points += bounty.reward;
+            }
+        });
+    });
+
+    // 2. Render Hunter Boards by Division
+    const activeDivs = Array.from(new Set([
+        ...Object.keys(state.divisions),
+        ...Object.keys(hunterStats)
+    ]));
+
+    activeDivs.forEach(divName => {
+        const divHounters = Object.values(hunterStats[divName] || {});
+        
+        // Sort
+        divHounters.sort((a, b) => {
+            if (b.points !== a.points) return b.points - a.points;
+            return b.claims - a.claims;
+        });
+
+        // Heading
+        const header = document.createElement("h3");
+        header.className = "division-board-header";
+        header.innerText = `${divName} Division`;
+        hunterBoard.appendChild(header);
+
+        // Table Card
+        const tableCard = document.createElement("div");
+        tableCard.className = "table-container card";
+        tableCard.style.marginBottom = "2rem";
+
+        if (divHounters.length === 0) {
+            tableCard.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No claims registered for this division.</div>`;
+        } else {
+            const table = document.createElement("table");
+            table.className = "leaderboard-table";
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th width="80px">Rank</th>
+                        <th>Hunter</th>
+                        <th class="num-col">Bounties Claimed</th>
+                        <th class="num-col">Total Points</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            `;
+            const tbody = table.querySelector("tbody");
+            divHounters.forEach((hunter, idx) => {
+                const tr = document.createElement("tr");
+                const displayName = hunter.team && hunter.team !== 'External' && hunter.team !== 'Independent' ? 
+                    `${hunter.name} <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">(${hunter.team})</span>` : 
+                    hunter.name;
+
+                tr.innerHTML = `
+                    <td>${getRankBadgeHTML(idx + 1)}</td>
+                    <td style="font-weight: 600;">${displayName}</td>
+                    <td class="num-col">${hunter.claims}</td>
+                    <td class="num-col" style="font-weight: 700; color: var(--accent-gold);">₵${hunter.points}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            tableCard.appendChild(table);
+        }
+        hunterBoard.appendChild(tableCard);
+    });
+
+    // 3. Render Target Boards by Division
+    activeDivs.forEach(divName => {
+        const divTargets = Object.values(targetStats[divName] || {});
+        
+        // Sort
+        divTargets.sort((a, b) => {
+            if (b.points !== a.points) return b.points - a.points;
+            return b.escapes - a.escapes;
+        });
+
+        // Heading
+        const header = document.createElement("h3");
+        header.className = "division-board-header";
+        header.innerText = `${divName} Division`;
+        targetBoard.appendChild(header);
+
+        // Table Card
+        const tableCard = document.createElement("div");
+        tableCard.className = "table-container card";
+        tableCard.style.marginBottom = "2rem";
+
+        if (divTargets.length === 0) {
+            tableCard.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No escaped bounties registered for this division.</div>`;
+        } else {
+            const table = document.createElement("table");
+            table.className = "leaderboard-table";
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th width="80px">Rank</th>
+                        <th>Target Player</th>
+                        <th class="num-col">Bounties Escaped</th>
+                        <th class="num-col">Total Points</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            `;
+            const tbody = table.querySelector("tbody");
+            divTargets.forEach((target, idx) => {
+                const tr = document.createElement("tr");
+                const displayName = target.team && target.team !== 'Independent' ? 
+                    `${target.name} <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">(${target.team})</span>` : 
+                    target.name;
+
+                tr.innerHTML = `
+                    <td>${getRankBadgeHTML(idx + 1)}</td>
+                    <td style="font-weight: 600;">${displayName}</td>
+                    <td class="num-col">${target.escapes}</td>
+                    <td class="num-col" style="font-weight: 700; color: var(--accent-gold);">₵${target.points}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            tableCard.appendChild(table);
+        }
+        targetBoard.appendChild(tableCard);
+    });
+}
+
+// Utility to render Rank Badges
+function getRankBadgeHTML(rank) {
+    if (rank === 1) return `<span class="rank-badge rank-1">1</span>`;
+    if (rank === 2) return `<span class="rank-badge rank-2">2</span>`;
+    if (rank === 3) return `<span class="rank-badge rank-3">3</span>`;
+    return `<span class="rank-badge rank-other">${rank}</span>`;
+}
+
+
+/* ==========================================================================
+   SHARE CARD GENERATION & EXPORT
+   ========================================================================== */
+function openShareCardModal() {
+    const selectEl = document.getElementById("week-select");
+    const weekIndex = parseInt(selectEl.value);
+    const week = state.weeks[weekIndex];
+
+    if (!week || !week.bounties || week.bounties.length === 0) {
+        showToast("No bounties available to generate card.", "error");
+        return;
+    }
+
+    document.getElementById("share-week-title").innerText = `WEEK ${week.weekNumber} REPORT`;
+    
+    const listContainer = document.getElementById("share-bounties-list");
+    listContainer.innerHTML = "";
+    
+    let claimCount = 0;
+    let escapeCount = 0;
+
+    week.bounties.forEach(bounty => {
+        const row = document.createElement("div");
+        row.className = `share-bounty-row ${bounty.status}`;
+        
+        let statusBadgeText = "Hunting";
+        if (bounty.status === 'claimed') {
+            statusBadgeText = "Captured";
+            claimCount++;
+        } else if (bounty.status === 'escaped') {
+            statusBadgeText = "Evaded";
+            escapeCount++;
+        }
+
+        const targetName = bounty.target.name || (typeof bounty.target === 'string' ? bounty.target : "Unknown");
+        const targetTeam = bounty.target.team ? ` (${bounty.target.team})` : "";
+
+        row.innerHTML = `
+            <div class="share-row-left">
+                <span class="share-div-tag">${bounty.division}</span>
+                <span class="share-target-name">${targetName}${targetTeam}</span>
+            </div>
+            <div class="share-row-right">
+                <span class="share-status-tag ${bounty.status}">${statusBadgeText}</span>
+                <span class="share-reward">₵${bounty.reward}</span>
+            </div>
+        `;
+        listContainer.appendChild(row);
+    });
+
+    document.getElementById("share-meta-summary").innerText = `${claimCount} CAPTURED / ${escapeCount} EVADED`;
+    
+    openModal("share-card-modal");
+}
+
+function downloadShareCardGraphic() {
+    const element = document.getElementById("share-card-graphic");
+    const selectEl = document.getElementById("week-select");
+    const weekIndex = parseInt(selectEl.value);
+    const week = state.weeks[weekIndex];
+
+    showToast("Generating image file...", "success");
+
+    html2canvas(element, {
+        scale: 2.5,
+        backgroundColor: "#0b0f19",
+        logging: false,
+        useCORS: true
+    }).then(canvas => {
+        const imageURL = canvas.toDataURL("image/png");
+        
+        const downloadLink = document.createElement("a");
+        downloadLink.download = `bounty-board-week-${week.weekNumber}.png`;
+        downloadLink.href = imageURL;
+        downloadLink.click();
+        
+        showToast("Image downloaded successfully!", "success");
+    }).catch(err => {
+        console.error(err);
+        showToast("Failed to render card image", "error");
+    });
+}
+
+const POOL_CRIMES = [
+    "Lethal trick shots and consecutive rack-wrecking.",
+    "Pocketing consecutive balls without a permit.",
+    "Illegal spin application (extreme English) on the cue ball.",
+    "Excessive chalking and mental intimidation of guild members.",
+    "Defacing tournament speed felt with consecutive bank shots.",
+    "Concealing an unregistered cue stick of mass destruction.",
+    "Unlicensed combination shots resulting in severe pocket abuse.",
+    "Dangerous jump shots violating low-altitude table airspace protocols.",
+    "Unlawful run-outs and cleaning the table under extreme duress.",
+    "Violently scratching on the 8-ball during high-stakes bounty matches.",
+    "Unlawful use of force-guided cue balls in gravity-well tournaments.",
+    "Smuggling high-grade Corellian chalk into the sector finals.",
+    "Engaging in unauthorized masse shots that fractured the cantina slate.",
+    "Illicit pocket-manipulation using concealed micro-tractor beams.",
+    "Sinking the 8-ball with an illegal cloaking device active.",
+    "Operating a modified cue stick with built-in targeting computer guidance.",
+    "Sabotaging the mechanical table leveling gyroscope in the Outer Rim.",
+    "Using Jedi mind tricks to force opponents to scratch on critical shots.",
+    "Rack-fixing using thermal detonators disguised as standard billiard balls.",
+    "Extorting credits by staging fraudulent cue ball velocity readings.",
+    "Falsifying amateur credentials to hustle bounty hunters in local cantinas.",
+    "Using a forbidden dual-handed bridge technique outlawed in three star systems.",
+    "Running the table in less than twelve parsecs without an active flight plan.",
+    "Illegal distribution of unlicensed carbonite cue ball polish.",
+    "Over-modifying cue stick tip hardness beyond legal Imperial density limits.",
+    "Unlicensed jump-shots that caused catastrophic damage to ceiling light fixtures.",
+    "Unauthorized double-hits causing severe vibrations in the local subspace matrix.",
+    "Hustling Imperial officers in a high-stakes 9-ball game on Tatooine.",
+    "Using a cybernetic eye implant to calculate bank shot angles to 99% accuracy.",
+    "Possession of a forbidden pool cue containing Kyber crystal focusing lenses."
+];
+
+function getRandomPoolCrime(playerName) {
+    let hash = 0;
+    for (let i = 0; i < playerName.length; i++) {
+        hash = playerName.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % POOL_CRIMES.length;
+    return POOL_CRIMES[index];
+}
+
+function triggerWantedPosterModal(bounty) {
+    sounds.playBeep();
+    const targetName = bounty.target.name || (typeof bounty.target === 'string' ? bounty.target : "Unknown");
+    const targetTeam = bounty.target.team || "Independent";
+    const division = bounty.division;
+    const reward = bounty.reward || 100;
+    const crime = getRandomPoolCrime(targetName);
+
+    // Populate Cyber Hologram
+    document.querySelector(".poster-cyber-name").innerText = targetName;
+    document.querySelector(".poster-cyber-team").innerText = targetTeam;
+    document.querySelector(".poster-cyber-division").innerText = division;
+    document.querySelector(".poster-cyber-crime").innerText = crime;
+    document.querySelector(".poster-cyber-reward").innerText = `₵${reward} CREDITS`;
+
+    // Populate Red Hologram
+    document.querySelector(".poster-red-holo-name").innerText = targetName;
+    document.querySelector(".poster-red-holo-team").innerText = targetTeam;
+    document.querySelector(".poster-red-holo-division").innerText = division;
+    document.querySelector(".poster-red-holo-crime").innerText = crime;
+    document.querySelector(".poster-red-holo-reward").innerText = `₵${reward} GALACTIC CREDITS`;
+
+    openModal("wanted-posters-modal");
+}
+
+function downloadPoster(elementId, baseName) {
+    const element = document.getElementById(elementId);
+    // Find the header or name text to include in filename
+    const nameEl = element.querySelector(".poster-cyber-name, .poster-red-holo-name");
+    const targetName = nameEl ? nameEl.innerText.replace(/\s+/g, '-').toLowerCase() : "target";
+    
+    showToast("Generating image file...", "success");
+
+    html2canvas(element, {
+        scale: 2.5,
+        backgroundColor: null,
+        logging: false,
+        useCORS: true
+    }).then(canvas => {
+        const imageURL = canvas.toDataURL("image/png");
+        const downloadLink = document.createElement("a");
+        downloadLink.download = `${baseName}-${targetName}.png`;
+        downloadLink.href = imageURL;
+        downloadLink.click();
+        showToast("Wanted poster downloaded successfully!", "success");
+    }).catch(err => {
+        console.error(err);
+        showToast("Failed to render poster image", "error");
+    });
+}
+
+
+</script>
+</body>
+</html>
