@@ -762,6 +762,44 @@ function setupEventListeners() {
     });
 
     /* --- Settings Event Listeners --- */
+    document.getElementById("copy-embed-code-btn").addEventListener("click", () => {
+        sounds.playBeep();
+        showToast("Generating self-contained Google Sites code...", "success");
+        
+        // Fetch files locally and compile
+        Promise.all([
+            fetch('/index.html').then(r => r.text()),
+            fetch('/style.css').then(r => r.text()),
+            fetch('/app.js').then(r => r.text())
+        ])
+        .then(([html, css, js]) => {
+            // Replace DEMO_PRESETS in JS
+            const presetsRegex = /const\s+DEMO_PRESETS\s*=\s*\{[\s\S]*?\};/i;
+            const finalJs = js.replace(presetsRegex, `const DEMO_PRESETS = ${JSON.stringify(state)};`);
+            
+            // Inline CSS
+            const cssLinkRegex = /<link\s+rel=["']stylesheet["']\s+href=["']style\.css["']\s*\/?>/i;
+            let finalHtml = html.replace(cssLinkRegex, `<style>\n${css}\n</style>`);
+            
+            // Inline JS
+            const jsScriptRegex = /<script\s+src=["']app\.js["']><\/script>/i;
+            finalHtml = finalHtml.replace(jsScriptRegex, `<script>\n${finalJs}\n</script>`);
+            
+            // Copy to clipboard
+            return navigator.clipboard.writeText(finalHtml);
+        })
+        .then(() => {
+            sounds.playSuccess();
+            showToast("Google Sites Code copied to clipboard!", "success");
+            alert("Success! The entire self-contained Bounty Board code has been copied to your clipboard.\n\nGo to Google Sites, click 'Embed' > 'Embed code', paste it, and click Save.");
+        })
+        .catch(err => {
+            sounds.playWarning();
+            console.error("Failed to copy code:", err);
+            showToast("Failed to copy code. Ensure your local Node server is running.", "error");
+        });
+    });
+
     document.getElementById("load-presets-btn").addEventListener("click", () => {
         sounds.playWarning();
         if (confirm("This will overwrite your current settings and history with demo mock data. Proceed?")) {
