@@ -762,11 +762,10 @@ function setupEventListeners() {
     });
 
     /* --- Settings Event Listeners --- */
-    document.getElementById("copy-embed-code-btn").addEventListener("click", () => {
+    function copyEmbedCode(forcedTab, forcedHideNav) {
         sounds.playBeep();
         showToast("Generating self-contained Google Sites code...", "success");
         
-        // Fetch files locally and compile
         Promise.all([
             fetch('/index.html').then(r => r.text()),
             fetch('/style.css').then(r => r.text()),
@@ -775,7 +774,23 @@ function setupEventListeners() {
         .then(([html, css, js]) => {
             // Replace DEMO_PRESETS in JS
             const presetsRegex = /const\s+DEMO_PRESETS\s*=\s*\{[\s\S]*?\};/i;
-            const finalJs = js.replace(presetsRegex, `const DEMO_PRESETS = ${JSON.stringify(state)};`);
+            let finalJs = js.replace(presetsRegex, `const DEMO_PRESETS = ${JSON.stringify(state)};`);
+            
+            // Force Public Mode configurations in JS
+            const publicModeRegex = /const\s+isPublicMode\s*=\s*urlParams\.get\(['"]mode['"]\)\s*===\s*['"]public['"];/g;
+            finalJs = finalJs.replace(publicModeRegex, `const isPublicMode = true; // Forced Public Mode`);
+            
+            // Force Hide Navigation in JS
+            if (forcedHideNav) {
+                const hideNavRegex = /const\s+hideNav\s*=\s*urlParams\.get\(['"]hide_nav['"]\)\s*===\s*['"]true['"];/g;
+                finalJs = finalJs.replace(hideNavRegex, `const hideNav = true; // Forced Hide Navigation`);
+            }
+            
+            // Force starting tab in JS
+            if (forcedTab) {
+                const startTabRegex = /const\s+startTab\s*=\s*urlParams\.get\(['"]tab['"]\);/g;
+                finalJs = finalJs.replace(startTabRegex, `const startTab = "${forcedTab}"; // Forced tab`);
+            }
             
             // Inline CSS
             const cssLinkRegex = /<link\s+rel=["']stylesheet["']\s+href=["']style\.css["']\s*\/?>/i;
@@ -791,13 +806,25 @@ function setupEventListeners() {
         .then(() => {
             sounds.playSuccess();
             showToast("Google Sites Code copied to clipboard!", "success");
-            alert("Success! The entire self-contained Bounty Board code has been copied to your clipboard.\n\nGo to Google Sites, click 'Embed' > 'Embed code', paste it, and click Save.");
+            alert("Success! The self-contained Bounty Board code has been copied to your clipboard.\n\nGo to Google Sites, click 'Embed' > 'Embed code', paste it, and click Save.");
         })
         .catch(err => {
             sounds.playWarning();
             console.error("Failed to copy code:", err);
             showToast("Failed to copy code. Ensure your local Node server is running.", "error");
         });
+    }
+
+    document.getElementById("copy-bounties-code-btn").addEventListener("click", () => {
+        copyEmbedCode('bounties', true);
+    });
+
+    document.getElementById("copy-leaderboard-code-btn").addEventListener("click", () => {
+        copyEmbedCode('leaderboard', true);
+    });
+
+    document.getElementById("copy-portal-code-btn").addEventListener("click", () => {
+        copyEmbedCode(null, false);
     });
 
     document.getElementById("load-presets-btn").addEventListener("click", () => {
