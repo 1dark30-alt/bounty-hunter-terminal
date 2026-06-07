@@ -320,10 +320,26 @@ const DEMO_PRESETS = {
 
 // Initialize Application
 document.addEventListener("DOMContentLoaded", () => {
+    // Check for Public Mode in URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const isPublicMode = urlParams.get('mode') === 'public';
+    if (isPublicMode) {
+        document.body.classList.add("public-mode");
+        const showcase = document.getElementById("public-video-showcase");
+        if (showcase) {
+            showcase.classList.remove("hidden");
+        }
+    }
+
     loadState();
     setupEventListeners();
     renderApp();
-    showToast("Bounty Hunters Guild Terminal Online", "success");
+    
+    if (isPublicMode) {
+        showToast("Bounty Hunters Guild Public Terminal Mode", "success");
+    } else {
+        showToast("Bounty Hunters Guild Terminal Online", "success");
+    }
 });
 
 // Load state from localStorage or load empty defaults

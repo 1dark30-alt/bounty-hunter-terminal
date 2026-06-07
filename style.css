@@ -2122,3 +2122,45 @@ input:focus, select:focus {
     line-height: 1.25;
     text-align: center;
 }
+
+/* Google Sites Public Mode overrides */
+body.public-mode [data-tab="tab-rosters"],
+body.public-mode [data-tab="tab-settings"],
+body.public-mode #add-week-btn,
+body.public-mode .actions-bar #reroll-week-btn,
+body.public-mode .bounty-card-footer .edit-bounty-btn,
+body.public-mode .bounty-card-footer .reroll-single-btn,
+body.public-mode #no-bounties-state #roll-bounties-trigger {
+    display: none !important;
+}
+
+body.public-mode .section-header {
+    margin-bottom: 1.5rem;
+}
+
+.video-showcase-card {
+    border-color: rgba(var(--accent-cyan-rgb), 0.25);
+    background-color: rgba(6, 12, 18, 0.4);
+    box-shadow: 0 0 15px rgba(var(--accent-cyan-rgb), 0.1), inset 0 0 10px rgba(var(--accent-cyan-rgb), 0.05);
+}
+
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: #000;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.video-container iframe, 
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
