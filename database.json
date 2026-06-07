@@ -613,6 +613,33 @@
           "reward": 100
         }
       ]
+    },
+    {
+      "weekNumber": 9,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000253",
+            "name": "Blake Mowrey",
+            "team": "Hondo’s"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 100
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97000016",
+            "name": "Alma Davidson",
+            "team": "Misfit Q's"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 100
+        }
+      ]
     }
   ]
 }
