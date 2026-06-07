@@ -427,24 +427,24 @@
         {
           "division": "Lower Columbia",
           "target": {
-            "id": "97000137",
-            "name": "Bill Ewan",
-            "team": "Friends"
+            "id": "97000198",
+            "name": "Adam Yaws",
+            "team": "Bull Elk"
           },
-          "status": "claimed",
-          "claimedBy": "97010394",
+          "status": "pending",
+          "claimedBy": null,
           "reward": 100
         },
         {
           "division": "St Helens &",
           "target": {
-            "id": "97000847",
-            "name": "Alicia Lease",
-            "team": "Wrong Hole"
+            "id": "97000138",
+            "name": "Harold Jennings",
+            "team": "Rack Wreckers"
           },
-          "status": "escaped",
+          "status": "pending",
           "claimedBy": null,
-          "reward": 120
+          "reward": 100
         }
       ]
     },
@@ -454,23 +454,23 @@
         {
           "division": "Lower Columbia",
           "target": {
-            "id": "97000221",
-            "name": "Daniel Messing",
-            "team": "Paw Patrol"
+            "id": "97000184",
+            "name": "Crystal Crawford",
+            "team": "Friends"
           },
-          "status": "escaped",
+          "status": "pending",
           "claimedBy": null,
           "reward": 100
         },
         {
           "division": "St Helens &",
           "target": {
-            "id": "97000101",
-            "name": "Chris Johnston",
-            "team": "Pocket Pounders"
+            "id": "97000057",
+            "name": "Margaret Moen",
+            "team": "One More Shot"
           },
-          "status": "claimed",
-          "claimedBy": "97000048",
+          "status": "pending",
+          "claimedBy": null,
           "reward": 100
         }
       ]
