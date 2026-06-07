@@ -1,3 +1,29 @@
+// Safe localStorage wrapper to prevent crashes in sandboxed iframes (e.g. Google Sites)
+const safeStorage = {
+    getItem(key) {
+        try {
+            return localStorage.getItem(key);
+        } catch (e) {
+            console.warn("Storage access denied for getItem:", e);
+            return null;
+        }
+    },
+    setItem(key, value) {
+        try {
+            localStorage.setItem(key, value);
+        } catch (e) {
+            console.warn("Storage access denied for setItem:", e);
+        }
+    },
+    removeItem(key) {
+        try {
+            localStorage.removeItem(key);
+        } catch (e) {
+            console.warn("Storage access denied for removeItem:", e);
+        }
+    }
+};
+
 // Audio Feedback System using Web Audio API
 class GuildSoundSystem {
     constructor() {
@@ -320,9 +346,17 @@ const DEMO_PRESETS = {
 
 // Initialize Application
 document.addEventListener("DOMContentLoaded", () => {
-    // Check for Public Mode in URL parameters
+    // Check for Public Mode in URL parameters or default by hosting environment
     const urlParams = new URLSearchParams(window.location.search);
-    const isPublicMode = urlParams.get('mode') === 'public';
+    const isLocal = window.location.hostname === 'localhost' || 
+                    window.location.hostname === '127.0.0.1' || 
+                    window.location.protocol === 'file:';
+    
+    let isPublicMode = urlParams.get('mode') === 'public';
+    if (!isLocal && urlParams.get('mode') !== 'admin') {
+        isPublicMode = true; // Default to public mode when hosted on GitHub Pages or embedded in Google Sites
+    }
+
     if (isPublicMode) {
         document.body.classList.add("public-mode");
         const showcase = document.getElementById("public-video-showcase");
@@ -357,9 +391,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Load state from localStorage or load empty defaults
+// Load state from local storage or load empty defaults
 function loadState() {
-    const saved = localStorage.getItem("bounty_hunter_state");
+    const saved = safeStorage.getItem("bounty_hunter_state");
     if (saved) {
         try {
             state = JSON.parse(saved);
@@ -476,7 +510,7 @@ function initEmptyState() {
 }
 
 function saveState() {
-    localStorage.setItem("bounty_hunter_state", JSON.stringify(state));
+    safeStorage.setItem("bounty_hunter_state", JSON.stringify(state));
 }
 
 // Global UI Rendering Router
@@ -494,7 +528,7 @@ function setupEventListeners() {
     const commsBtn = document.getElementById("comms-audio-btn");
     if (commsBtn) {
         // Load default preference
-        const savedAudioPref = localStorage.getItem("comms_audio_enabled");
+        const savedAudioPref = safeStorage.getItem("comms_audio_enabled");
         if (savedAudioPref !== null) {
             sounds.enabled = savedAudioPref === "true";
             if (!sounds.enabled) {
@@ -506,7 +540,7 @@ function setupEventListeners() {
         commsBtn.addEventListener("click", () => {
             sounds.init(); // Initialize audio context on first user click
             sounds.enabled = !sounds.enabled;
-            localStorage.setItem("comms_audio_enabled", sounds.enabled);
+            safeStorage.setItem("comms_audio_enabled", sounds.enabled);
             
             if (sounds.enabled) {
                 commsBtn.classList.add("active");
@@ -775,10 +809,9 @@ function setupEventListeners() {
             // Replace DEMO_PRESETS in JS
             const presetsRegex = /const\s+DEMO_PRESETS\s*=\s*\{[\s\S]*?\};/i;
             let finalJs = js.replace(presetsRegex, `const DEMO_PRESETS = ${JSON.stringify(state)};`);
-            
             // Force Public Mode configurations in JS
-            const publicModeRegex = /const\s+isPublicMode\s*=\s*urlParams\.get\(['"]mode['"]\)\s*===\s*['"]public['"];/g;
-            finalJs = finalJs.replace(publicModeRegex, `const isPublicMode = true; // Forced Public Mode`);
+            const publicModeRegex = /(const|let)\s+isPublicMode\s*=\s*urlParams\.get\(['"]mode['"]\)\s*===\s*['"]public['"];/g;
+            finalJs = finalJs.replace(publicModeRegex, `let isPublicMode = true; // Forced Public Mode`);
             
             // Force Hide Navigation in JS
             if (forcedHideNav) {
@@ -797,8 +830,8 @@ function setupEventListeners() {
             let finalHtml = html.replace(cssLinkRegex, `<style>\n${css}\n</style>`);
             
             // Inline JS
-            const jsScriptRegex = /<script\s+src=["']app\.js["']><\/script>/i;
-            finalHtml = finalHtml.replace(jsScriptRegex, `<script>\n${finalJs}\n</script>`);
+            const jsScriptRegex = new RegExp('<script\\s+src=["\']app\\.js["\']><\\/' + 'script>', 'i');
+            finalHtml = finalHtml.replace(jsScriptRegex, '<script>\n' + finalJs + '\n</' + 'script>');
             
             // Copy to clipboard
             return navigator.clipboard.writeText(finalHtml);
