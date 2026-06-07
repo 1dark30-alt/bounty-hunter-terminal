@@ -727,6 +727,40 @@ function setupEventListeners() {
         downloadPoster("poster-red-holo-element", "red-hologram-poster");
     });
 
+    document.getElementById("publish-web-btn").addEventListener("click", () => {
+        sounds.playBeep();
+        showToast("Publishing database & re-compiling page...", "success");
+        
+        fetch('/api/publish', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(state)
+        })
+        .then(res => {
+            if (!res.ok) {
+                return res.json().then(errData => {
+                    throw new Error(errData.error || "Unknown server error");
+                });
+            }
+            return res.json();
+        })
+        .then(data => {
+            if (data.success) {
+                sounds.playSuccess();
+                showToast("Bounty Board published to GitHub Pages successfully!", "success");
+            } else {
+                throw new Error(data.error || "Publish rejected by server");
+            }
+        })
+        .catch(err => {
+            sounds.playWarning();
+            console.error("Publishing error:", err);
+            showToast("Publish failed: Make sure local server.js is running and git pushes successfully.", "error");
+        });
+    });
+
     /* --- Settings Event Listeners --- */
     document.getElementById("load-presets-btn").addEventListener("click", () => {
         sounds.playWarning();
