@@ -65,7 +65,7 @@ const server = http.createServer((req, res) => {
                 
                 // Git add, commit, and push
                 console.log('[Server] Executing Git push sequence...');
-                exec('git add . && git commit -m "Auto-update database from Admin Terminal" && git push origin main', (err, stdout, stderr) => {
+                exec('git add . && (git diff-index --quiet HEAD || git commit -m "Auto-update database from Admin Terminal") && git push origin main', (err, stdout, stderr) => {
                     if (err) {
                         console.error('[Server] Git push failed:', err);
                         res.writeHead(500, { 'Content-Type': 'application/json' });
