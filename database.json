@@ -423,7 +423,30 @@
   "weeks": [
     {
       "weekNumber": 1,
-      "bounties": []
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000182",
+            "name": "Ronald Carter",
+            "team": "Hondo’s"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 100
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97000171",
+            "name": "Shawn Etheredge",
+            "team": "Wrong Hole"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 100
+        }
+      ]
     }
   ]
 }
