@@ -24,6 +24,15 @@ const safeStorage = {
     }
 };
 
+// Helper function to allow bypassing confirm alerts in automated tests or admin mode
+function safeConfirm(message) {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("bypassConfirm") === "true") {
+        return true;
+    }
+    return confirm(message);
+}
+
 // Audio Feedback System using Web Audio API
 class GuildSoundSystem {
     constructor() {
@@ -462,27 +471,6 @@ function loadState() {
                 }
             });
 
-            // Inject Lower Columbia division if it doesn't exist in saved data
-            if (!state.divisions["Lower Columbia"]) {
-                state.divisions["Lower Columbia"] = JSON.parse(JSON.stringify(LOWER_COLUMBIA_PLAYERS));
-                migrated = true;
-            }
-
-            // Inject St Helens & division if it doesn't exist in saved data
-            if (!state.divisions["St Helens &"]) {
-                state.divisions["St Helens &"] = JSON.parse(JSON.stringify(ST_HELENS_PLAYERS));
-                migrated = true;
-            } else {
-                // Force sync team names of pre-existing St Helens & division to cleaned defaults if they were partially cleaned
-                state.divisions["St Helens &"].forEach(p => {
-                    const match = ST_HELENS_PLAYERS.find(orig => orig.id === p.id);
-                    if (match && p.team !== match.team) {
-                        p.team = match.team;
-                        migrated = true;
-                    }
-                });
-            }
-
             if (migrated) {
                 saveState();
                 console.log("Migrated local state database, cleaned team names and fake divisions.");
@@ -499,13 +487,13 @@ function loadState() {
 }
 
 function initEmptyState() {
-    state = {
-        divisions: {
-            "Lower Columbia": [...LOWER_COLUMBIA_PLAYERS],
-            "St Helens &": [...ST_HELENS_PLAYERS]
-        },
-        weeks: []
-    };
+    if (!state) {
+        state = {};
+    }
+    if (!state.divisions) {
+        state.divisions = {};
+    }
+    state.weeks = [{ weekNumber: 1, bounties: [] }];
     saveState();
 }
 
@@ -609,7 +597,7 @@ function setupEventListeners() {
 
     document.getElementById("reroll-week-btn").addEventListener("click", () => {
         sounds.playWarning();
-        if (confirm("Are you sure you want to re-roll ALL bounties for this week? Current weekly claims and outcomes will be wiped.")) {
+        if (safeConfirm("Are you sure you want to re-roll ALL bounties for this week? Current weekly claims and outcomes will be wiped.")) {
             sounds.playBeep();
             const selectEl = document.getElementById("week-select");
             const weekIndex = parseInt(selectEl.value);
@@ -657,7 +645,7 @@ function setupEventListeners() {
 
     document.getElementById("delete-div-btn").addEventListener("click", () => {
         sounds.playWarning();
-        if (confirm(`Are you sure you want to delete "${selectedDivision}" and all of its players? This will not retroactively delete past week history.`)) {
+        if (safeConfirm(`Are you sure you want to delete "${selectedDivision}" and all of its players? This will not retroactively delete past week history.`)) {
             sounds.playBeep();
             delete state.divisions[selectedDivision];
             selectedDivision = Object.keys(state.divisions)[0] || null;
@@ -862,7 +850,7 @@ function setupEventListeners() {
 
     document.getElementById("load-presets-btn").addEventListener("click", () => {
         sounds.playWarning();
-        if (confirm("This will overwrite your current settings and history with demo mock data. Proceed?")) {
+        if (safeConfirm("This will overwrite your current settings and history with demo mock data. Proceed?")) {
             sounds.playSuccess();
             state = JSON.parse(JSON.stringify(DEMO_PRESETS));
             saveState();
@@ -870,18 +858,20 @@ function setupEventListeners() {
             populateWeeksDropdown(0);
             renderApp();
             showToast("Demo presets loaded successfully!", "success");
+            syncStateToServer(true);
         }
     });
 
     document.getElementById("clear-db-btn").addEventListener("click", () => {
         sounds.playWarning();
-        if (confirm("WARNING: This will permanently delete all your rosters and weekly history. Are you absolutely sure?")) {
+        if (safeConfirm("WARNING: This will permanently delete all weekly history and active bounties. Rosters will remain intact. Are you sure?")) {
             sounds.playSuccess();
             initEmptyState();
-            selectedDivision = null;
+            selectedDivision = Object.keys(state.divisions)[0] || null;
             populateWeeksDropdown();
             renderApp();
-            showToast("All data wiped.", "error");
+            showToast("Weekly history wiped.", "error");
+            syncStateToServer(true);
         }
     });
 
@@ -908,6 +898,7 @@ function setupEventListeners() {
                     populateWeeksDropdown();
                     renderApp();
                     showToast("Database imported successfully!", "success");
+                    syncStateToServer(true);
                 } else {
                     sounds.playWarning();
                     showToast("Invalid data structure in JSON file", "error");
@@ -920,6 +911,33 @@ function setupEventListeners() {
         if (e.target.files[0]) {
             fileReader.readAsText(e.target.files[0]);
         }
+    });
+}
+
+function syncStateToServer(notify = false) {
+    fetch('/api/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(state)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success && notify) showToast("Database synchronized to server.", "success");
+    })
+    .catch(err => console.error("Sync error:", err));
+}
+
+
+
+function renderPublicScan() {
+    const scanContainer = document.getElementById("public-scanner-results");
+    if (!scanContainer) return;
+    scanContainer.innerHTML = "<h4>Active Bounty Nodes</h4>";
+    state.weeks[state.weeks.length - 1].bounties.forEach(b => {
+        const div = document.createElement("div");
+        div.className = "scan-node";
+        div.innerHTML = `<span>${b.target}</span> <small>${b.status}</small>`;
+        scanContainer.appendChild(div);
     });
 }
 
@@ -1227,7 +1245,7 @@ function renderBountiesTab() {
             });
 
             card.querySelector(".reroll-single-btn").addEventListener("click", () => {
-                if (confirm(`Re-roll bounty for "${bounty.division}"? This will pick a new random target.`)) {
+                if (safeConfirm(`Re-roll bounty for "${bounty.division}"? This will pick a new random target.`)) {
                     rerollSingleBounty(weekIndex, index);
                 }
             });
@@ -1235,6 +1253,7 @@ function renderBountiesTab() {
             cardsContainer.appendChild(card);
         });
     }
+    renderPublicScan();
 }
 
 // Helper to look up player by ID or Name and return formatted details
@@ -1927,5 +1946,205 @@ function downloadPoster(elementId, baseName) {
         console.error(err);
         showToast("Failed to render poster image", "error");
     });
+}
+
+// Auto-sync current state to local server to update database.json and recompile index_inline.html
+function syncStateToServer(silent = false) {
+    return fetch('/api/publish', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(state)
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            if (!silent) showToast("Database synchronized on local server and pushed to web!", "success");
+        } else {
+            throw new Error(data.error || "Sync rejected");
+        }
+    })
+    .catch(err => {
+        console.warn("Server database sync skipped (not running locally or network issue):", err);
+    });
+}
+
+// Render dynamic target acquisition scan console for public mode
+function renderPublicScan() {
+    const showcase = document.getElementById("public-video-showcase");
+    if (!showcase) return;
+    
+    // Check if in public mode
+    const isPublicMode = document.body.classList.contains("public-mode");
+    if (!isPublicMode) {
+        showcase.classList.add("hidden");
+        return;
+    }
+    
+    showcase.classList.remove("hidden");
+    
+    const selectEl = document.getElementById("week-select");
+    if (!selectEl) return;
+    
+    const weekIndex = parseInt(selectEl.value);
+    if (isNaN(weekIndex) || !state.weeks[weekIndex]) {
+        showcase.classList.add("hidden");
+        return;
+    }
+    
+    const week = state.weeks[weekIndex];
+    if (!week.bounties || week.bounties.length === 0) {
+        showcase.classList.add("hidden");
+        return;
+    }
+    
+    // Replace the video container content with our dynamic scan console
+    const container = showcase.querySelector(".video-container");
+    if (!container) return;
+    
+    // Reset video container styles for custom content layout
+    container.style.paddingBottom = "0";
+    container.style.height = "auto";
+    container.style.overflow = "visible";
+    container.style.background = "rgba(4, 9, 12, 0.95)";
+    container.style.border = "1px solid rgba(0, 240, 255, 0.25)";
+    container.style.padding = "1.5rem";
+    
+    let tracksHtml = "";
+    week.bounties.forEach((bounty, trackIdx) => {
+        tracksHtml += `
+            <div class="roulette-track-item" style="background-color: rgba(0, 0, 0, 0.4); padding: 0.8rem 1.2rem; margin-bottom: 0.8rem; border: 1px solid rgba(0, 240, 255, 0.1); display: grid; grid-template-columns: 180px 1fr; align-items: center; gap: 1.5rem;">
+                <div class="roulette-div-name" style="font-size: 0.9rem;">${bounty.division}</div>
+                <div class="roulette-viewport" id="public-viewport-${trackIdx}" style="height: 46px; background-color: rgba(0, 0, 0, 0.6); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(0, 240, 255, 0.3); box-shadow: inset 0 0 10px rgba(0, 240, 255, 0.2);">
+                    <div class="roulette-strip" id="public-strip-${trackIdx}" style="display: flex; position: absolute; left: 0; height: 100%; align-items: center; will-change: transform;">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = `
+        <div class="dynamic-scan-console" style="width: 100%; display: flex; flex-direction: column; gap: 1rem;">
+            <div class="scan-status-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 240, 255, 0.2); padding-bottom: 0.8rem; font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 0.1em;">
+                <span class="scan-blink" style="color: var(--accent-pink); animation: scan-blink-anim 1s infinite alternate;">● SCANNING SECTORS</span>
+                <span class="scan-week-label" style="color: var(--accent-cyan);">CYCLE ${week.weekNumber} TARGET ACQUISITION</span>
+            </div>
+            <div class="scan-tracks-list" id="public-scan-tracks">
+                ${tracksHtml}
+            </div>
+            <div class="scan-controls-row" style="display: flex; justify-content: center; margin-top: 0.5rem; gap: 1rem;">
+                <button id="run-public-scan-btn" class="btn btn-accent">Initiate Acquisition Scan</button>
+            </div>
+        </div>
+    `;
+    
+    // Populate strips with names
+    week.bounties.forEach((bounty, trackIdx) => {
+        const strip = document.getElementById(`public-strip-${trackIdx}`);
+        if (!strip) return;
+        
+        const divName = bounty.division;
+        const targetPlayer = bounty.target;
+        const players = state.divisions[divName] || [targetPlayer];
+        
+        const totalItemsCount = 40;
+        for (let i = 0; i < totalItemsCount; i++) {
+            const playerIdx = i % players.length;
+            const playerObj = players[playerIdx];
+            const pName = playerObj.name || playerObj;
+            
+            const item = document.createElement("div");
+            item.className = "roulette-item";
+            item.style.flexShrink = "0";
+            item.style.width = "180px";
+            item.style.height = "100%";
+            item.style.display = "flex";
+            item.style.alignItems = "center";
+            item.style.justifyContent = "center";
+            item.style.fontFamily = "var(--font-display)";
+            item.style.fontWeight = "700";
+            item.style.fontSize = "1.05rem";
+            item.style.color = "var(--text-secondary)";
+            item.innerText = pName;
+            
+            if (i === 30) {
+                item.innerText = targetPlayer.name;
+                item.classList.add("target-node");
+                item.style.color = "var(--accent-cyan)";
+            }
+            strip.appendChild(item);
+        }
+        
+        strip.style.transform = `translateX(0px)`;
+    });
+    
+    // Add click handler to initiate scan
+    document.getElementById("run-public-scan-btn").addEventListener("click", () => {
+        runPublicTargetScan(week.bounties);
+    });
+}
+
+function runPublicTargetScan(bounties) {
+    const btn = document.getElementById("run-public-scan-btn");
+    if (btn) btn.disabled = true;
+    
+    sounds.playBeep();
+    
+    // Reset track strip transitions and positions
+    bounties.forEach((_, trackIdx) => {
+        const strip = document.getElementById(`public-strip-${trackIdx}`);
+        if (strip) {
+            strip.style.transition = "none";
+            strip.style.transform = "translateX(0px)";
+            const targetNode = strip.querySelector(".target-node");
+            if (targetNode) {
+                targetNode.classList.remove("selected-roll");
+                targetNode.style.fontSize = "1.05rem";
+                targetNode.style.textShadow = "none";
+            }
+        }
+    });
+    
+    setTimeout(() => {
+        // Play sweeps
+        let sweepInterval = setInterval(() => {
+            sounds.playRadarSweep();
+        }, 300);
+        
+        bounties.forEach((bounty, trackIdx) => {
+            const strip = document.getElementById(`public-strip-${trackIdx}`);
+            const viewport = document.getElementById(`public-viewport-${trackIdx}`);
+            if (strip && viewport) {
+                const viewportWidth = viewport.offsetWidth;
+                const finalX = (viewportWidth / 2) - ((30 * 180) + 90);
+                const spinDuration = 2500 + (trackIdx * 300);
+                
+                strip.style.transition = `transform ${spinDuration}ms cubic-bezier(0.1, 0.8, 0.15, 1)`;
+                strip.style.transform = `translateX(${finalX}px)`;
+                
+                setTimeout(() => {
+                    const targetNode = strip.querySelector(".target-node");
+                    if (targetNode) {
+                        targetNode.classList.add("selected-roll");
+                        targetNode.style.fontSize = "1.25rem";
+                        targetNode.style.textShadow = "0 0 15px rgba(0, 240, 255, 0.5)";
+                        sounds.playLock();
+                    }
+                }, spinDuration);
+            }
+        });
+        
+        const longestSpin = 2500 + ((bounties.length - 1) * 300);
+        setTimeout(() => {
+            clearInterval(sweepInterval);
+            sounds.playSuccess();
+            if (btn) {
+                btn.disabled = false;
+                btn.innerText = "Replay Acquisition Scan";
+            }
+        }, longestSpin + 200);
+    }, 200);
 }
 

@@ -2515,10 +2515,10 @@ body.hide-nav .app-main {
                             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.5rem;"><path d="M10 2v7.31L3.75 20a1 1 0 0 0 .85 1.5h14.8a1 1 0 0 0 .85-1.5L14 9.31V2zM8.5 2h7M7 16h10"/></svg>
                             Sandbox Controls
                         </h3>
-                        <p>Reset the state or inject clean pre-configured mock divisions, players, and weekly history to see the hub in action.</p>
+                        <p>Wipe weekly history while keeping player rosters, or load pre-configured mock data to see the hub in action.</p>
                         <div class="settings-actions">
                             <button id="load-presets-btn" class="btn btn-accent">Load Demo Presets</button>
-                            <button id="clear-db-btn" class="btn btn-danger">Wipe Database</button>
+                            <button id="clear-db-btn" class="btn btn-danger">Wipe Weekly History</button>
                         </div>
                     </div>
                 </div>
@@ -2788,6 +2788,15 @@ const safeStorage = {
         }
     }
 };
+
+// Helper function to allow bypassing confirm alerts in automated tests or admin mode
+function safeConfirm(message) {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("bypassConfirm") === "true") {
+        return true;
+    }
+    return confirm(message);
+}
 
 // Audio Feedback System using Web Audio API
 class GuildSoundSystem {
@@ -3062,7 +3071,7 @@ const ST_HELENS_PLAYERS = [
 ];
 
 // Demo Mock Presets
-const DEMO_PRESETS = {"divisions":{"Lower Columbia":[{"id":"97000137","name":"Bill Ewan","team":"Friends"},{"id":"97024217","name":"John Nichols","team":"Friends"},{"id":"97000153","name":"Maryann Abbott","team":"Friends"},{"id":"97000174","name":"Edward Hatley","team":"Friends"},{"id":"97000149","name":"Shayne Wright","team":"Friends"},{"id":"97000184","name":"Crystal Crawford","team":"Friends"},{"id":"97010394","name":"David Berkman","team":"Paw Patrol"},{"id":"97000205","name":"Bonnie Russell","team":"Paw Patrol"},{"id":"97000213","name":"Mistee Messing","team":"Paw Patrol"},{"id":"97000221","name":"Daniel Messing","team":"Paw Patrol"},{"id":"97000146","name":"Chase Billings","team":"Paw Patrol"},{"id":"97000159","name":"Joseph Manchester","team":"Paw Patrol"},{"id":"97000187","name":"Alex McKenzie","team":"Paw Patrol"},{"id":"97000113","name":"John Kraemer","team":"Bull Elk"},{"id":"97000196","name":"Chuy Puerta","team":"Bull Elk"},{"id":"97000237","name":"David Hall","team":"Bull Elk"},{"id":"97000328","name":"Andrew Hoggard","team":"Bull Elk"},{"id":"97000245","name":"Samuel McDaniel","team":"Bull Elk"},{"id":"97000141","name":"Rigel Ross","team":"Bull Elk"},{"id":"97000308","name":"Anthony Hoggard","team":"Bull Elk"},{"id":"97000199","name":"Nathan Pancheo","team":"Bull Elk"},{"id":"97000198","name":"Adam Yaws","team":"Bull Elk"},{"id":"97000210","name":"Lorna Padgett","team":"Bull Elk"},{"id":"97000269","name":"Betsy Crist","team":"Hondo’s"},{"id":"97000253","name":"Blake Mowrey","team":"Hondo’s"},{"id":"97000162","name":"Simo Ranta","team":"Hondo’s"},{"id":"97000179","name":"Ronald Kiepke","team":"Hondo’s"},{"id":"97000182","name":"Ronald Carter","team":"Hondo’s"},{"id":"97000194","name":"Ryan Applebee","team":"Hondo’s"},{"id":"97000040","name":"Michael Wylie","team":"Legion of Doom"},{"id":"97000168","name":"Garrett Danel","team":"Legion of Doom"},{"id":"97000139","name":"Maksym Dervevianko","team":"Legion of Doom"},{"id":"97000177","name":"Desiree Payne","team":"Legion of Doom"},{"id":"97000192","name":"Gordon Scott","team":"Legion of Doom"},{"id":"97000190","name":"Christian Paniagua","team":"Legion of Doom"}],"St Helens &":[{"id":"97000847","name":"Alicia Lease","team":"Wrong Hole"},{"id":"97000171","name":"Shawn Etheredge","team":"Wrong Hole"},{"id":"97020560","name":"William Polk","team":"Wrong Hole"},{"id":"97000114","name":"Tom Lee","team":"Wrong Hole"},{"id":"97008640","name":"Douglas Miller","team":"Wrong Hole"},{"id":"97000242","name":"James Merrit","team":"Wrong Hole"},{"id":"97000337","name":"Michael Cenci","team":"Unacceptable"},{"id":"97000301","name":"Jim Mclain","team":"Unacceptable"},{"id":"97000339","name":"Steve Linn","team":"Unacceptable"},{"id":"97000348","name":"Greg Greer","team":"Unacceptable"},{"id":"97000332","name":"David Gastley","team":"Unacceptable"},{"id":"97000101","name":"Chris Johnston","team":"Pocket Pounders"},{"id":"97000048","name":"Brian Flannery","team":"Pocket Pounders"},{"id":"97000148","name":"Michael Johnston","team":"Pocket Pounders"},{"id":"97000064","name":"Robert Johnston","team":"Pocket Pounders"},{"id":"97000065","name":"Kathleen Duncan","team":"Pocket Pounders"},{"id":"97000135","name":"Lora Elliott","team":"Pocket Pounders"},{"id":"97000110","name":"Jake Trenton","team":"Rack Wreckers"},{"id":"97000142","name":"James Mier","team":"Rack Wreckers"},{"id":"97000134","name":"Shane Hayes","team":"Rack Wreckers"},{"id":"97000138","name":"Harold Jennings","team":"Rack Wreckers"},{"id":"97000104","name":"De Scorpian Broaddus","team":"Rack Wreckers"},{"id":"97000161","name":"Phillip Barton","team":"Rack Wreckers"},{"id":"97000160","name":"Benjamin Strobel","team":"Rack Wreckers"},{"id":"97000312","name":"Clint Petty","team":"One More Shot"},{"id":"97000314","name":"Robert Wakeman","team":"One More Shot"},{"id":"97000057","name":"Margaret Moen","team":"One More Shot"},{"id":"97000303","name":"lrene Wakeman","team":"One More Shot"},{"id":"97000092","name":"Robert Montgomery","team":"One More Shot"},{"id":"97000045","name":"Jeffrey Hamilton","team":"One More Shot"},{"id":"97000307","name":"Colin Flanagan","team":"One More Shot"},{"id":"97000155","name":"Andrea Parr","team":"Chalk is Cheap"},{"id":"97023367","name":"Kevin Long","team":"Chalk is Cheap"},{"id":"97022763","name":"Stephen Bradley","team":"Chalk is Cheap"},{"id":"97023502","name":"Diane Bradley","team":"Chalk is Cheap"},{"id":"97000088","name":"Ken Hile","team":"Chalk is Cheap"},{"id":"97000250","name":"Dan Baer","team":"Chalk is Cheap"},{"id":"97000310","name":"Karen McDaniel","team":"Felt Junkies"},{"id":"97000331","name":"Louis Foust","team":"Felt Junkies"},{"id":"97019743","name":"Gerald Ellis","team":"Felt Junkies"},{"id":"97019589","name":"Kristine Rock","team":"Felt Junkies"},{"id":"97000345","name":"Brennen Brigham","team":"Felt Junkies"},{"id":"97000122","name":"Kenneth Furman","team":"Misfit Q's"},{"id":"97000126","name":"Tammy Furman","team":"Misfit Q's"},{"id":"97000132","name":"Samuel Ortiz","team":"Misfit Q's"},{"id":"97000016","name":"Alma Davidson","team":"Misfit Q's"},{"id":"97004026","name":"Ryan Hall","team":"Misfit Q's"},{"id":"97000203","name":"Jeremy Arnold","team":"Misfit Q's"}]},"weeks":[{"weekNumber":1,"bounties":[{"division":"Lower Columbia","target":{"id":"97000141","name":"Rigel Ross","team":"Bull Elk"},"status":"claimed","claimedBy":"97000198","reward":100},{"division":"St Helens &","target":{"id":"97000339","name":"Steve Linn","team":"Unacceptable"},"status":"escaped","claimedBy":null,"reward":100}]},{"weekNumber":2,"bounties":[{"division":"Lower Columbia","target":{"id":"97000141","name":"Rigel Ross","team":"Bull Elk"},"status":"claimed","claimedBy":"97000205","reward":100},{"division":"St Helens &","target":{"id":"97000142","name":"James Mier","team":"Rack Wreckers"},"status":"pending","claimedBy":null,"reward":100}]},{"weekNumber":3,"bounties":[{"division":"Lower Columbia","target":{"id":"97000210","name":"Lorna Padgett","team":"Bull Elk"},"status":"pending","claimedBy":null,"reward":100},{"division":"St Helens &","target":{"id":"97000310","name":"Karen McDaniel","team":"Felt Junkies"},"status":"escaped","claimedBy":null,"reward":100}]},{"weekNumber":4,"bounties":[{"division":"Lower Columbia","target":{"id":"97000198","name":"Adam Yaws","team":"Bull Elk"},"status":"pending","claimedBy":null,"reward":100},{"division":"St Helens &","target":{"id":"97020560","name":"William Polk","team":"Wrong Hole"},"status":"claimed","claimedBy":"97000345","reward":100}]},{"weekNumber":5,"bounties":[{"division":"Lower Columbia","target":{"id":"97000187","name":"Alex McKenzie","team":"Paw Patrol"},"status":"pending","claimedBy":null,"reward":100},{"division":"St Helens &","target":{"id":"97004026","name":"Ryan Hall","team":"Misfit Q's"},"status":"pending","claimedBy":null,"reward":100}]},{"weekNumber":6,"bounties":[]},{"weekNumber":7,"bounties":[{"division":"Lower Columbia","target":{"id":"97000213","name":"Mistee Messing","team":"Paw Patrol"},"status":"claimed","claimedBy":"97000198","reward":100},{"division":"St Helens &","target":{"id":"97019743","name":"Gerald Ellis","team":"Felt Junkies"},"status":"pending","claimedBy":null,"reward":100}]},{"weekNumber":8,"bounties":[{"division":"Lower Columbia","target":{"id":"97000139","name":"Maksym Dervevianko","team":"Legion of Doom"},"status":"claimed","claimedBy":"97000198","reward":100},{"division":"St Helens &","target":{"id":"97000148","name":"Michael Johnston","team":"Pocket Pounders"},"status":"pending","claimedBy":null,"reward":100}]},{"weekNumber":9,"bounties":[{"division":"Lower Columbia","target":{"id":"97000253","name":"Blake Mowrey","team":"Hondo’s"},"status":"pending","claimedBy":null,"reward":100},{"division":"St Helens &","target":{"id":"97000016","name":"Alma Davidson","team":"Misfit Q's"},"status":"pending","claimedBy":null,"reward":100}]}]};
+const DEMO_PRESETS = {"divisions":{"Lower Columbia":[{"id":"97000137","name":"Bill Ewan","team":"Friends"},{"id":"97024217","name":"John Nichols","team":"Friends"},{"id":"97000153","name":"Maryann Abbott","team":"Friends"},{"id":"97000174","name":"Edward Hatley","team":"Friends"},{"id":"97000149","name":"Shayne Wright","team":"Friends"},{"id":"97000184","name":"Crystal Crawford","team":"Friends"},{"id":"97010394","name":"David Berkman","team":"Paw Patrol"},{"id":"97000205","name":"Bonnie Russell","team":"Paw Patrol"},{"id":"97000213","name":"Mistee Messing","team":"Paw Patrol"},{"id":"97000221","name":"Daniel Messing","team":"Paw Patrol"},{"id":"97000146","name":"Chase Billings","team":"Paw Patrol"},{"id":"97000159","name":"Joseph Manchester","team":"Paw Patrol"},{"id":"97000187","name":"Alex McKenzie","team":"Paw Patrol"},{"id":"97000113","name":"John Kraemer","team":"Bull Elk"},{"id":"97000196","name":"Chuy Puerta","team":"Bull Elk"},{"id":"97000237","name":"David Hall","team":"Bull Elk"},{"id":"97000328","name":"Andrew Hoggard","team":"Bull Elk"},{"id":"97000245","name":"Samuel McDaniel","team":"Bull Elk"},{"id":"97000141","name":"Rigel Ross","team":"Bull Elk"},{"id":"97000308","name":"Anthony Hoggard","team":"Bull Elk"},{"id":"97000199","name":"Nathan Pancheo","team":"Bull Elk"},{"id":"97000198","name":"Adam Yaws","team":"Bull Elk"},{"id":"97000210","name":"Lorna Padgett","team":"Bull Elk"},{"id":"97000269","name":"Betsy Crist","team":"Hondo’s"},{"id":"97000253","name":"Blake Mowrey","team":"Hondo’s"},{"id":"97000162","name":"Simo Ranta","team":"Hondo’s"},{"id":"97000179","name":"Ronald Kiepke","team":"Hondo’s"},{"id":"97000182","name":"Ronald Carter","team":"Hondo’s"},{"id":"97000194","name":"Ryan Applebee","team":"Hondo’s"},{"id":"97000040","name":"Michael Wylie","team":"Legion of Doom"},{"id":"97000168","name":"Garrett Danel","team":"Legion of Doom"},{"id":"97000139","name":"Maksym Dervevianko","team":"Legion of Doom"},{"id":"97000177","name":"Desiree Payne","team":"Legion of Doom"},{"id":"97000192","name":"Gordon Scott","team":"Legion of Doom"},{"id":"97000190","name":"Christian Paniagua","team":"Legion of Doom"}],"St Helens &":[{"id":"97000847","name":"Alicia Lease","team":"Wrong Hole"},{"id":"97000171","name":"Shawn Etheredge","team":"Wrong Hole"},{"id":"97020560","name":"William Polk","team":"Wrong Hole"},{"id":"97000114","name":"Tom Lee","team":"Wrong Hole"},{"id":"97008640","name":"Douglas Miller","team":"Wrong Hole"},{"id":"97000242","name":"James Merrit","team":"Wrong Hole"},{"id":"97000337","name":"Michael Cenci","team":"Unacceptable"},{"id":"97000301","name":"Jim Mclain","team":"Unacceptable"},{"id":"97000339","name":"Steve Linn","team":"Unacceptable"},{"id":"97000348","name":"Greg Greer","team":"Unacceptable"},{"id":"97000332","name":"David Gastley","team":"Unacceptable"},{"id":"97000101","name":"Chris Johnston","team":"Pocket Pounders"},{"id":"97000048","name":"Brian Flannery","team":"Pocket Pounders"},{"id":"97000148","name":"Michael Johnston","team":"Pocket Pounders"},{"id":"97000064","name":"Robert Johnston","team":"Pocket Pounders"},{"id":"97000065","name":"Kathleen Duncan","team":"Pocket Pounders"},{"id":"97000135","name":"Lora Elliott","team":"Pocket Pounders"},{"id":"97000110","name":"Jake Trenton","team":"Rack Wreckers"},{"id":"97000142","name":"James Mier","team":"Rack Wreckers"},{"id":"97000134","name":"Shane Hayes","team":"Rack Wreckers"},{"id":"97000138","name":"Harold Jennings","team":"Rack Wreckers"},{"id":"97000104","name":"De Scorpian Broaddus","team":"Rack Wreckers"},{"id":"97000161","name":"Phillip Barton","team":"Rack Wreckers"},{"id":"97000160","name":"Benjamin Strobel","team":"Rack Wreckers"},{"id":"97000312","name":"Clint Petty","team":"One More Shot"},{"id":"97000314","name":"Robert Wakeman","team":"One More Shot"},{"id":"97000057","name":"Margaret Moen","team":"One More Shot"},{"id":"97000303","name":"lrene Wakeman","team":"One More Shot"},{"id":"97000092","name":"Robert Montgomery","team":"One More Shot"},{"id":"97000045","name":"Jeffrey Hamilton","team":"One More Shot"},{"id":"97000307","name":"Colin Flanagan","team":"One More Shot"},{"id":"97000155","name":"Andrea Parr","team":"Chalk is Cheap"},{"id":"97023367","name":"Kevin Long","team":"Chalk is Cheap"},{"id":"97022763","name":"Stephen Bradley","team":"Chalk is Cheap"},{"id":"97023502","name":"Diane Bradley","team":"Chalk is Cheap"},{"id":"97000088","name":"Ken Hile","team":"Chalk is Cheap"},{"id":"97000250","name":"Dan Baer","team":"Chalk is Cheap"},{"id":"97000310","name":"Karen McDaniel","team":"Felt Junkies"},{"id":"97000331","name":"Louis Foust","team":"Felt Junkies"},{"id":"97019743","name":"Gerald Ellis","team":"Felt Junkies"},{"id":"97019589","name":"Kristine Rock","team":"Felt Junkies"},{"id":"97000345","name":"Brennen Brigham","team":"Felt Junkies"},{"id":"97000122","name":"Kenneth Furman","team":"Misfit Q's"},{"id":"97000126","name":"Tammy Furman","team":"Misfit Q's"},{"id":"97000132","name":"Samuel Ortiz","team":"Misfit Q's"},{"id":"97000016","name":"Alma Davidson","team":"Misfit Q's"},{"id":"97004026","name":"Ryan Hall","team":"Misfit Q's"},{"id":"97000203","name":"Jeremy Arnold","team":"Misfit Q's"}]},"weeks":[{"weekNumber":1,"bounties":[]}]};
 
 // Initialize Application
 document.addEventListener("DOMContentLoaded", () => {
@@ -3182,27 +3191,6 @@ function loadState() {
                 }
             });
 
-            // Inject Lower Columbia division if it doesn't exist in saved data
-            if (!state.divisions["Lower Columbia"]) {
-                state.divisions["Lower Columbia"] = JSON.parse(JSON.stringify(LOWER_COLUMBIA_PLAYERS));
-                migrated = true;
-            }
-
-            // Inject St Helens & division if it doesn't exist in saved data
-            if (!state.divisions["St Helens &"]) {
-                state.divisions["St Helens &"] = JSON.parse(JSON.stringify(ST_HELENS_PLAYERS));
-                migrated = true;
-            } else {
-                // Force sync team names of pre-existing St Helens & division to cleaned defaults if they were partially cleaned
-                state.divisions["St Helens &"].forEach(p => {
-                    const match = ST_HELENS_PLAYERS.find(orig => orig.id === p.id);
-                    if (match && p.team !== match.team) {
-                        p.team = match.team;
-                        migrated = true;
-                    }
-                });
-            }
-
             if (migrated) {
                 saveState();
                 console.log("Migrated local state database, cleaned team names and fake divisions.");
@@ -3219,13 +3207,13 @@ function loadState() {
 }
 
 function initEmptyState() {
-    state = {
-        divisions: {
-            "Lower Columbia": [...LOWER_COLUMBIA_PLAYERS],
-            "St Helens &": [...ST_HELENS_PLAYERS]
-        },
-        weeks: []
-    };
+    if (!state) {
+        state = {};
+    }
+    if (!state.divisions) {
+        state.divisions = {};
+    }
+    state.weeks = [{ weekNumber: 1, bounties: [] }];
     saveState();
 }
 
@@ -3329,7 +3317,7 @@ function setupEventListeners() {
 
     document.getElementById("reroll-week-btn").addEventListener("click", () => {
         sounds.playWarning();
-        if (confirm("Are you sure you want to re-roll ALL bounties for this week? Current weekly claims and outcomes will be wiped.")) {
+        if (safeConfirm("Are you sure you want to re-roll ALL bounties for this week? Current weekly claims and outcomes will be wiped.")) {
             sounds.playBeep();
             const selectEl = document.getElementById("week-select");
             const weekIndex = parseInt(selectEl.value);
@@ -3377,7 +3365,7 @@ function setupEventListeners() {
 
     document.getElementById("delete-div-btn").addEventListener("click", () => {
         sounds.playWarning();
-        if (confirm(`Are you sure you want to delete "${selectedDivision}" and all of its players? This will not retroactively delete past week history.`)) {
+        if (safeConfirm(`Are you sure you want to delete "${selectedDivision}" and all of its players? This will not retroactively delete past week history.`)) {
             sounds.playBeep();
             delete state.divisions[selectedDivision];
             selectedDivision = Object.keys(state.divisions)[0] || null;
@@ -3582,7 +3570,7 @@ function setupEventListeners() {
 
     document.getElementById("load-presets-btn").addEventListener("click", () => {
         sounds.playWarning();
-        if (confirm("This will overwrite your current settings and history with demo mock data. Proceed?")) {
+        if (safeConfirm("This will overwrite your current settings and history with demo mock data. Proceed?")) {
             sounds.playSuccess();
             state = JSON.parse(JSON.stringify(DEMO_PRESETS));
             saveState();
@@ -3590,18 +3578,20 @@ function setupEventListeners() {
             populateWeeksDropdown(0);
             renderApp();
             showToast("Demo presets loaded successfully!", "success");
+            syncStateToServer(true);
         }
     });
 
     document.getElementById("clear-db-btn").addEventListener("click", () => {
         sounds.playWarning();
-        if (confirm("WARNING: This will permanently delete all your rosters and weekly history. Are you absolutely sure?")) {
+        if (safeConfirm("WARNING: This will permanently delete all weekly history and active bounties. Rosters will remain intact. Are you sure?")) {
             sounds.playSuccess();
             initEmptyState();
-            selectedDivision = null;
+            selectedDivision = Object.keys(state.divisions)[0] || null;
             populateWeeksDropdown();
             renderApp();
-            showToast("All data wiped.", "error");
+            showToast("Weekly history wiped.", "error");
+            syncStateToServer(true);
         }
     });
 
@@ -3628,6 +3618,7 @@ function setupEventListeners() {
                     populateWeeksDropdown();
                     renderApp();
                     showToast("Database imported successfully!", "success");
+                    syncStateToServer(true);
                 } else {
                     sounds.playWarning();
                     showToast("Invalid data structure in JSON file", "error");
@@ -3640,6 +3631,33 @@ function setupEventListeners() {
         if (e.target.files[0]) {
             fileReader.readAsText(e.target.files[0]);
         }
+    });
+}
+
+function syncStateToServer(notify = false) {
+    fetch('/api/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(state)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success && notify) showToast("Database synchronized to server.", "success");
+    })
+    .catch(err => console.error("Sync error:", err));
+}
+
+
+
+function renderPublicScan() {
+    const scanContainer = document.getElementById("public-scanner-results");
+    if (!scanContainer) return;
+    scanContainer.innerHTML = "<h4>Active Bounty Nodes</h4>";
+    state.weeks[state.weeks.length - 1].bounties.forEach(b => {
+        const div = document.createElement("div");
+        div.className = "scan-node";
+        div.innerHTML = `<span>${b.target}</span> <small>${b.status}</small>`;
+        scanContainer.appendChild(div);
     });
 }
 
@@ -3947,7 +3965,7 @@ function renderBountiesTab() {
             });
 
             card.querySelector(".reroll-single-btn").addEventListener("click", () => {
-                if (confirm(`Re-roll bounty for "${bounty.division}"? This will pick a new random target.`)) {
+                if (safeConfirm(`Re-roll bounty for "${bounty.division}"? This will pick a new random target.`)) {
                     rerollSingleBounty(weekIndex, index);
                 }
             });
@@ -3955,6 +3973,7 @@ function renderBountiesTab() {
             cardsContainer.appendChild(card);
         });
     }
+    renderPublicScan();
 }
 
 // Helper to look up player by ID or Name and return formatted details
@@ -4647,6 +4666,206 @@ function downloadPoster(elementId, baseName) {
         console.error(err);
         showToast("Failed to render poster image", "error");
     });
+}
+
+// Auto-sync current state to local server to update database.json and recompile index_inline.html
+function syncStateToServer(silent = false) {
+    return fetch('/api/publish', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(state)
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            if (!silent) showToast("Database synchronized on local server and pushed to web!", "success");
+        } else {
+            throw new Error(data.error || "Sync rejected");
+        }
+    })
+    .catch(err => {
+        console.warn("Server database sync skipped (not running locally or network issue):", err);
+    });
+}
+
+// Render dynamic target acquisition scan console for public mode
+function renderPublicScan() {
+    const showcase = document.getElementById("public-video-showcase");
+    if (!showcase) return;
+    
+    // Check if in public mode
+    const isPublicMode = document.body.classList.contains("public-mode");
+    if (!isPublicMode) {
+        showcase.classList.add("hidden");
+        return;
+    }
+    
+    showcase.classList.remove("hidden");
+    
+    const selectEl = document.getElementById("week-select");
+    if (!selectEl) return;
+    
+    const weekIndex = parseInt(selectEl.value);
+    if (isNaN(weekIndex) || !state.weeks[weekIndex]) {
+        showcase.classList.add("hidden");
+        return;
+    }
+    
+    const week = state.weeks[weekIndex];
+    if (!week.bounties || week.bounties.length === 0) {
+        showcase.classList.add("hidden");
+        return;
+    }
+    
+    // Replace the video container content with our dynamic scan console
+    const container = showcase.querySelector(".video-container");
+    if (!container) return;
+    
+    // Reset video container styles for custom content layout
+    container.style.paddingBottom = "0";
+    container.style.height = "auto";
+    container.style.overflow = "visible";
+    container.style.background = "rgba(4, 9, 12, 0.95)";
+    container.style.border = "1px solid rgba(0, 240, 255, 0.25)";
+    container.style.padding = "1.5rem";
+    
+    let tracksHtml = "";
+    week.bounties.forEach((bounty, trackIdx) => {
+        tracksHtml += `
+            <div class="roulette-track-item" style="background-color: rgba(0, 0, 0, 0.4); padding: 0.8rem 1.2rem; margin-bottom: 0.8rem; border: 1px solid rgba(0, 240, 255, 0.1); display: grid; grid-template-columns: 180px 1fr; align-items: center; gap: 1.5rem;">
+                <div class="roulette-div-name" style="font-size: 0.9rem;">${bounty.division}</div>
+                <div class="roulette-viewport" id="public-viewport-${trackIdx}" style="height: 46px; background-color: rgba(0, 0, 0, 0.6); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(0, 240, 255, 0.3); box-shadow: inset 0 0 10px rgba(0, 240, 255, 0.2);">
+                    <div class="roulette-strip" id="public-strip-${trackIdx}" style="display: flex; position: absolute; left: 0; height: 100%; align-items: center; will-change: transform;">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = `
+        <div class="dynamic-scan-console" style="width: 100%; display: flex; flex-direction: column; gap: 1rem;">
+            <div class="scan-status-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 240, 255, 0.2); padding-bottom: 0.8rem; font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 0.1em;">
+                <span class="scan-blink" style="color: var(--accent-pink); animation: scan-blink-anim 1s infinite alternate;">● SCANNING SECTORS</span>
+                <span class="scan-week-label" style="color: var(--accent-cyan);">CYCLE ${week.weekNumber} TARGET ACQUISITION</span>
+            </div>
+            <div class="scan-tracks-list" id="public-scan-tracks">
+                ${tracksHtml}
+            </div>
+            <div class="scan-controls-row" style="display: flex; justify-content: center; margin-top: 0.5rem; gap: 1rem;">
+                <button id="run-public-scan-btn" class="btn btn-accent">Initiate Acquisition Scan</button>
+            </div>
+        </div>
+    `;
+    
+    // Populate strips with names
+    week.bounties.forEach((bounty, trackIdx) => {
+        const strip = document.getElementById(`public-strip-${trackIdx}`);
+        if (!strip) return;
+        
+        const divName = bounty.division;
+        const targetPlayer = bounty.target;
+        const players = state.divisions[divName] || [targetPlayer];
+        
+        const totalItemsCount = 40;
+        for (let i = 0; i < totalItemsCount; i++) {
+            const playerIdx = i % players.length;
+            const playerObj = players[playerIdx];
+            const pName = playerObj.name || playerObj;
+            
+            const item = document.createElement("div");
+            item.className = "roulette-item";
+            item.style.flexShrink = "0";
+            item.style.width = "180px";
+            item.style.height = "100%";
+            item.style.display = "flex";
+            item.style.alignItems = "center";
+            item.style.justifyContent = "center";
+            item.style.fontFamily = "var(--font-display)";
+            item.style.fontWeight = "700";
+            item.style.fontSize = "1.05rem";
+            item.style.color = "var(--text-secondary)";
+            item.innerText = pName;
+            
+            if (i === 30) {
+                item.innerText = targetPlayer.name;
+                item.classList.add("target-node");
+                item.style.color = "var(--accent-cyan)";
+            }
+            strip.appendChild(item);
+        }
+        
+        strip.style.transform = `translateX(0px)`;
+    });
+    
+    // Add click handler to initiate scan
+    document.getElementById("run-public-scan-btn").addEventListener("click", () => {
+        runPublicTargetScan(week.bounties);
+    });
+}
+
+function runPublicTargetScan(bounties) {
+    const btn = document.getElementById("run-public-scan-btn");
+    if (btn) btn.disabled = true;
+    
+    sounds.playBeep();
+    
+    // Reset track strip transitions and positions
+    bounties.forEach((_, trackIdx) => {
+        const strip = document.getElementById(`public-strip-${trackIdx}`);
+        if (strip) {
+            strip.style.transition = "none";
+            strip.style.transform = "translateX(0px)";
+            const targetNode = strip.querySelector(".target-node");
+            if (targetNode) {
+                targetNode.classList.remove("selected-roll");
+                targetNode.style.fontSize = "1.05rem";
+                targetNode.style.textShadow = "none";
+            }
+        }
+    });
+    
+    setTimeout(() => {
+        // Play sweeps
+        let sweepInterval = setInterval(() => {
+            sounds.playRadarSweep();
+        }, 300);
+        
+        bounties.forEach((bounty, trackIdx) => {
+            const strip = document.getElementById(`public-strip-${trackIdx}`);
+            const viewport = document.getElementById(`public-viewport-${trackIdx}`);
+            if (strip && viewport) {
+                const viewportWidth = viewport.offsetWidth;
+                const finalX = (viewportWidth / 2) - ((30 * 180) + 90);
+                const spinDuration = 2500 + (trackIdx * 300);
+                
+                strip.style.transition = `transform ${spinDuration}ms cubic-bezier(0.1, 0.8, 0.15, 1)`;
+                strip.style.transform = `translateX(${finalX}px)`;
+                
+                setTimeout(() => {
+                    const targetNode = strip.querySelector(".target-node");
+                    if (targetNode) {
+                        targetNode.classList.add("selected-roll");
+                        targetNode.style.fontSize = "1.25rem";
+                        targetNode.style.textShadow = "0 0 15px rgba(0, 240, 255, 0.5)";
+                        sounds.playLock();
+                    }
+                }, spinDuration);
+            }
+        });
+        
+        const longestSpin = 2500 + ((bounties.length - 1) * 300);
+        setTimeout(() => {
+            clearInterval(sweepInterval);
+            sounds.playSuccess();
+            if (btn) {
+                btn.disabled = false;
+                btn.innerText = "Replay Acquisition Scan";
+            }
+        }, longestSpin + 200);
+    }, 200);
 }
 
 
