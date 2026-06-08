@@ -424,33 +424,6 @@
     {
       "weekNumber": 1,
       "bounties": []
-    },
-    {
-      "weekNumber": 2,
-      "bounties": [
-        {
-          "division": "Lower Columbia",
-          "target": {
-            "id": "97000308",
-            "name": "Anthony Hoggard",
-            "team": "Bull Elk"
-          },
-          "status": "pending",
-          "claimedBy": null,
-          "reward": 100
-        },
-        {
-          "division": "St Helens &",
-          "target": {
-            "id": "97000048",
-            "name": "Brian Flannery",
-            "team": "Pocket Pounders"
-          },
-          "status": "pending",
-          "claimedBy": null,
-          "reward": 100
-        }
-      ]
     }
   ]
 }
