@@ -742,15 +742,6 @@ function setupEventListeners() {
         closeModal("wanted-posters-modal");
     });
 
-    document.getElementById("download-cyber-btn").addEventListener("click", () => {
-        sounds.playSuccess();
-        downloadPoster("poster-cyber-element", "cyber-bounty-alert");
-    });
-
-    document.getElementById("share-cyber-fb-btn").addEventListener("click", () => {
-        shareWantedPosterFacebook("poster-cyber-element", "cyber-bounty-alert");
-    });
-
     document.getElementById("download-red-holo-btn").addEventListener("click", () => {
         sounds.playSuccess();
         downloadPoster("poster-red-holo-element", "red-hologram-poster");
@@ -1929,6 +1920,143 @@ function getRandomPoolCrime(playerName) {
     return POOL_CRIMES[index];
 }
 
+function detectGender(name) {
+    if (!name) return 'male';
+    const firstName = name.trim().split(/\s+/)[0].toLowerCase();
+    
+    const femaleNames = new Set([
+        'maryann', 'crystal', 'bonnie', 'mistee', 'lorna', 'betsy', 'desiree', 
+        'alicia', 'kathleen', 'lora', 'margaret', 'irene', 'andrea', 'diane', 
+        'karen', 'kristine', 'tammy', 'alma', 'lrene',
+        'mary', 'maria', 'linda', 'patricia', 'elizabeth', 'susan', 'jessica',
+        'sarah', 'karen', 'lisa', 'nancy', 'betty', 'sandra', 'ashley', 'donna',
+        'kimberly', 'carol', 'michelle', 'emily', 'amanda', 'melissa', 'deborah',
+        'stephanie', 'rebecca', 'laura', 'sharon', 'cynthia', 'amy', 'shirley',
+        'angela', 'helen', 'anna', 'brenda', 'pamela', 'nicole', 'samantha',
+        'katherine', 'emma', 'ruth', 'christine', 'debra', 'rachel', 'carolyn',
+        'janet', 'virginia', 'heather', 'catherine', 'diana', 'julie', 'victoria',
+        'kelly', 'christina', 'lauren', 'joan', 'evelyn', 'judith', 'megan',
+        'cheryl', 'charlotte', 'charlene', 'judy', 'theresa', 'alice', 'sophia',
+        'kathy', 'regina', 'marie', 'doris', 'gloria', 'jean', 'mildred', 'rose',
+        'janice', 'kathryn', 'helen', 'heather', 'tiffany', 'amber', 'megan',
+        'melissa', 'kayla', 'brittany', 'taylor', 'brooke', 'shannon', 'paige',
+        'jenny', 'jennifer', 'jessica', 'heather', 'stephanie', 'nicole',
+        'christina', 'courtney', 'elizabeth', 'megan', 'amanda', 'rachel',
+        'danielle', 'sarah', 'melanie', 'natalie', 'vanessa', 'valerie',
+        'monica', 'erica', 'sabrina', 'melissa', 'jacqueline', 'claudia'
+    ]);
+    
+    if (femaleNames.has(firstName)) {
+        return 'female';
+    }
+    
+    if (firstName.endsWith('ella') || 
+        firstName.endsWith('ina') || 
+        firstName.endsWith('ette') || 
+        firstName.endsWith('issa') || 
+        firstName.endsWith('anna') || 
+        firstName.endsWith('iana') || 
+        firstName.endsWith('elia') || 
+        firstName.endsWith('icia') ||
+        firstName.endsWith('lisa') ||
+        firstName.endsWith('nica')) {
+        return 'female';
+    }
+    
+    return 'male';
+}
+
+function getCharacterAvatar(name) {
+    const gender = detectGender(name);
+    const charName = name || "unknown";
+    
+    let hash = 0;
+    for (let i = 0; i < charName.length; i++) {
+        hash = charName.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash);
+    
+    const maleAvatars = [
+        `<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2" style="width: 100%; height: 100%;">
+            <path d="M50,15 C32,15 28,32 28,48 C28,54 30,60 32,64 L25,76 C23,79 26,83 30,83 L70,83 C74,83 77,79 75,76 L68,64 C70,60 72,54 72,48 C72,32 68,15 50,15 Z" fill="currentColor" fill-opacity="0.15"/>
+            <path d="M35,50 C32,50 32,58 37,58 C42,58 43,53 43,50 Z" fill="currentColor"/>
+            <path d="M65,50 C68,50 68,58 63,58 C58,58 57,53 57,50 Z" fill="currentColor"/>
+            <path d="M50,56 L42,72 L58,72 Z" fill="currentColor"/>
+            <line x1="50" y1="56" x2="50" y2="72" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="46" y1="64" x2="54" y2="64" stroke="currentColor" stroke-width="1"/>
+            <line x1="44" y1="68" x2="56" y2="68" stroke="currentColor" stroke-width="1"/>
+            <path d="M50,15 L50,45" stroke="currentColor" stroke-width="2.5"/>
+        </svg>`,
+        `<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2" style="width: 100%; height: 100%;">
+            <path d="M50,18 C33,18 31,28 31,45 L31,75 L33,78 L38,78 L39,82 L42,82 L43,78 L57,78 L58,82 L61,82 L62,78 L67,78 L69,75 L69,45 C69,28 67,18 50,18 Z" fill="currentColor" fill-opacity="0.15"/>
+            <path d="M36,44 L64,44 L64,49 L53,49 L53,74 L47,74 L47,49 L36,49 Z" fill="currentColor"/>
+            <path d="M69,40 L76,40 L76,28 L73,28 L73,25 L79,25 L79,28 L76,28" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M31,54 L38,58 L38,68 L31,70" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M69,54 L62,58 L62,68 L69,70" stroke="currentColor" stroke-width="1.5"/>
+        </svg>`,
+        `<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2" style="width: 100%; height: 100%;">
+            <path d="M50,16 C33,16 30,28 30,42 C30,46 31,50 33,53 C31,55 28,59 28,62 C28,66 32,67 35,67 C36,73 31,80 37,82 L63,82 C69,80 64,73 65,67 C68,67 72,66 72,62 C72,59 69,55 67,53 C69,50 70,46 70,42 C70,28 67,16 50,16 Z" fill="currentColor" fill-opacity="0.15"/>
+            <path d="M34,48 C31,48 32,54 37,53 C42,52 44,48 44,48 Z" fill="currentColor"/>
+            <path d="M66,48 C69,48 68,54 63,53 C58,52 56,48 56,48 Z" fill="currentColor"/>
+            <path d="M33,35 L38,37 M67,35 L62,37" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M31,43 Q50,40 69,43" stroke="currentColor" stroke-width="3" fill="none"/>
+            <path d="M44,65 L56,65 L54,72 L46,72 Z" fill="currentColor"/>
+            <circle cx="39" cy="63" r="3" fill="currentColor"/>
+            <circle cx="61" cy="63" r="3" fill="currentColor"/>
+        </svg>`,
+        `<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2" style="width: 100%; height: 100%;">
+            <path d="M50,15 C33,15 25,28 22,48 C20,62 18,72 15,82 L85,82 C82,72 80,62 78,48 C75,28 67,15 50,15 Z" fill="currentColor" fill-opacity="0.15"/>
+            <path d="M50,22 C38,22 33,34 33,52 C33,65 30,76 28,82 L72,82 C70,76 67,65 67,52 C67,34 62,22 50,22 Z" fill="currentColor"/>
+            <path d="M42,54 Q50,56 58,54" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <path d="M47,72 L53,72 L53,82 L47,82 Z" fill="currentColor"/>
+        </svg>`
+    ];
+    
+    const femaleAvatars = [
+        `<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2" style="width: 100%; height: 100%;">
+            <path d="M50,28 C41,28 36,35 36,48 C36,60 41,72 50,72 C59,72 64,60 64,48 C64,35 59,28 50,28 Z" fill="currentColor" fill-opacity="0.15"/>
+            <circle cx="27" cy="48" r="11" fill="currentColor"/>
+            <circle cx="27" cy="48" r="7" stroke="var(--bg-primary, #04090c)" stroke-width="1.5"/>
+            <circle cx="73" cy="48" r="11" fill="currentColor"/>
+            <circle cx="73" cy="48" r="7" stroke="var(--bg-primary, #04090c)" stroke-width="1.5"/>
+            <path d="M36,44 C36,30 42,23 50,23 C58,23 64,30 64,44 C64,30 50,28 36,44 Z" fill="currentColor"/>
+            <path d="M44,71 L40,82 L60,82 L56,71" fill="currentColor" fill-opacity="0.15"/>
+        </svg>`,
+        `<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2" style="width: 100%; height: 100%;">
+            <path d="M50,32 C43,32 38,40 38,52 C38,62 43,68 50,68 C57,68 62,62 62,52 C62,40 57,32 50,32 Z" fill="currentColor" fill-opacity="0.15"/>
+            <path d="M50,32 C48,22 41,14 36,14 C33,14 36,25 39,32 Z" fill="currentColor"/>
+            <path d="M50,32 C52,22 59,14 64,14 C67,14 64,25 61,32 Z" fill="currentColor"/>
+            <path d="M38,46 C34,46 29,60 28,78 C30,82 34,82 37,76 C37,64 38,54 38,46 Z" fill="currentColor"/>
+            <path d="M62,46 C66,46 71,60 72,78 C70,82 66,82 63,76 C63,64 62,54 62,46 Z" fill="currentColor"/>
+            <path d="M42,35 Q50,38 58,35 L50,42 Z" fill="currentColor"/>
+            <path d="M40,48 L44,50 M60,48 L56,50 M50,60 L50,66" stroke="currentColor" stroke-width="1.5"/>
+        </svg>`,
+        `<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2" style="width: 100%; height: 100%;">
+            <path d="M50,28 C42,28 37,36 37,48 C37,58 42,66 50,66 C58,66 63,58 63,48 C63,36 58,28 50,28 Z" fill="currentColor" fill-opacity="0.15"/>
+            <circle cx="50" cy="20" r="6" fill="currentColor"/>
+            <circle cx="50" cy="12" r="4" fill="currentColor"/>
+            <circle cx="50" cy="26" r="5" fill="currentColor"/>
+            <path d="M37,40 C35,45 35,52 35,52" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M63,40 C65,45 65,52 65,52" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M44,65 L32,82 L68,82 L56,65" fill="currentColor" fill-opacity="0.15"/>
+            <path d="M36,75 L64,75" stroke="currentColor" stroke-width="1"/>
+        </svg>`,
+        `<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2" style="width: 100%; height: 100%;">
+            <path d="M50,18 C33,18 32,28 32,45 L32,74 C32,78 35,80 40,80 L60,80 C65,80 68,78 68,74 L68,45 C68,28 67,18 50,18 Z" fill="currentColor" fill-opacity="0.15"/>
+            <path d="M35,42 C38,40 44,40 47,43 L48,46 L52,46 L53,43 C56,40 62,40 65,42 C68,44 68,48 64,48 L53,48 L53,72 L47,72 L47,48 L36,48 C32,48 32,44 35,42 Z" fill="currentColor"/>
+            <path d="M50,22 L47,27 L53,27 Z" fill="currentColor"/>
+            <path d="M32,48 L29,48 L29,54 L32,54" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M68,48 L71,48 L71,54 L68,54" stroke="currentColor" stroke-width="1.5"/>
+        </svg>`
+    ];
+    
+    if (gender === 'female') {
+        return femaleAvatars[index % femaleAvatars.length];
+    } else {
+        return maleAvatars[index % maleAvatars.length];
+    }
+}
+
 function triggerWantedPosterModal(bounty) {
     sounds.playBeep();
     const targetName = bounty.target.name || (typeof bounty.target === 'string' ? bounty.target : "Unknown");
@@ -1937,19 +2065,18 @@ function triggerWantedPosterModal(bounty) {
     const reward = bounty.reward || 100;
     const crime = getRandomPoolCrime(targetName);
 
-    // Populate Cyber Hologram
-    document.querySelector(".poster-cyber-name").innerText = targetName;
-    document.querySelector(".poster-cyber-team").innerText = targetTeam;
-    document.querySelector(".poster-cyber-division").innerText = division;
-    document.querySelector(".poster-cyber-crime").innerText = crime;
-    document.querySelector(".poster-cyber-reward").innerText = `₵${reward} CREDITS`;
-
-    // Populate Red Hologram
+    // Populate Red Hologram (Website Wanted Poster)
     document.querySelector(".poster-red-holo-name").innerText = targetName;
     document.querySelector(".poster-red-holo-team").innerText = targetTeam;
     document.querySelector(".poster-red-holo-division").innerText = division;
     document.querySelector(".poster-red-holo-crime").innerText = crime;
     document.querySelector(".poster-red-holo-reward").innerText = `₵${reward} GALACTIC CREDITS`;
+
+    // Inject character avatar silhouette
+    const avatarEl = document.querySelector(".poster-avatar-placeholder-red");
+    if (avatarEl) {
+        avatarEl.innerHTML = getCharacterAvatar(targetName);
+    }
 
     openModal("wanted-posters-modal");
 }
@@ -2261,64 +2388,6 @@ function renderWantedTab() {
         
         card.innerHTML = `
             <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; width: 100%;">
-                <!-- Poster A (FB Square) -->
-                <div class="poster-preview-card" style="width: 360px;">
-                    <h3 style="margin-bottom: 1rem; color: var(--accent-cyan); font-size: 0.95rem;">Facebook Format (1:1)</h3>
-                    <div id="poster-cyber-page-${index}" class="wanted-poster-box poster-cyber" style="transform: scale(0.9); margin-bottom: -20px; margin-top: -20px;">
-                        <div class="poster-cyber-grid"></div>
-                        <div class="poster-cyber-border-accents"></div>
-                        <div class="poster-cyber-header">
-                            <span class="agency-label">UNDERWORLD NETWORK DETECT</span>
-                            <span class="alert-label">GUILD BOUNTY ALERT</span>
-                        </div>
-                        <div class="poster-cyber-photo-container">
-                            <div class="photo-reticle">
-                                <svg viewBox="0 0 100 100" width="80" height="80" class="reticle-svg">
-                                    <circle cx="50" cy="50" r="45" stroke="var(--accent-cyan)" stroke-width="1" fill="none" stroke-dasharray="2 3"></circle>
-                                    <circle cx="50" cy="50" r="30" stroke="var(--accent-cyan)" stroke-width="1" fill="none"></circle>
-                                    <line x1="50" y1="0" x2="50" y2="100" stroke="var(--accent-cyan)" stroke-width="0.5"></line>
-                                    <line x1="0" y1="50" x2="100" y2="50" stroke="var(--accent-cyan)" stroke-width="0.5"></line>
-                                </svg>
-                            </div>
-                            <svg class="poster-avatar-placeholder" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" opacity="0.3" stroke-width="1">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                <circle cx="12" cy="7" r="4" />
-                            </svg>
-                        </div>
-                        <div class="poster-cyber-info">
-                            <div class="w-label">TARGET PUCK REGISTERED</div>
-                            <h1 class="poster-cyber-name">${targetName}</h1>
-                            <div class="poster-cyber-meta-row">
-                                <div>
-                                    <span class="meta-lbl">TEAM:</span>
-                                    <span class="meta-val poster-cyber-team">${targetTeam}</span>
-                                </div>
-                                <div>
-                                    <span class="meta-lbl">SECTOR:</span>
-                                    <span class="meta-val poster-cyber-division">${division}</span>
-                                </div>
-                            </div>
-                            <div class="poster-cyber-crime-box">
-                                <span class="crime-header">WANTED FOR:</span>
-                                <p class="poster-cyber-crime">${crime}</p>
-                            </div>
-                        </div>
-                        <div class="poster-cyber-footer">
-                            <div class="reward-title">BOUNTY REWARD VALUE</div>
-                            <div class="reward-amount poster-cyber-reward">₵${reward} CREDITS</div>
-                            <div class="status-disclaimer">WANTED DEAD OR IN CARBONITE BY THE GUILD BOARD</div>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary download-wanted-btn" data-target="poster-cyber-page-${index}" data-name="cyber-bounty-alert-${targetName.toLowerCase()}" style="width: 100%; margin-top: 1rem;">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.3rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                        Download PNG (FB Square)
-                    </button>
-                    <button class="btn btn-facebook share-wanted-fb-btn" data-target="poster-cyber-page-${index}" data-name="cyber-bounty-alert-${targetName.toLowerCase()}" style="width: 100%; margin-top: 0.5rem; background-color: #1877f2; color: white; border: none;">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="margin-right: 0.3rem;"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                        Share on Facebook
-                    </button>
-                </div>
-                
                 <!-- Poster B (Web Portrait) -->
                 <div class="poster-preview-card" style="width: 360px;">
                     <h3 style="margin-bottom: 1rem; color: var(--accent-pink); font-size: 0.95rem;">Website Format (3:4)</h3>
@@ -2337,10 +2406,9 @@ function renderWantedTab() {
                                     <line x1="0" y1="50" x2="100" y2="50" stroke="var(--accent-pink)" stroke-width="0.5"></line>
                                 </svg>
                             </div>
-                            <svg class="poster-avatar-placeholder-red" viewBox="0 0 24 24" fill="none" stroke="var(--accent-pink)" opacity="0.3" stroke-width="1">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                <circle cx="12" cy="7" r="4" />
-                            </svg>
+                            <div class="poster-avatar-placeholder-red" style="width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; color: var(--accent-pink);">
+                                ${getCharacterAvatar(targetName)}
+                            </div>
                         </div>
                         <div class="poster-red-holo-info">
                             <div class="w-label-red">TARGET IDENTITY CONFIRMED</div>
