@@ -2209,6 +2209,70 @@ body.hide-nav .app-main {
     }
 }
 
+/* Wanted Posters Tab Layout */
+.wanted-posters-display-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 3rem;
+    padding: 1.5rem 0;
+}
+
+.wanted-posters-display-grid .wanted-poster-box {
+    margin: 0 auto;
+}
+
+.wanted-posters-display-grid .poster-preview-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 2rem 1.5rem;
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow-glow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+    position: relative;
+}
+
+.wanted-posters-display-grid .poster-preview-card::before, 
+.wanted-posters-display-grid .poster-preview-card::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-style: solid;
+    border-color: rgba(var(--accent-cyan-rgb), 0.35);
+    pointer-events: none;
+}
+.wanted-posters-display-grid .poster-preview-card::before {
+    top: -1px;
+    left: -1px;
+    border-width: 2px 0 0 2px;
+}
+.wanted-posters-display-grid .poster-preview-card::after {
+    bottom: -1px;
+    right: -1px;
+    border-width: 0 2px 2px 0;
+}
+
+/* Facebook Sharing Button */
+.btn-facebook {
+    background-color: #1877f2;
+    color: white;
+    border: none;
+    transition: background-color var(--transition-speed);
+}
+.btn-facebook:hover {
+    background-color: #1565c0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(24, 119, 242, 0.3);
+}
+
+.step-num {
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+}
+
+
 </style>
     <!-- html2canvas library for exporting graphics -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -2250,6 +2314,16 @@ body.hide-nav .app-main {
                         </svg>
                     </span>
                     <span class="tab-text">Guild Standings</span>
+                </button>
+                <button class="nav-tab" data-tab="tab-wanted">
+                    <span class="tab-icon">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="12" cy="10" r="3"/>
+                            <path d="M7 21v-2a4 4 0 0 1 8 0v2"/>
+                        </svg>
+                    </span>
+                    <span class="tab-text">Wanted Posters</span>
                 </button>
                 <button class="nav-tab" data-tab="tab-rosters">
                     <span class="tab-icon">
@@ -2386,6 +2460,35 @@ body.hide-nav .app-main {
                 <!-- Targets Board -->
                 <div id="target-board" class="sub-tab-content">
                     <!-- Dynamic division tables will be populated here -->
+            </section>
+
+            <!-- SECTION: WANTED POSTERS -->
+            <section id="tab-wanted" class="tab-content">
+                <div class="section-header">
+                    <div>
+                        <h2>Sector Death Marks</h2>
+                        <p>Active cycle bounty alert posters issued by the Guild Central Dispatch.</p>
+                    </div>
+                </div>
+
+                <div class="wanted-page-layout" style="margin-top: 1rem;">
+                    <div id="wanted-empty-state" class="empty-state card">
+                        <div class="empty-icon">
+                            <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="var(--text-muted)" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10" stroke-dasharray="3 3"></circle>
+                                <circle cx="12" cy="12" r="6"></circle>
+                                <circle cx="12" cy="12" r="2" fill="var(--text-muted)"></circle>
+                                <path d="M12 2v20M2 12h20"></path>
+                            </svg>
+                        </div>
+                        <h3>No Active Wanted Posters</h3>
+                        <p>No active wanted posters to display for this cycle. Make sure targets are scanned.</p>
+                    </div>
+                    <div id="wanted-active-view" class="hidden">
+                        <div class="wanted-posters-display-grid" id="wanted-display-grid" style="display: flex; flex-direction: column; gap: 4rem;">
+                            <!-- Dynamic grid of wanted posters -->
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -2504,6 +2607,7 @@ body.hide-nav .app-main {
                         <p>Generate and copy the entire self-contained console code (with your active contracts baked in) to paste directly into your Google Sites "Embed Code" box, bypassing GitHub completely.</p>
                         <div class="settings-actions" style="gap: 0.8rem; flex-wrap: wrap;">
                             <button id="copy-bounties-code-btn" class="btn btn-accent">Copy Bounties Code</button>
+                            <button id="copy-wanted-code-btn" class="btn btn-secondary">Copy Wanted Posters Code</button>
                             <button id="copy-leaderboard-code-btn" class="btn btn-secondary">Copy Leaderboard Code</button>
                             <button id="copy-portal-code-btn" class="btn btn-secondary">Copy Full Portal Code</button>
                         </div>
@@ -2703,6 +2807,10 @@ body.hide-nav .app-main {
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.3rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                             Download PNG (FB Square)
                         </button>
+                        <button id="share-cyber-fb-btn" class="btn btn-facebook" style="width: 100%; margin-top: 0.5rem; background-color: #1877f2; color: white; border: none;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="margin-right: 0.3rem;"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            Share on Facebook
+                        </button>
                     </div>
 
                     <!-- Poster B: Imperial Security Hologram (Website 3:4) -->
@@ -2748,12 +2856,45 @@ body.hide-nav .app-main {
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.3rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                             Download PNG (Web Portrait)
                         </button>
+                        <button id="share-red-fb-btn" class="btn btn-facebook" style="width: 100%; margin-top: 0.5rem; background-color: #1877f2; color: white; border: none;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="margin-right: 0.3rem;"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            Share on Facebook
+                        </button>
                     </div>
 
                 </div>
             </div>
             <div class="modal-footer">
                 <button id="close-wanted-btn" class="btn btn-secondary">Close Terminal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: FACEBOOK SHARE INSTRUCTIONS -->
+    <div id="fb-share-instructions-modal" class="modal hidden">
+        <div class="modal-overlay" id="fb-share-overlay"></div>
+        <div class="modal-container modal-sm">
+            <div class="modal-header">
+                <h2>Post to Facebook</h2>
+                <p>Follow these quick steps to publish this wanted poster to your Facebook page:</p>
+            </div>
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.2rem; padding: 1rem 0;">
+                <div class="instruction-step" style="display: flex; gap: 0.8rem; align-items: flex-start;">
+                    <span class="step-num" style="background-color: var(--accent-cyan); color: #000; font-family: var(--font-display); font-weight: bold; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; text-shadow: none;">1</span>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--text-primary); text-transform: none;">The high-resolution wanted poster image **has been downloaded** to your computer.</p>
+                </div>
+                <div class="instruction-step" style="display: flex; gap: 0.8rem; align-items: flex-start;">
+                    <span class="step-num" style="background-color: var(--accent-cyan); color: #000; font-family: var(--font-display); font-weight: bold; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; text-shadow: none;">2</span>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--text-primary); text-transform: none;">A galactic wanted caption **has been copied to your clipboard** automatically.</p>
+                </div>
+                <div class="instruction-step" style="display: flex; gap: 0.8rem; align-items: flex-start;">
+                    <span class="step-num" style="background-color: var(--accent-cyan); color: #000; font-family: var(--font-display); font-weight: bold; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; text-shadow: none;">3</span>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--text-primary); text-transform: none;">Click **\"Go to Facebook\"** below, start a new post on your feed or page, paste (Ctrl+V) the caption, and upload the downloaded wanted poster PNG!</p>
+                </div>
+            </div>
+            <div class="modal-footer" style="display: flex; gap: 0.8rem; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                <button id="go-to-fb-btn" class="btn btn-primary">Go to Facebook</button>
+                <button id="close-fb-instructions-btn" class="btn btn-secondary">Close</button>
             </div>
         </div>
     </div>
@@ -3071,7 +3212,458 @@ const ST_HELENS_PLAYERS = [
 ];
 
 // Demo Mock Presets
-const DEMO_PRESETS = {"divisions":{"Lower Columbia":[{"id":"97000137","name":"Bill Ewan","team":"Friends"},{"id":"97024217","name":"John Nichols","team":"Friends"},{"id":"97000153","name":"Maryann Abbott","team":"Friends"},{"id":"97000174","name":"Edward Hatley","team":"Friends"},{"id":"97000149","name":"Shayne Wright","team":"Friends"},{"id":"97000184","name":"Crystal Crawford","team":"Friends"},{"id":"97010394","name":"David Berkman","team":"Paw Patrol"},{"id":"97000205","name":"Bonnie Russell","team":"Paw Patrol"},{"id":"97000213","name":"Mistee Messing","team":"Paw Patrol"},{"id":"97000221","name":"Daniel Messing","team":"Paw Patrol"},{"id":"97000146","name":"Chase Billings","team":"Paw Patrol"},{"id":"97000159","name":"Joseph Manchester","team":"Paw Patrol"},{"id":"97000187","name":"Alex McKenzie","team":"Paw Patrol"},{"id":"97000113","name":"John Kraemer","team":"Bull Elk"},{"id":"97000196","name":"Chuy Puerta","team":"Bull Elk"},{"id":"97000237","name":"David Hall","team":"Bull Elk"},{"id":"97000328","name":"Andrew Hoggard","team":"Bull Elk"},{"id":"97000245","name":"Samuel McDaniel","team":"Bull Elk"},{"id":"97000141","name":"Rigel Ross","team":"Bull Elk"},{"id":"97000308","name":"Anthony Hoggard","team":"Bull Elk"},{"id":"97000199","name":"Nathan Pancheo","team":"Bull Elk"},{"id":"97000198","name":"Adam Yaws","team":"Bull Elk"},{"id":"97000210","name":"Lorna Padgett","team":"Bull Elk"},{"id":"97000269","name":"Betsy Crist","team":"Hondo’s"},{"id":"97000253","name":"Blake Mowrey","team":"Hondo’s"},{"id":"97000162","name":"Simo Ranta","team":"Hondo’s"},{"id":"97000179","name":"Ronald Kiepke","team":"Hondo’s"},{"id":"97000182","name":"Ronald Carter","team":"Hondo’s"},{"id":"97000194","name":"Ryan Applebee","team":"Hondo’s"},{"id":"97000040","name":"Michael Wylie","team":"Legion of Doom"},{"id":"97000168","name":"Garrett Danel","team":"Legion of Doom"},{"id":"97000139","name":"Maksym Dervevianko","team":"Legion of Doom"},{"id":"97000177","name":"Desiree Payne","team":"Legion of Doom"},{"id":"97000192","name":"Gordon Scott","team":"Legion of Doom"},{"id":"97000190","name":"Christian Paniagua","team":"Legion of Doom"}],"St Helens &":[{"id":"97000847","name":"Alicia Lease","team":"Wrong Hole"},{"id":"97000171","name":"Shawn Etheredge","team":"Wrong Hole"},{"id":"97020560","name":"William Polk","team":"Wrong Hole"},{"id":"97000114","name":"Tom Lee","team":"Wrong Hole"},{"id":"97008640","name":"Douglas Miller","team":"Wrong Hole"},{"id":"97000242","name":"James Merrit","team":"Wrong Hole"},{"id":"97000337","name":"Michael Cenci","team":"Unacceptable"},{"id":"97000301","name":"Jim Mclain","team":"Unacceptable"},{"id":"97000339","name":"Steve Linn","team":"Unacceptable"},{"id":"97000348","name":"Greg Greer","team":"Unacceptable"},{"id":"97000332","name":"David Gastley","team":"Unacceptable"},{"id":"97000101","name":"Chris Johnston","team":"Pocket Pounders"},{"id":"97000048","name":"Brian Flannery","team":"Pocket Pounders"},{"id":"97000148","name":"Michael Johnston","team":"Pocket Pounders"},{"id":"97000064","name":"Robert Johnston","team":"Pocket Pounders"},{"id":"97000065","name":"Kathleen Duncan","team":"Pocket Pounders"},{"id":"97000135","name":"Lora Elliott","team":"Pocket Pounders"},{"id":"97000110","name":"Jake Trenton","team":"Rack Wreckers"},{"id":"97000142","name":"James Mier","team":"Rack Wreckers"},{"id":"97000134","name":"Shane Hayes","team":"Rack Wreckers"},{"id":"97000138","name":"Harold Jennings","team":"Rack Wreckers"},{"id":"97000104","name":"De Scorpian Broaddus","team":"Rack Wreckers"},{"id":"97000161","name":"Phillip Barton","team":"Rack Wreckers"},{"id":"97000160","name":"Benjamin Strobel","team":"Rack Wreckers"},{"id":"97000312","name":"Clint Petty","team":"One More Shot"},{"id":"97000314","name":"Robert Wakeman","team":"One More Shot"},{"id":"97000057","name":"Margaret Moen","team":"One More Shot"},{"id":"97000303","name":"lrene Wakeman","team":"One More Shot"},{"id":"97000092","name":"Robert Montgomery","team":"One More Shot"},{"id":"97000045","name":"Jeffrey Hamilton","team":"One More Shot"},{"id":"97000307","name":"Colin Flanagan","team":"One More Shot"},{"id":"97000155","name":"Andrea Parr","team":"Chalk is Cheap"},{"id":"97023367","name":"Kevin Long","team":"Chalk is Cheap"},{"id":"97022763","name":"Stephen Bradley","team":"Chalk is Cheap"},{"id":"97023502","name":"Diane Bradley","team":"Chalk is Cheap"},{"id":"97000088","name":"Ken Hile","team":"Chalk is Cheap"},{"id":"97000250","name":"Dan Baer","team":"Chalk is Cheap"},{"id":"97000310","name":"Karen McDaniel","team":"Felt Junkies"},{"id":"97000331","name":"Louis Foust","team":"Felt Junkies"},{"id":"97019743","name":"Gerald Ellis","team":"Felt Junkies"},{"id":"97019589","name":"Kristine Rock","team":"Felt Junkies"},{"id":"97000345","name":"Brennen Brigham","team":"Felt Junkies"},{"id":"97000122","name":"Kenneth Furman","team":"Misfit Q's"},{"id":"97000126","name":"Tammy Furman","team":"Misfit Q's"},{"id":"97000132","name":"Samuel Ortiz","team":"Misfit Q's"},{"id":"97000016","name":"Alma Davidson","team":"Misfit Q's"},{"id":"97004026","name":"Ryan Hall","team":"Misfit Q's"},{"id":"97000203","name":"Jeremy Arnold","team":"Misfit Q's"}]},"weeks":[{"weekNumber":1,"bounties":[{"division":"Lower Columbia","target":{"id":"97000182","name":"Ronald Carter","team":"Hondo’s"},"status":"pending","claimedBy":null,"reward":100},{"division":"St Helens &","target":{"id":"97000171","name":"Shawn Etheredge","team":"Wrong Hole"},"status":"pending","claimedBy":null,"reward":100}]}]};
+const DEMO_PRESETS = {
+  "divisions": {
+    "Lower Columbia": [
+      {
+        "id": "97000137",
+        "name": "Bill Ewan",
+        "team": "Friends"
+      },
+      {
+        "id": "97024217",
+        "name": "John Nichols",
+        "team": "Friends"
+      },
+      {
+        "id": "97000153",
+        "name": "Maryann Abbott",
+        "team": "Friends"
+      },
+      {
+        "id": "97000174",
+        "name": "Edward Hatley",
+        "team": "Friends"
+      },
+      {
+        "id": "97000149",
+        "name": "Shayne Wright",
+        "team": "Friends"
+      },
+      {
+        "id": "97000184",
+        "name": "Crystal Crawford",
+        "team": "Friends"
+      },
+      {
+        "id": "97010394",
+        "name": "David Berkman",
+        "team": "Paw Patrol"
+      },
+      {
+        "id": "97000205",
+        "name": "Bonnie Russell",
+        "team": "Paw Patrol"
+      },
+      {
+        "id": "97000213",
+        "name": "Mistee Messing",
+        "team": "Paw Patrol"
+      },
+      {
+        "id": "97000221",
+        "name": "Daniel Messing",
+        "team": "Paw Patrol"
+      },
+      {
+        "id": "97000146",
+        "name": "Chase Billings",
+        "team": "Paw Patrol"
+      },
+      {
+        "id": "97000159",
+        "name": "Joseph Manchester",
+        "team": "Paw Patrol"
+      },
+      {
+        "id": "97000187",
+        "name": "Alex McKenzie",
+        "team": "Paw Patrol"
+      },
+      {
+        "id": "97000113",
+        "name": "John Kraemer",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000196",
+        "name": "Chuy Puerta",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000237",
+        "name": "David Hall",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000328",
+        "name": "Andrew Hoggard",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000245",
+        "name": "Samuel McDaniel",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000141",
+        "name": "Rigel Ross",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000308",
+        "name": "Anthony Hoggard",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000199",
+        "name": "Nathan Pancheo",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000198",
+        "name": "Adam Yaws",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000210",
+        "name": "Lorna Padgett",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000269",
+        "name": "Betsy Crist",
+        "team": "Hondo’s"
+      },
+      {
+        "id": "97000253",
+        "name": "Blake Mowrey",
+        "team": "Hondo’s"
+      },
+      {
+        "id": "97000162",
+        "name": "Simo Ranta",
+        "team": "Hondo’s"
+      },
+      {
+        "id": "97000179",
+        "name": "Ronald Kiepke",
+        "team": "Hondo’s"
+      },
+      {
+        "id": "97000182",
+        "name": "Ronald Carter",
+        "team": "Hondo’s"
+      },
+      {
+        "id": "97000194",
+        "name": "Ryan Applebee",
+        "team": "Hondo’s"
+      },
+      {
+        "id": "97000040",
+        "name": "Michael Wylie",
+        "team": "Legion of Doom"
+      },
+      {
+        "id": "97000168",
+        "name": "Garrett Danel",
+        "team": "Legion of Doom"
+      },
+      {
+        "id": "97000139",
+        "name": "Maksym Dervevianko",
+        "team": "Legion of Doom"
+      },
+      {
+        "id": "97000177",
+        "name": "Desiree Payne",
+        "team": "Legion of Doom"
+      },
+      {
+        "id": "97000192",
+        "name": "Gordon Scott",
+        "team": "Legion of Doom"
+      },
+      {
+        "id": "97000190",
+        "name": "Christian Paniagua",
+        "team": "Legion of Doom"
+      }
+    ],
+    "St Helens &": [
+      {
+        "id": "97000847",
+        "name": "Alicia Lease",
+        "team": "Wrong Hole"
+      },
+      {
+        "id": "97000171",
+        "name": "Shawn Etheredge",
+        "team": "Wrong Hole"
+      },
+      {
+        "id": "97020560",
+        "name": "William Polk",
+        "team": "Wrong Hole"
+      },
+      {
+        "id": "97000114",
+        "name": "Tom Lee",
+        "team": "Wrong Hole"
+      },
+      {
+        "id": "97008640",
+        "name": "Douglas Miller",
+        "team": "Wrong Hole"
+      },
+      {
+        "id": "97000242",
+        "name": "James Merrit",
+        "team": "Wrong Hole"
+      },
+      {
+        "id": "97000337",
+        "name": "Michael Cenci",
+        "team": "Unacceptable"
+      },
+      {
+        "id": "97000301",
+        "name": "Jim Mclain",
+        "team": "Unacceptable"
+      },
+      {
+        "id": "97000339",
+        "name": "Steve Linn",
+        "team": "Unacceptable"
+      },
+      {
+        "id": "97000348",
+        "name": "Greg Greer",
+        "team": "Unacceptable"
+      },
+      {
+        "id": "97000332",
+        "name": "David Gastley",
+        "team": "Unacceptable"
+      },
+      {
+        "id": "97000101",
+        "name": "Chris Johnston",
+        "team": "Pocket Pounders"
+      },
+      {
+        "id": "97000048",
+        "name": "Brian Flannery",
+        "team": "Pocket Pounders"
+      },
+      {
+        "id": "97000148",
+        "name": "Michael Johnston",
+        "team": "Pocket Pounders"
+      },
+      {
+        "id": "97000064",
+        "name": "Robert Johnston",
+        "team": "Pocket Pounders"
+      },
+      {
+        "id": "97000065",
+        "name": "Kathleen Duncan",
+        "team": "Pocket Pounders"
+      },
+      {
+        "id": "97000135",
+        "name": "Lora Elliott",
+        "team": "Pocket Pounders"
+      },
+      {
+        "id": "97000110",
+        "name": "Jake Trenton",
+        "team": "Rack Wreckers"
+      },
+      {
+        "id": "97000142",
+        "name": "James Mier",
+        "team": "Rack Wreckers"
+      },
+      {
+        "id": "97000134",
+        "name": "Shane Hayes",
+        "team": "Rack Wreckers"
+      },
+      {
+        "id": "97000138",
+        "name": "Harold Jennings",
+        "team": "Rack Wreckers"
+      },
+      {
+        "id": "97000104",
+        "name": "De Scorpian Broaddus",
+        "team": "Rack Wreckers"
+      },
+      {
+        "id": "97000161",
+        "name": "Phillip Barton",
+        "team": "Rack Wreckers"
+      },
+      {
+        "id": "97000160",
+        "name": "Benjamin Strobel",
+        "team": "Rack Wreckers"
+      },
+      {
+        "id": "97000312",
+        "name": "Clint Petty",
+        "team": "One More Shot"
+      },
+      {
+        "id": "97000314",
+        "name": "Robert Wakeman",
+        "team": "One More Shot"
+      },
+      {
+        "id": "97000057",
+        "name": "Margaret Moen",
+        "team": "One More Shot"
+      },
+      {
+        "id": "97000303",
+        "name": "lrene Wakeman",
+        "team": "One More Shot"
+      },
+      {
+        "id": "97000092",
+        "name": "Robert Montgomery",
+        "team": "One More Shot"
+      },
+      {
+        "id": "97000045",
+        "name": "Jeffrey Hamilton",
+        "team": "One More Shot"
+      },
+      {
+        "id": "97000307",
+        "name": "Colin Flanagan",
+        "team": "One More Shot"
+      },
+      {
+        "id": "97000155",
+        "name": "Andrea Parr",
+        "team": "Chalk is Cheap"
+      },
+      {
+        "id": "97023367",
+        "name": "Kevin Long",
+        "team": "Chalk is Cheap"
+      },
+      {
+        "id": "97022763",
+        "name": "Stephen Bradley",
+        "team": "Chalk is Cheap"
+      },
+      {
+        "id": "97023502",
+        "name": "Diane Bradley",
+        "team": "Chalk is Cheap"
+      },
+      {
+        "id": "97000088",
+        "name": "Ken Hile",
+        "team": "Chalk is Cheap"
+      },
+      {
+        "id": "97000250",
+        "name": "Dan Baer",
+        "team": "Chalk is Cheap"
+      },
+      {
+        "id": "97000310",
+        "name": "Karen McDaniel",
+        "team": "Felt Junkies"
+      },
+      {
+        "id": "97000331",
+        "name": "Louis Foust",
+        "team": "Felt Junkies"
+      },
+      {
+        "id": "97019743",
+        "name": "Gerald Ellis",
+        "team": "Felt Junkies"
+      },
+      {
+        "id": "97019589",
+        "name": "Kristine Rock",
+        "team": "Felt Junkies"
+      },
+      {
+        "id": "97000345",
+        "name": "Brennen Brigham",
+        "team": "Felt Junkies"
+      },
+      {
+        "id": "97000122",
+        "name": "Kenneth Furman",
+        "team": "Misfit Q's"
+      },
+      {
+        "id": "97000126",
+        "name": "Tammy Furman",
+        "team": "Misfit Q's"
+      },
+      {
+        "id": "97000132",
+        "name": "Samuel Ortiz",
+        "team": "Misfit Q's"
+      },
+      {
+        "id": "97000016",
+        "name": "Alma Davidson",
+        "team": "Misfit Q's"
+      },
+      {
+        "id": "97004026",
+        "name": "Ryan Hall",
+        "team": "Misfit Q's"
+      },
+      {
+        "id": "97000203",
+        "name": "Jeremy Arnold",
+        "team": "Misfit Q's"
+      }
+    ]
+  },
+  "weeks": [
+    {
+      "weekNumber": 1,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000182",
+            "name": "Ronald Carter",
+            "team": "Hondo’s"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 100
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97000171",
+            "name": "Shawn Etheredge",
+            "team": "Wrong Hole"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 100
+        }
+      ]
+    }
+  ]
+};
 
 // Initialize Application
 document.addEventListener("DOMContentLoaded", () => {
@@ -3225,6 +3817,7 @@ function saveState() {
 function renderApp() {
     renderRosterTab();
     renderBountiesTab();
+    renderWantedTab();
     renderLeaderboardTab();
 }
 
@@ -3279,6 +3872,8 @@ function setupEventListeners() {
                 renderLeaderboardTab();
             } else if (target === 'tab-bounties') {
                 renderBountiesTab();
+            } else if (target === 'tab-wanted') {
+                renderWantedTab();
             } else if (target === 'tab-rosters') {
                 renderRosterTab();
             }
@@ -3464,9 +4059,34 @@ function setupEventListeners() {
         downloadPoster("poster-cyber-element", "cyber-bounty-alert");
     });
 
+    document.getElementById("share-cyber-fb-btn").addEventListener("click", () => {
+        shareWantedPosterFacebook("poster-cyber-element", "cyber-bounty-alert");
+    });
+
     document.getElementById("download-red-holo-btn").addEventListener("click", () => {
         sounds.playSuccess();
         downloadPoster("poster-red-holo-element", "red-hologram-poster");
+    });
+
+    document.getElementById("share-red-fb-btn").addEventListener("click", () => {
+        shareWantedPosterFacebook("poster-red-holo-element", "red-hologram-poster");
+    });
+
+    // Facebook sharing instructions modal event handlers
+    document.getElementById("close-fb-instructions-btn").addEventListener("click", () => {
+        sounds.playBeep();
+        closeModal("fb-share-instructions-modal");
+    });
+    
+    document.getElementById("fb-share-overlay").addEventListener("click", () => {
+        sounds.playBeep();
+        closeModal("fb-share-instructions-modal");
+    });
+
+    document.getElementById("go-to-fb-btn").addEventListener("click", () => {
+        sounds.playSuccess();
+        closeModal("fb-share-instructions-modal");
+        window.open("https://www.facebook.com", "_blank");
     });
 
     document.getElementById("publish-web-btn").addEventListener("click", () => {
@@ -3558,6 +4178,10 @@ function setupEventListeners() {
 
     document.getElementById("copy-bounties-code-btn").addEventListener("click", () => {
         copyEmbedCode('bounties', true);
+    });
+
+    document.getElementById("copy-wanted-code-btn").addEventListener("click", () => {
+        copyEmbedCode('wanted', true);
     });
 
     document.getElementById("copy-leaderboard-code-btn").addEventListener("click", () => {
@@ -4866,6 +5490,214 @@ function runPublicTargetScan(bounties) {
             }
         }, longestSpin + 200);
     }, 200);
+}
+
+// Facebook sharing helper (captures image, copies caption to clipboard, opens Facebook)
+function shareWantedPosterFacebook(elementId, baseName) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    const nameEl = element.querySelector(".poster-cyber-name, .poster-red-holo-name");
+    const teamEl = element.querySelector(".poster-cyber-team, .poster-red-holo-team");
+    const divEl = element.querySelector(".poster-cyber-division, .poster-red-holo-division");
+    const rewardEl = element.querySelector(".poster-cyber-reward, .poster-red-holo-reward");
+    
+    const targetName = nameEl ? nameEl.innerText : "Target";
+    const targetTeam = teamEl ? teamEl.innerText : "Independent";
+    const division = divEl ? divEl.innerText : "Unknown";
+    const reward = rewardEl ? rewardEl.innerText.replace(/[^0-9]/g, '') : "100";
+    
+    const caption = `🚨 GUILD DEATH MARK ALERT 🚨\n\nTarget: ${targetName}\nFaction: ${targetTeam}\nSector: ${division} Division\nBounty Reward: ₵${reward} Credits\n\nStatus: WANTED DEAD OR IN CARBONITE!\n\n#BountyHunter #Wanted #GuildBoard #StarWars`;
+    
+    // Copy caption to clipboard
+    navigator.clipboard.writeText(caption)
+        .then(() => {
+            showToast("Wanted caption copied to clipboard!", "success");
+        })
+        .catch(err => {
+            console.error("Clipboard copy failed:", err);
+        });
+        
+    // Trigger download
+    downloadPoster(elementId, baseName);
+    
+    // Open instructions modal
+    openModal("fb-share-instructions-modal");
+}
+
+// Render dynamic Wanted Posters tab
+function renderWantedTab() {
+    const container = document.getElementById("wanted-display-grid");
+    if (!container) return;
+    
+    container.innerHTML = "";
+    
+    const selectEl = document.getElementById("week-select");
+    if (!selectEl) return;
+    
+    const weekIndex = parseInt(selectEl.value);
+    if (isNaN(weekIndex) || !state.weeks[weekIndex]) {
+        document.getElementById("wanted-empty-state").classList.remove("hidden");
+        document.getElementById("wanted-active-view").classList.add("hidden");
+        return;
+    }
+    
+    const week = state.weeks[weekIndex];
+    if (!week.bounties || week.bounties.length === 0) {
+        document.getElementById("wanted-empty-state").classList.remove("hidden");
+        document.getElementById("wanted-active-view").classList.add("hidden");
+        return;
+    }
+    
+    document.getElementById("wanted-empty-state").classList.add("hidden");
+    document.getElementById("wanted-active-view").classList.remove("hidden");
+    
+    week.bounties.forEach((bounty, index) => {
+        const targetName = bounty.target.name || (typeof bounty.target === 'string' ? bounty.target : "Unknown");
+        const targetTeam = bounty.target.team || "Independent";
+        const division = bounty.division;
+        const reward = bounty.reward || 100;
+        const crime = getRandomPoolCrime(targetName);
+        
+        const card = document.createElement("div");
+        card.className = "wanted-poster-group-card";
+        card.style.display = "flex";
+        card.style.flexDirection = "column";
+        card.style.gap = "1.5rem";
+        card.style.borderBottom = "1px solid rgba(0, 240, 255, 0.15)";
+        card.style.paddingBottom = "3rem";
+        if (index === week.bounties.length - 1) {
+            card.style.borderBottom = "none";
+            card.style.paddingBottom = "0";
+        }
+        
+        card.innerHTML = `
+            <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; width: 100%;">
+                <!-- Poster A (FB Square) -->
+                <div class="poster-preview-card" style="width: 360px;">
+                    <h3 style="margin-bottom: 1rem; color: var(--accent-cyan); font-size: 0.95rem;">Facebook Format (1:1)</h3>
+                    <div id="poster-cyber-page-${index}" class="wanted-poster-box poster-cyber" style="transform: scale(0.9); margin-bottom: -20px; margin-top: -20px;">
+                        <div class="poster-cyber-grid"></div>
+                        <div class="poster-cyber-border-accents"></div>
+                        <div class="poster-cyber-header">
+                            <span class="agency-label">UNDERWORLD NETWORK DETECT</span>
+                            <span class="alert-label">GUILD BOUNTY ALERT</span>
+                        </div>
+                        <div class="poster-cyber-photo-container">
+                            <div class="photo-reticle">
+                                <svg viewBox="0 0 100 100" width="80" height="80" class="reticle-svg">
+                                    <circle cx="50" cy="50" r="45" stroke="var(--accent-cyan)" stroke-width="1" fill="none" stroke-dasharray="2 3"></circle>
+                                    <circle cx="50" cy="50" r="30" stroke="var(--accent-cyan)" stroke-width="1" fill="none"></circle>
+                                    <line x1="50" y1="0" x2="50" y2="100" stroke="var(--accent-cyan)" stroke-width="0.5"></line>
+                                    <line x1="0" y1="50" x2="100" y2="50" stroke="var(--accent-cyan)" stroke-width="0.5"></line>
+                                </svg>
+                            </div>
+                            <svg class="poster-avatar-placeholder" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" opacity="0.3" stroke-width="1">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                        </div>
+                        <div class="poster-cyber-info">
+                            <div class="w-label">TARGET PUCK REGISTERED</div>
+                            <h1 class="poster-cyber-name">${targetName}</h1>
+                            <div class="poster-cyber-meta-row">
+                                <div>
+                                    <span class="meta-lbl">TEAM:</span>
+                                    <span class="meta-val poster-cyber-team">${targetTeam}</span>
+                                </div>
+                                <div>
+                                    <span class="meta-lbl">SECTOR:</span>
+                                    <span class="meta-val poster-cyber-division">${division}</span>
+                                </div>
+                            </div>
+                            <div class="poster-cyber-crime-box">
+                                <span class="crime-header">WANTED FOR:</span>
+                                <p class="poster-cyber-crime">${crime}</p>
+                            </div>
+                        </div>
+                        <div class="poster-cyber-footer">
+                            <div class="reward-title">BOUNTY REWARD VALUE</div>
+                            <div class="reward-amount poster-cyber-reward">₵${reward} CREDITS</div>
+                            <div class="status-disclaimer">WANTED DEAD OR IN CARBONITE BY THE GUILD BOARD</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary download-wanted-btn" data-target="poster-cyber-page-${index}" data-name="cyber-bounty-alert-${targetName.toLowerCase()}" style="width: 100%; margin-top: 1rem;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.3rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                        Download PNG (FB Square)
+                    </button>
+                    <button class="btn btn-facebook share-wanted-fb-btn" data-target="poster-cyber-page-${index}" data-name="cyber-bounty-alert-${targetName.toLowerCase()}" style="width: 100%; margin-top: 0.5rem; background-color: #1877f2; color: white; border: none;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="margin-right: 0.3rem;"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        Share on Facebook
+                    </button>
+                </div>
+                
+                <!-- Poster B (Web Portrait) -->
+                <div class="poster-preview-card" style="width: 360px;">
+                    <h3 style="margin-bottom: 1rem; color: var(--accent-pink); font-size: 0.95rem;">Website Format (3:4)</h3>
+                    <div id="poster-red-holo-page-${index}" class="wanted-poster-box poster-red-holo" style="transform: scale(0.9); margin-bottom: -20px; margin-top: -20px;">
+                        <div class="poster-red-holo-grid"></div>
+                        <div class="poster-red-holo-border-accents"></div>
+                        <div class="poster-red-holo-header">
+                            <span class="agency-label-red">IMPERIAL SECURITY REGISTRY</span>
+                            <span class="alert-label-red">GUILD DEATH MARK</span>
+                        </div>
+                        <div class="poster-red-holo-photo-container">
+                            <div class="photo-reticle-red">
+                                <svg viewBox="0 0 100 100" width="80" height="80" class="reticle-svg-red">
+                                    <circle cx="50" cy="50" r="45" stroke="var(--accent-pink)" stroke-width="1" fill="none" stroke-dasharray="3 3"></circle>
+                                    <line x1="50" y1="0" x2="50" y2="100" stroke="var(--accent-pink)" stroke-width="0.5"></line>
+                                    <line x1="0" y1="50" x2="100" y2="50" stroke="var(--accent-pink)" stroke-width="0.5"></line>
+                                </svg>
+                            </div>
+                            <svg class="poster-avatar-placeholder-red" viewBox="0 0 24 24" fill="none" stroke="var(--accent-pink)" opacity="0.3" stroke-width="1">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                        </div>
+                        <div class="poster-red-holo-info">
+                            <div class="w-label-red">TARGET IDENTITY CONFIRMED</div>
+                            <h2 class="poster-red-holo-name">${targetName}</h2>
+                            <div class="poster-red-holo-sub">OPERATING WITH THE <span class="poster-red-holo-team">${targetTeam}</span> FACTION</div>
+                            <div class="poster-red-holo-div-tag">SECTOR: <span class="poster-red-holo-division">${division}</span></div>
+                            <div class="poster-red-holo-crime-box">
+                                <span class="crime-header-red">Pool Crime Registry:</span>
+                                <p class="poster-red-holo-crime">${crime}</p>
+                            </div>
+                        </div>
+                        <div class="poster-red-holo-footer">
+                            <div class="p-reward-title-red">REWARD FOR APPREHENSION</div>
+                            <div class="p-reward-amount-red poster-red-holo-reward">₵${reward} GALACTIC CREDITS</div>
+                            <div class="p-disclaimer-red">TERMINATE OR APPREHEND. AUTHORED BY GALACTIC EMPIRE UNDERWORLD DISPATCH.</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-accent download-wanted-btn" data-target="poster-red-holo-page-${index}" data-name="red-hologram-poster-${targetName.toLowerCase()}" style="width: 100%; margin-top: 1rem;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.3rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                        Download PNG (Web Portrait)
+                    </button>
+                    <button class="btn btn-facebook share-wanted-fb-btn" data-target="poster-red-holo-page-${index}" data-name="red-hologram-poster-${targetName.toLowerCase()}" style="width: 100%; margin-top: 0.5rem; background-color: #1877f2; color: white; border: none;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="margin-right: 0.3rem;"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        Share on Facebook
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Setup download and share event listeners for the page poster cards
+        card.querySelectorAll(".download-wanted-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                sounds.playSuccess();
+                downloadPoster(btn.dataset.target, btn.dataset.name);
+            });
+        });
+        
+        card.querySelectorAll(".share-wanted-fb-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                shareWantedPosterFacebook(btn.dataset.target, btn.dataset.name);
+            });
+        });
+        
+        container.appendChild(card);
+    });
 }
 
 

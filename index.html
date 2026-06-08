@@ -51,6 +51,16 @@
                     </span>
                     <span class="tab-text">Guild Standings</span>
                 </button>
+                <button class="nav-tab" data-tab="tab-wanted">
+                    <span class="tab-icon">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="12" cy="10" r="3"/>
+                            <path d="M7 21v-2a4 4 0 0 1 8 0v2"/>
+                        </svg>
+                    </span>
+                    <span class="tab-text">Wanted Posters</span>
+                </button>
                 <button class="nav-tab" data-tab="tab-rosters">
                     <span class="tab-icon">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
@@ -186,6 +196,35 @@
                 <!-- Targets Board -->
                 <div id="target-board" class="sub-tab-content">
                     <!-- Dynamic division tables will be populated here -->
+            </section>
+
+            <!-- SECTION: WANTED POSTERS -->
+            <section id="tab-wanted" class="tab-content">
+                <div class="section-header">
+                    <div>
+                        <h2>Sector Death Marks</h2>
+                        <p>Active cycle bounty alert posters issued by the Guild Central Dispatch.</p>
+                    </div>
+                </div>
+
+                <div class="wanted-page-layout" style="margin-top: 1rem;">
+                    <div id="wanted-empty-state" class="empty-state card">
+                        <div class="empty-icon">
+                            <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="var(--text-muted)" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10" stroke-dasharray="3 3"></circle>
+                                <circle cx="12" cy="12" r="6"></circle>
+                                <circle cx="12" cy="12" r="2" fill="var(--text-muted)"></circle>
+                                <path d="M12 2v20M2 12h20"></path>
+                            </svg>
+                        </div>
+                        <h3>No Active Wanted Posters</h3>
+                        <p>No active wanted posters to display for this cycle. Make sure targets are scanned.</p>
+                    </div>
+                    <div id="wanted-active-view" class="hidden">
+                        <div class="wanted-posters-display-grid" id="wanted-display-grid" style="display: flex; flex-direction: column; gap: 4rem;">
+                            <!-- Dynamic grid of wanted posters -->
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -304,6 +343,7 @@
                         <p>Generate and copy the entire self-contained console code (with your active contracts baked in) to paste directly into your Google Sites "Embed Code" box, bypassing GitHub completely.</p>
                         <div class="settings-actions" style="gap: 0.8rem; flex-wrap: wrap;">
                             <button id="copy-bounties-code-btn" class="btn btn-accent">Copy Bounties Code</button>
+                            <button id="copy-wanted-code-btn" class="btn btn-secondary">Copy Wanted Posters Code</button>
                             <button id="copy-leaderboard-code-btn" class="btn btn-secondary">Copy Leaderboard Code</button>
                             <button id="copy-portal-code-btn" class="btn btn-secondary">Copy Full Portal Code</button>
                         </div>
@@ -503,6 +543,10 @@
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.3rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                             Download PNG (FB Square)
                         </button>
+                        <button id="share-cyber-fb-btn" class="btn btn-facebook" style="width: 100%; margin-top: 0.5rem; background-color: #1877f2; color: white; border: none;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="margin-right: 0.3rem;"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            Share on Facebook
+                        </button>
                     </div>
 
                     <!-- Poster B: Imperial Security Hologram (Website 3:4) -->
@@ -548,12 +592,45 @@
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.3rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                             Download PNG (Web Portrait)
                         </button>
+                        <button id="share-red-fb-btn" class="btn btn-facebook" style="width: 100%; margin-top: 0.5rem; background-color: #1877f2; color: white; border: none;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="margin-right: 0.3rem;"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            Share on Facebook
+                        </button>
                     </div>
 
                 </div>
             </div>
             <div class="modal-footer">
                 <button id="close-wanted-btn" class="btn btn-secondary">Close Terminal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: FACEBOOK SHARE INSTRUCTIONS -->
+    <div id="fb-share-instructions-modal" class="modal hidden">
+        <div class="modal-overlay" id="fb-share-overlay"></div>
+        <div class="modal-container modal-sm">
+            <div class="modal-header">
+                <h2>Post to Facebook</h2>
+                <p>Follow these quick steps to publish this wanted poster to your Facebook page:</p>
+            </div>
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.2rem; padding: 1rem 0;">
+                <div class="instruction-step" style="display: flex; gap: 0.8rem; align-items: flex-start;">
+                    <span class="step-num" style="background-color: var(--accent-cyan); color: #000; font-family: var(--font-display); font-weight: bold; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; text-shadow: none;">1</span>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--text-primary); text-transform: none;">The high-resolution wanted poster image **has been downloaded** to your computer.</p>
+                </div>
+                <div class="instruction-step" style="display: flex; gap: 0.8rem; align-items: flex-start;">
+                    <span class="step-num" style="background-color: var(--accent-cyan); color: #000; font-family: var(--font-display); font-weight: bold; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; text-shadow: none;">2</span>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--text-primary); text-transform: none;">A galactic wanted caption **has been copied to your clipboard** automatically.</p>
+                </div>
+                <div class="instruction-step" style="display: flex; gap: 0.8rem; align-items: flex-start;">
+                    <span class="step-num" style="background-color: var(--accent-cyan); color: #000; font-family: var(--font-display); font-weight: bold; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; text-shadow: none;">3</span>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--text-primary); text-transform: none;">Click **\"Go to Facebook\"** below, start a new post on your feed or page, paste (Ctrl+V) the caption, and upload the downloaded wanted poster PNG!</p>
+                </div>
+            </div>
+            <div class="modal-footer" style="display: flex; gap: 0.8rem; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                <button id="go-to-fb-btn" class="btn btn-primary">Go to Facebook</button>
+                <button id="close-fb-instructions-btn" class="btn btn-secondary">Close</button>
             </div>
         </div>
     </div>

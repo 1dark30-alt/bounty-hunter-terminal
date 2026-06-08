@@ -505,6 +505,7 @@ function saveState() {
 function renderApp() {
     renderRosterTab();
     renderBountiesTab();
+    renderWantedTab();
     renderLeaderboardTab();
 }
 
@@ -559,6 +560,8 @@ function setupEventListeners() {
                 renderLeaderboardTab();
             } else if (target === 'tab-bounties') {
                 renderBountiesTab();
+            } else if (target === 'tab-wanted') {
+                renderWantedTab();
             } else if (target === 'tab-rosters') {
                 renderRosterTab();
             }
@@ -744,9 +747,34 @@ function setupEventListeners() {
         downloadPoster("poster-cyber-element", "cyber-bounty-alert");
     });
 
+    document.getElementById("share-cyber-fb-btn").addEventListener("click", () => {
+        shareWantedPosterFacebook("poster-cyber-element", "cyber-bounty-alert");
+    });
+
     document.getElementById("download-red-holo-btn").addEventListener("click", () => {
         sounds.playSuccess();
         downloadPoster("poster-red-holo-element", "red-hologram-poster");
+    });
+
+    document.getElementById("share-red-fb-btn").addEventListener("click", () => {
+        shareWantedPosterFacebook("poster-red-holo-element", "red-hologram-poster");
+    });
+
+    // Facebook sharing instructions modal event handlers
+    document.getElementById("close-fb-instructions-btn").addEventListener("click", () => {
+        sounds.playBeep();
+        closeModal("fb-share-instructions-modal");
+    });
+    
+    document.getElementById("fb-share-overlay").addEventListener("click", () => {
+        sounds.playBeep();
+        closeModal("fb-share-instructions-modal");
+    });
+
+    document.getElementById("go-to-fb-btn").addEventListener("click", () => {
+        sounds.playSuccess();
+        closeModal("fb-share-instructions-modal");
+        window.open("https://www.facebook.com", "_blank");
     });
 
     document.getElementById("publish-web-btn").addEventListener("click", () => {
@@ -838,6 +866,10 @@ function setupEventListeners() {
 
     document.getElementById("copy-bounties-code-btn").addEventListener("click", () => {
         copyEmbedCode('bounties', true);
+    });
+
+    document.getElementById("copy-wanted-code-btn").addEventListener("click", () => {
+        copyEmbedCode('wanted', true);
     });
 
     document.getElementById("copy-leaderboard-code-btn").addEventListener("click", () => {
@@ -2146,5 +2178,213 @@ function runPublicTargetScan(bounties) {
             }
         }, longestSpin + 200);
     }, 200);
+}
+
+// Facebook sharing helper (captures image, copies caption to clipboard, opens Facebook)
+function shareWantedPosterFacebook(elementId, baseName) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    const nameEl = element.querySelector(".poster-cyber-name, .poster-red-holo-name");
+    const teamEl = element.querySelector(".poster-cyber-team, .poster-red-holo-team");
+    const divEl = element.querySelector(".poster-cyber-division, .poster-red-holo-division");
+    const rewardEl = element.querySelector(".poster-cyber-reward, .poster-red-holo-reward");
+    
+    const targetName = nameEl ? nameEl.innerText : "Target";
+    const targetTeam = teamEl ? teamEl.innerText : "Independent";
+    const division = divEl ? divEl.innerText : "Unknown";
+    const reward = rewardEl ? rewardEl.innerText.replace(/[^0-9]/g, '') : "100";
+    
+    const caption = `🚨 GUILD DEATH MARK ALERT 🚨\n\nTarget: ${targetName}\nFaction: ${targetTeam}\nSector: ${division} Division\nBounty Reward: ₵${reward} Credits\n\nStatus: WANTED DEAD OR IN CARBONITE!\n\n#BountyHunter #Wanted #GuildBoard #StarWars`;
+    
+    // Copy caption to clipboard
+    navigator.clipboard.writeText(caption)
+        .then(() => {
+            showToast("Wanted caption copied to clipboard!", "success");
+        })
+        .catch(err => {
+            console.error("Clipboard copy failed:", err);
+        });
+        
+    // Trigger download
+    downloadPoster(elementId, baseName);
+    
+    // Open instructions modal
+    openModal("fb-share-instructions-modal");
+}
+
+// Render dynamic Wanted Posters tab
+function renderWantedTab() {
+    const container = document.getElementById("wanted-display-grid");
+    if (!container) return;
+    
+    container.innerHTML = "";
+    
+    const selectEl = document.getElementById("week-select");
+    if (!selectEl) return;
+    
+    const weekIndex = parseInt(selectEl.value);
+    if (isNaN(weekIndex) || !state.weeks[weekIndex]) {
+        document.getElementById("wanted-empty-state").classList.remove("hidden");
+        document.getElementById("wanted-active-view").classList.add("hidden");
+        return;
+    }
+    
+    const week = state.weeks[weekIndex];
+    if (!week.bounties || week.bounties.length === 0) {
+        document.getElementById("wanted-empty-state").classList.remove("hidden");
+        document.getElementById("wanted-active-view").classList.add("hidden");
+        return;
+    }
+    
+    document.getElementById("wanted-empty-state").classList.add("hidden");
+    document.getElementById("wanted-active-view").classList.remove("hidden");
+    
+    week.bounties.forEach((bounty, index) => {
+        const targetName = bounty.target.name || (typeof bounty.target === 'string' ? bounty.target : "Unknown");
+        const targetTeam = bounty.target.team || "Independent";
+        const division = bounty.division;
+        const reward = bounty.reward || 100;
+        const crime = getRandomPoolCrime(targetName);
+        
+        const card = document.createElement("div");
+        card.className = "wanted-poster-group-card";
+        card.style.display = "flex";
+        card.style.flexDirection = "column";
+        card.style.gap = "1.5rem";
+        card.style.borderBottom = "1px solid rgba(0, 240, 255, 0.15)";
+        card.style.paddingBottom = "3rem";
+        if (index === week.bounties.length - 1) {
+            card.style.borderBottom = "none";
+            card.style.paddingBottom = "0";
+        }
+        
+        card.innerHTML = `
+            <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; width: 100%;">
+                <!-- Poster A (FB Square) -->
+                <div class="poster-preview-card" style="width: 360px;">
+                    <h3 style="margin-bottom: 1rem; color: var(--accent-cyan); font-size: 0.95rem;">Facebook Format (1:1)</h3>
+                    <div id="poster-cyber-page-${index}" class="wanted-poster-box poster-cyber" style="transform: scale(0.9); margin-bottom: -20px; margin-top: -20px;">
+                        <div class="poster-cyber-grid"></div>
+                        <div class="poster-cyber-border-accents"></div>
+                        <div class="poster-cyber-header">
+                            <span class="agency-label">UNDERWORLD NETWORK DETECT</span>
+                            <span class="alert-label">GUILD BOUNTY ALERT</span>
+                        </div>
+                        <div class="poster-cyber-photo-container">
+                            <div class="photo-reticle">
+                                <svg viewBox="0 0 100 100" width="80" height="80" class="reticle-svg">
+                                    <circle cx="50" cy="50" r="45" stroke="var(--accent-cyan)" stroke-width="1" fill="none" stroke-dasharray="2 3"></circle>
+                                    <circle cx="50" cy="50" r="30" stroke="var(--accent-cyan)" stroke-width="1" fill="none"></circle>
+                                    <line x1="50" y1="0" x2="50" y2="100" stroke="var(--accent-cyan)" stroke-width="0.5"></line>
+                                    <line x1="0" y1="50" x2="100" y2="50" stroke="var(--accent-cyan)" stroke-width="0.5"></line>
+                                </svg>
+                            </div>
+                            <svg class="poster-avatar-placeholder" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" opacity="0.3" stroke-width="1">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                        </div>
+                        <div class="poster-cyber-info">
+                            <div class="w-label">TARGET PUCK REGISTERED</div>
+                            <h1 class="poster-cyber-name">${targetName}</h1>
+                            <div class="poster-cyber-meta-row">
+                                <div>
+                                    <span class="meta-lbl">TEAM:</span>
+                                    <span class="meta-val poster-cyber-team">${targetTeam}</span>
+                                </div>
+                                <div>
+                                    <span class="meta-lbl">SECTOR:</span>
+                                    <span class="meta-val poster-cyber-division">${division}</span>
+                                </div>
+                            </div>
+                            <div class="poster-cyber-crime-box">
+                                <span class="crime-header">WANTED FOR:</span>
+                                <p class="poster-cyber-crime">${crime}</p>
+                            </div>
+                        </div>
+                        <div class="poster-cyber-footer">
+                            <div class="reward-title">BOUNTY REWARD VALUE</div>
+                            <div class="reward-amount poster-cyber-reward">₵${reward} CREDITS</div>
+                            <div class="status-disclaimer">WANTED DEAD OR IN CARBONITE BY THE GUILD BOARD</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary download-wanted-btn" data-target="poster-cyber-page-${index}" data-name="cyber-bounty-alert-${targetName.toLowerCase()}" style="width: 100%; margin-top: 1rem;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.3rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                        Download PNG (FB Square)
+                    </button>
+                    <button class="btn btn-facebook share-wanted-fb-btn" data-target="poster-cyber-page-${index}" data-name="cyber-bounty-alert-${targetName.toLowerCase()}" style="width: 100%; margin-top: 0.5rem; background-color: #1877f2; color: white; border: none;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="margin-right: 0.3rem;"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        Share on Facebook
+                    </button>
+                </div>
+                
+                <!-- Poster B (Web Portrait) -->
+                <div class="poster-preview-card" style="width: 360px;">
+                    <h3 style="margin-bottom: 1rem; color: var(--accent-pink); font-size: 0.95rem;">Website Format (3:4)</h3>
+                    <div id="poster-red-holo-page-${index}" class="wanted-poster-box poster-red-holo" style="transform: scale(0.9); margin-bottom: -20px; margin-top: -20px;">
+                        <div class="poster-red-holo-grid"></div>
+                        <div class="poster-red-holo-border-accents"></div>
+                        <div class="poster-red-holo-header">
+                            <span class="agency-label-red">IMPERIAL SECURITY REGISTRY</span>
+                            <span class="alert-label-red">GUILD DEATH MARK</span>
+                        </div>
+                        <div class="poster-red-holo-photo-container">
+                            <div class="photo-reticle-red">
+                                <svg viewBox="0 0 100 100" width="80" height="80" class="reticle-svg-red">
+                                    <circle cx="50" cy="50" r="45" stroke="var(--accent-pink)" stroke-width="1" fill="none" stroke-dasharray="3 3"></circle>
+                                    <line x1="50" y1="0" x2="50" y2="100" stroke="var(--accent-pink)" stroke-width="0.5"></line>
+                                    <line x1="0" y1="50" x2="100" y2="50" stroke="var(--accent-pink)" stroke-width="0.5"></line>
+                                </svg>
+                            </div>
+                            <svg class="poster-avatar-placeholder-red" viewBox="0 0 24 24" fill="none" stroke="var(--accent-pink)" opacity="0.3" stroke-width="1">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                        </div>
+                        <div class="poster-red-holo-info">
+                            <div class="w-label-red">TARGET IDENTITY CONFIRMED</div>
+                            <h2 class="poster-red-holo-name">${targetName}</h2>
+                            <div class="poster-red-holo-sub">OPERATING WITH THE <span class="poster-red-holo-team">${targetTeam}</span> FACTION</div>
+                            <div class="poster-red-holo-div-tag">SECTOR: <span class="poster-red-holo-division">${division}</span></div>
+                            <div class="poster-red-holo-crime-box">
+                                <span class="crime-header-red">Pool Crime Registry:</span>
+                                <p class="poster-red-holo-crime">${crime}</p>
+                            </div>
+                        </div>
+                        <div class="poster-red-holo-footer">
+                            <div class="p-reward-title-red">REWARD FOR APPREHENSION</div>
+                            <div class="p-reward-amount-red poster-red-holo-reward">₵${reward} GALACTIC CREDITS</div>
+                            <div class="p-disclaimer-red">TERMINATE OR APPREHEND. AUTHORED BY GALACTIC EMPIRE UNDERWORLD DISPATCH.</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-accent download-wanted-btn" data-target="poster-red-holo-page-${index}" data-name="red-hologram-poster-${targetName.toLowerCase()}" style="width: 100%; margin-top: 1rem;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.3rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                        Download PNG (Web Portrait)
+                    </button>
+                    <button class="btn btn-facebook share-wanted-fb-btn" data-target="poster-red-holo-page-${index}" data-name="red-hologram-poster-${targetName.toLowerCase()}" style="width: 100%; margin-top: 0.5rem; background-color: #1877f2; color: white; border: none;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="margin-right: 0.3rem;"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        Share on Facebook
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Setup download and share event listeners for the page poster cards
+        card.querySelectorAll(".download-wanted-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                sounds.playSuccess();
+                downloadPoster(btn.dataset.target, btn.dataset.name);
+            });
+        });
+        
+        card.querySelectorAll(".share-wanted-fb-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                shareWantedPosterFacebook(btn.dataset.target, btn.dataset.name);
+            });
+        });
+        
+        container.appendChild(card);
+    });
 }
 
