@@ -1393,7 +1393,7 @@ function triggerBountyRoulette() {
             target: targetPlayer, // store player object
             status: "pending",
             claimedBy: null,
-            reward: 100 // default points value
+            reward: 80000 // default points value
         });
 
         // Set up roulette wheel strip
@@ -1539,7 +1539,7 @@ function triggerEditBountyModal(weekIndex, bountyIndex) {
     
     document.getElementById("edit-bounty-subtitle").innerText = `Division: ${bounty.division} | Target: ${targetName}${targetTeam}`;
     document.getElementById("bounty-status-select").value = bounty.status;
-    document.getElementById("bounty-reward-input").value = bounty.reward || 100;
+    document.getElementById("bounty-reward-input").value = bounty.reward || 80000;
     
     // Populate Hunter dropdown
     const hunterSelect = document.getElementById("bounty-hunter-select");
@@ -2049,7 +2049,7 @@ function triggerWantedPosterModal(bounty) {
     const targetName = bounty.target.name || (typeof bounty.target === 'string' ? bounty.target : "Unknown");
     const targetTeam = bounty.target.team || "Independent";
     const division = bounty.division;
-    const reward = bounty.reward || 100;
+    const reward = bounty.reward || 80000;
     const crime = getRandomPoolCrime(targetName);
 
     // Populate Red Hologram (Website Wanted Poster)
@@ -2307,7 +2307,7 @@ function shareWantedPosterFacebook(elementId, baseName) {
     const targetName = nameEl ? nameEl.innerText : "Target";
     const targetTeam = teamEl ? teamEl.innerText : "Independent";
     const division = divEl ? divEl.innerText : "Unknown";
-    const reward = rewardEl ? rewardEl.innerText.replace(/[^0-9]/g, '') : "100";
+    const reward = rewardEl ? rewardEl.innerText.replace(/[^0-9]/g, '') : "80000";
     
     const caption = `🚨 GUILD DEATH MARK ALERT 🚨\n\nTarget: ${targetName}\nFaction: ${targetTeam}\nSector: ${division} Division\nBounty Reward: ₵${reward} Credits\n\nStatus: WANTED DEAD OR IN CARBONITE!\n\n#BountyHunter #Wanted #GuildBoard #StarWars`;
     
@@ -2358,7 +2358,7 @@ function renderWantedTab() {
         const targetName = bounty.target.name || (typeof bounty.target === 'string' ? bounty.target : "Unknown");
         const targetTeam = bounty.target.team || "Independent";
         const division = bounty.division;
-        const reward = bounty.reward || 100;
+        const reward = bounty.reward || 80000;
         const crime = getRandomPoolCrime(targetName);
         
         const card = document.createElement("div");
