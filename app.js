@@ -1266,7 +1266,20 @@ function renderBountiesTab() {
             });
 
             card.querySelector(".wanted-poster-btn").addEventListener("click", () => {
-                triggerWantedPosterModal(bounty);
+                const wantedTabButton = document.querySelector('.nav-tab[data-tab="tab-wanted"]');
+                if (wantedTabButton) {
+                    wantedTabButton.click();
+                    setTimeout(() => {
+                        const posterEl = document.getElementById(`poster-red-holo-page-${index}`);
+                        if (posterEl) {
+                            posterEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            posterEl.classList.add('poster-highlight-glow');
+                            setTimeout(() => {
+                                posterEl.classList.remove('poster-highlight-glow');
+                            }, 2500);
+                        }
+                    }, 150);
+                }
             });
 
             card.querySelector(".reroll-single-btn").addEventListener("click", () => {
@@ -2355,7 +2368,7 @@ function renderWantedTab() {
             <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; width: 100%;">
                 <!-- Poster B (Web Portrait) -->
                 <div class="poster-preview-card" style="width: 360px;">
-                    <div id="poster-red-holo-page-${index}" class="wanted-poster-box poster-red-holo" style="transform: scale(0.9); margin-bottom: -20px; margin-top: -20px;">
+                    <div id="poster-red-holo-page-${index}" class="wanted-poster-box poster-red-holo tab-wanted-poster-box">
                         <div class="poster-red-holo-grid"></div>
                         <div class="poster-red-holo-border-accents"></div>
                         <div class="poster-red-holo-header">

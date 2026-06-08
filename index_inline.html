@@ -2291,6 +2291,46 @@ body.hide-nav .app-main {
     box-shadow: 0 12px 40px rgba(0, 240, 255, 0.15);
 }
 
+.tab-wanted-poster-box {
+    transform: scale(0.9);
+    margin-bottom: -20px;
+    margin-top: -20px;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Custom wanted poster scroll highlight */
+@keyframes wanted-poster-highlight {
+    0% {
+        box-shadow: 0 0 20px rgba(255, 51, 85, 0.2), inset 0 0 15px rgba(255, 51, 85, 0.1);
+        transform: scale(0.9);
+        border-color: rgba(255, 51, 85, 0.5);
+    }
+    15% {
+        box-shadow: 0 0 45px rgba(255, 51, 85, 1), 0 0 25px rgba(255, 51, 85, 0.8), inset 0 0 25px rgba(255, 51, 85, 0.5);
+        transform: scale(0.96);
+        border-color: rgba(255, 51, 85, 1);
+    }
+    30% {
+        box-shadow: 0 0 20px rgba(255, 51, 85, 0.2), inset 0 0 15px rgba(255, 51, 85, 0.1);
+        transform: scale(0.9);
+        border-color: rgba(255, 51, 85, 0.5);
+    }
+    45% {
+        box-shadow: 0 0 45px rgba(255, 51, 85, 1), 0 0 25px rgba(255, 51, 85, 0.8), inset 0 0 25px rgba(255, 51, 85, 0.5);
+        transform: scale(0.96);
+        border-color: rgba(255, 51, 85, 1);
+    }
+    100% {
+        box-shadow: 0 0 20px rgba(255, 51, 85, 0.2), inset 0 0 15px rgba(255, 51, 85, 0.1);
+        transform: scale(0.9);
+        border-color: rgba(255, 51, 85, 0.5);
+    }
+}
+
+.poster-highlight-glow {
+    animation: wanted-poster-highlight 2.5s ease-out forwards;
+}
+
 
 </style>
     <!-- html2canvas library for exporting graphics -->
@@ -2385,7 +2425,7 @@ body.hide-nav .app-main {
             <section id="tab-bounties" class="tab-content active">
                 <div class="section-header">
                     <div>
-                        <h2>Sector Contract Pucks</h2>
+                        <h2>Sector Contracts Hits</h2>
                         <p>Track active targets, bounty credits, and capture logs by division.</p>
                     </div>
                     <div class="week-controls">
@@ -2435,7 +2475,7 @@ body.hide-nav .app-main {
                             <path d="M12 2v20M2 12h20"></path>
                         </svg>
                     </div>
-                    <h3>No Guild Pucks Activated For This Cycle</h3>
+                    <h3>No Guild Hits Activated For This Cycle</h3>
                     <p>Initialize tracking fob database scan to select random targets for each division.</p>
                     <button id="roll-bounties-trigger" class="btn btn-primary btn-large">
                         <span class="pulse-ring"></span>
@@ -2683,7 +2723,7 @@ body.hide-nav .app-main {
                 <div class="form-group">
                     <label for="bounty-status-select">Contract Status</label>
                     <select id="bounty-status-select">
-                        <option value="pending">Hunting (Active Puck)</option>
+                        <option value="pending">Hunting (Active Hit)</option>
                         <option value="claimed">Captured (Carbonite Claims)</option>
                         <option value="escaped">Evaded (Jumped to Hyperspace)</option>
                     </select>
@@ -3174,7 +3214,462 @@ const ST_HELENS_PLAYERS = [
 ];
 
 // Demo Mock Presets
-const DEMO_PRESETS = {"divisions":{"Lower Columbia":[{"id":"97000137","name":"Bill Ewan","team":"Friends"},{"id":"97024217","name":"John Nichols","team":"Friends"},{"id":"97000153","name":"Maryann Abbott","team":"Friends"},{"id":"97000174","name":"Edward Hatley","team":"Friends"},{"id":"97000149","name":"Shayne Wright","team":"Friends"},{"id":"97000184","name":"Crystal Crawford","team":"Friends"},{"id":"97010394","name":"David Berkman","team":"Paw Patrol"},{"id":"97000205","name":"Bonnie Russell","team":"Paw Patrol"},{"id":"97000213","name":"Mistee Messing","team":"Paw Patrol"},{"id":"97000221","name":"Daniel Messing","team":"Paw Patrol"},{"id":"97000146","name":"Chase Billings","team":"Paw Patrol"},{"id":"97000159","name":"Joseph Manchester","team":"Paw Patrol"},{"id":"97000187","name":"Alex McKenzie","team":"Paw Patrol"},{"id":"97000113","name":"John Kraemer","team":"Bull Elk"},{"id":"97000196","name":"Chuy Puerta","team":"Bull Elk"},{"id":"97000237","name":"David Hall","team":"Bull Elk"},{"id":"97000328","name":"Andrew Hoggard","team":"Bull Elk"},{"id":"97000245","name":"Samuel McDaniel","team":"Bull Elk"},{"id":"97000141","name":"Rigel Ross","team":"Bull Elk"},{"id":"97000308","name":"Anthony Hoggard","team":"Bull Elk"},{"id":"97000199","name":"Nathan Pancheo","team":"Bull Elk"},{"id":"97000198","name":"Adam Yaws","team":"Bull Elk"},{"id":"97000210","name":"Lorna Padgett","team":"Bull Elk"},{"id":"97000269","name":"Betsy Crist","team":"Hondo’s"},{"id":"97000253","name":"Blake Mowrey","team":"Hondo’s"},{"id":"97000162","name":"Simo Ranta","team":"Hondo’s"},{"id":"97000179","name":"Ronald Kiepke","team":"Hondo’s"},{"id":"97000182","name":"Ronald Carter","team":"Hondo’s"},{"id":"97000194","name":"Ryan Applebee","team":"Hondo’s"},{"id":"97000040","name":"Michael Wylie","team":"Legion of Doom"},{"id":"97000168","name":"Garrett Danel","team":"Legion of Doom"},{"id":"97000139","name":"Maksym Dervevianko","team":"Legion of Doom"},{"id":"97000177","name":"Desiree Payne","team":"Legion of Doom"},{"id":"97000192","name":"Gordon Scott","team":"Legion of Doom"},{"id":"97000190","name":"Christian Paniagua","team":"Legion of Doom"}],"St Helens &":[{"id":"97000847","name":"Alicia Lease","team":"Wrong Hole"},{"id":"97000171","name":"Shawn Etheredge","team":"Wrong Hole"},{"id":"97020560","name":"William Polk","team":"Wrong Hole"},{"id":"97000114","name":"Tom Lee","team":"Wrong Hole"},{"id":"97008640","name":"Douglas Miller","team":"Wrong Hole"},{"id":"97000242","name":"James Merrit","team":"Wrong Hole"},{"id":"97000337","name":"Michael Cenci","team":"Unacceptable"},{"id":"97000301","name":"Jim Mclain","team":"Unacceptable"},{"id":"97000339","name":"Steve Linn","team":"Unacceptable"},{"id":"97000348","name":"Greg Greer","team":"Unacceptable"},{"id":"97000332","name":"David Gastley","team":"Unacceptable"},{"id":"97000101","name":"Chris Johnston","team":"Pocket Pounders"},{"id":"97000048","name":"Brian Flannery","team":"Pocket Pounders"},{"id":"97000148","name":"Michael Johnston","team":"Pocket Pounders"},{"id":"97000064","name":"Robert Johnston","team":"Pocket Pounders"},{"id":"97000065","name":"Kathleen Duncan","team":"Pocket Pounders"},{"id":"97000135","name":"Lora Elliott","team":"Pocket Pounders"},{"id":"97000110","name":"Jake Trenton","team":"Rack Wreckers"},{"id":"97000142","name":"James Mier","team":"Rack Wreckers"},{"id":"97000134","name":"Shane Hayes","team":"Rack Wreckers"},{"id":"97000138","name":"Harold Jennings","team":"Rack Wreckers"},{"id":"97000104","name":"De Scorpian Broaddus","team":"Rack Wreckers"},{"id":"97000161","name":"Phillip Barton","team":"Rack Wreckers"},{"id":"97000160","name":"Benjamin Strobel","team":"Rack Wreckers"},{"id":"97000312","name":"Clint Petty","team":"One More Shot"},{"id":"97000314","name":"Robert Wakeman","team":"One More Shot"},{"id":"97000057","name":"Margaret Moen","team":"One More Shot"},{"id":"97000303","name":"lrene Wakeman","team":"One More Shot"},{"id":"97000092","name":"Robert Montgomery","team":"One More Shot"},{"id":"97000045","name":"Jeffrey Hamilton","team":"One More Shot"},{"id":"97000307","name":"Colin Flanagan","team":"One More Shot"},{"id":"97000155","name":"Andrea Parr","team":"Chalk is Cheap"},{"id":"97023367","name":"Kevin Long","team":"Chalk is Cheap"},{"id":"97022763","name":"Stephen Bradley","team":"Chalk is Cheap"},{"id":"97023502","name":"Diane Bradley","team":"Chalk is Cheap"},{"id":"97000088","name":"Ken Hile","team":"Chalk is Cheap"},{"id":"97000250","name":"Dan Baer","team":"Chalk is Cheap"},{"id":"97000310","name":"Karen McDaniel","team":"Felt Junkies"},{"id":"97000331","name":"Louis Foust","team":"Felt Junkies"},{"id":"97019743","name":"Gerald Ellis","team":"Felt Junkies"},{"id":"97019589","name":"Kristine Rock","team":"Felt Junkies"},{"id":"97000345","name":"Brennen Brigham","team":"Felt Junkies"},{"id":"97000122","name":"Kenneth Furman","team":"Misfit Q's"},{"id":"97000126","name":"Tammy Furman","team":"Misfit Q's"},{"id":"97000132","name":"Samuel Ortiz","team":"Misfit Q's"},{"id":"97000016","name":"Alma Davidson","team":"Misfit Q's"},{"id":"97004026","name":"Ryan Hall","team":"Misfit Q's"},{"id":"97000203","name":"Jeremy Arnold","team":"Misfit Q's"}]},"weeks":[{"weekNumber":1,"bounties":[]},{"weekNumber":2,"bounties":[{"division":"Lower Columbia","target":{"id":"97000308","name":"Anthony Hoggard","team":"Bull Elk"},"status":"pending","claimedBy":null,"reward":100},{"division":"St Helens &","target":{"id":"97000048","name":"Brian Flannery","team":"Pocket Pounders"},"status":"pending","claimedBy":null,"reward":100}]}]};
+const DEMO_PRESETS = {
+  "divisions": {
+    "Lower Columbia": [
+      {
+        "id": "97000137",
+        "name": "Bill Ewan",
+        "team": "Friends"
+      },
+      {
+        "id": "97024217",
+        "name": "John Nichols",
+        "team": "Friends"
+      },
+      {
+        "id": "97000153",
+        "name": "Maryann Abbott",
+        "team": "Friends"
+      },
+      {
+        "id": "97000174",
+        "name": "Edward Hatley",
+        "team": "Friends"
+      },
+      {
+        "id": "97000149",
+        "name": "Shayne Wright",
+        "team": "Friends"
+      },
+      {
+        "id": "97000184",
+        "name": "Crystal Crawford",
+        "team": "Friends"
+      },
+      {
+        "id": "97010394",
+        "name": "David Berkman",
+        "team": "Paw Patrol"
+      },
+      {
+        "id": "97000205",
+        "name": "Bonnie Russell",
+        "team": "Paw Patrol"
+      },
+      {
+        "id": "97000213",
+        "name": "Mistee Messing",
+        "team": "Paw Patrol"
+      },
+      {
+        "id": "97000221",
+        "name": "Daniel Messing",
+        "team": "Paw Patrol"
+      },
+      {
+        "id": "97000146",
+        "name": "Chase Billings",
+        "team": "Paw Patrol"
+      },
+      {
+        "id": "97000159",
+        "name": "Joseph Manchester",
+        "team": "Paw Patrol"
+      },
+      {
+        "id": "97000187",
+        "name": "Alex McKenzie",
+        "team": "Paw Patrol"
+      },
+      {
+        "id": "97000113",
+        "name": "John Kraemer",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000196",
+        "name": "Chuy Puerta",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000237",
+        "name": "David Hall",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000328",
+        "name": "Andrew Hoggard",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000245",
+        "name": "Samuel McDaniel",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000141",
+        "name": "Rigel Ross",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000308",
+        "name": "Anthony Hoggard",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000199",
+        "name": "Nathan Pancheo",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000198",
+        "name": "Adam Yaws",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000210",
+        "name": "Lorna Padgett",
+        "team": "Bull Elk"
+      },
+      {
+        "id": "97000269",
+        "name": "Betsy Crist",
+        "team": "Hondo’s"
+      },
+      {
+        "id": "97000253",
+        "name": "Blake Mowrey",
+        "team": "Hondo’s"
+      },
+      {
+        "id": "97000162",
+        "name": "Simo Ranta",
+        "team": "Hondo’s"
+      },
+      {
+        "id": "97000179",
+        "name": "Ronald Kiepke",
+        "team": "Hondo’s"
+      },
+      {
+        "id": "97000182",
+        "name": "Ronald Carter",
+        "team": "Hondo’s"
+      },
+      {
+        "id": "97000194",
+        "name": "Ryan Applebee",
+        "team": "Hondo’s"
+      },
+      {
+        "id": "97000040",
+        "name": "Michael Wylie",
+        "team": "Legion of Doom"
+      },
+      {
+        "id": "97000168",
+        "name": "Garrett Danel",
+        "team": "Legion of Doom"
+      },
+      {
+        "id": "97000139",
+        "name": "Maksym Dervevianko",
+        "team": "Legion of Doom"
+      },
+      {
+        "id": "97000177",
+        "name": "Desiree Payne",
+        "team": "Legion of Doom"
+      },
+      {
+        "id": "97000192",
+        "name": "Gordon Scott",
+        "team": "Legion of Doom"
+      },
+      {
+        "id": "97000190",
+        "name": "Christian Paniagua",
+        "team": "Legion of Doom"
+      }
+    ],
+    "St Helens &": [
+      {
+        "id": "97000847",
+        "name": "Alicia Lease",
+        "team": "Wrong Hole"
+      },
+      {
+        "id": "97000171",
+        "name": "Shawn Etheredge",
+        "team": "Wrong Hole"
+      },
+      {
+        "id": "97020560",
+        "name": "William Polk",
+        "team": "Wrong Hole"
+      },
+      {
+        "id": "97000114",
+        "name": "Tom Lee",
+        "team": "Wrong Hole"
+      },
+      {
+        "id": "97008640",
+        "name": "Douglas Miller",
+        "team": "Wrong Hole"
+      },
+      {
+        "id": "97000242",
+        "name": "James Merrit",
+        "team": "Wrong Hole"
+      },
+      {
+        "id": "97000337",
+        "name": "Michael Cenci",
+        "team": "Unacceptable"
+      },
+      {
+        "id": "97000301",
+        "name": "Jim Mclain",
+        "team": "Unacceptable"
+      },
+      {
+        "id": "97000339",
+        "name": "Steve Linn",
+        "team": "Unacceptable"
+      },
+      {
+        "id": "97000348",
+        "name": "Greg Greer",
+        "team": "Unacceptable"
+      },
+      {
+        "id": "97000332",
+        "name": "David Gastley",
+        "team": "Unacceptable"
+      },
+      {
+        "id": "97000101",
+        "name": "Chris Johnston",
+        "team": "Pocket Pounders"
+      },
+      {
+        "id": "97000048",
+        "name": "Brian Flannery",
+        "team": "Pocket Pounders"
+      },
+      {
+        "id": "97000148",
+        "name": "Michael Johnston",
+        "team": "Pocket Pounders"
+      },
+      {
+        "id": "97000064",
+        "name": "Robert Johnston",
+        "team": "Pocket Pounders"
+      },
+      {
+        "id": "97000065",
+        "name": "Kathleen Duncan",
+        "team": "Pocket Pounders"
+      },
+      {
+        "id": "97000135",
+        "name": "Lora Elliott",
+        "team": "Pocket Pounders"
+      },
+      {
+        "id": "97000110",
+        "name": "Jake Trenton",
+        "team": "Rack Wreckers"
+      },
+      {
+        "id": "97000142",
+        "name": "James Mier",
+        "team": "Rack Wreckers"
+      },
+      {
+        "id": "97000134",
+        "name": "Shane Hayes",
+        "team": "Rack Wreckers"
+      },
+      {
+        "id": "97000138",
+        "name": "Harold Jennings",
+        "team": "Rack Wreckers"
+      },
+      {
+        "id": "97000104",
+        "name": "De Scorpian Broaddus",
+        "team": "Rack Wreckers"
+      },
+      {
+        "id": "97000161",
+        "name": "Phillip Barton",
+        "team": "Rack Wreckers"
+      },
+      {
+        "id": "97000160",
+        "name": "Benjamin Strobel",
+        "team": "Rack Wreckers"
+      },
+      {
+        "id": "97000312",
+        "name": "Clint Petty",
+        "team": "One More Shot"
+      },
+      {
+        "id": "97000314",
+        "name": "Robert Wakeman",
+        "team": "One More Shot"
+      },
+      {
+        "id": "97000057",
+        "name": "Margaret Moen",
+        "team": "One More Shot"
+      },
+      {
+        "id": "97000303",
+        "name": "lrene Wakeman",
+        "team": "One More Shot"
+      },
+      {
+        "id": "97000092",
+        "name": "Robert Montgomery",
+        "team": "One More Shot"
+      },
+      {
+        "id": "97000045",
+        "name": "Jeffrey Hamilton",
+        "team": "One More Shot"
+      },
+      {
+        "id": "97000307",
+        "name": "Colin Flanagan",
+        "team": "One More Shot"
+      },
+      {
+        "id": "97000155",
+        "name": "Andrea Parr",
+        "team": "Chalk is Cheap"
+      },
+      {
+        "id": "97023367",
+        "name": "Kevin Long",
+        "team": "Chalk is Cheap"
+      },
+      {
+        "id": "97022763",
+        "name": "Stephen Bradley",
+        "team": "Chalk is Cheap"
+      },
+      {
+        "id": "97023502",
+        "name": "Diane Bradley",
+        "team": "Chalk is Cheap"
+      },
+      {
+        "id": "97000088",
+        "name": "Ken Hile",
+        "team": "Chalk is Cheap"
+      },
+      {
+        "id": "97000250",
+        "name": "Dan Baer",
+        "team": "Chalk is Cheap"
+      },
+      {
+        "id": "97000310",
+        "name": "Karen McDaniel",
+        "team": "Felt Junkies"
+      },
+      {
+        "id": "97000331",
+        "name": "Louis Foust",
+        "team": "Felt Junkies"
+      },
+      {
+        "id": "97019743",
+        "name": "Gerald Ellis",
+        "team": "Felt Junkies"
+      },
+      {
+        "id": "97019589",
+        "name": "Kristine Rock",
+        "team": "Felt Junkies"
+      },
+      {
+        "id": "97000345",
+        "name": "Brennen Brigham",
+        "team": "Felt Junkies"
+      },
+      {
+        "id": "97000122",
+        "name": "Kenneth Furman",
+        "team": "Misfit Q's"
+      },
+      {
+        "id": "97000126",
+        "name": "Tammy Furman",
+        "team": "Misfit Q's"
+      },
+      {
+        "id": "97000132",
+        "name": "Samuel Ortiz",
+        "team": "Misfit Q's"
+      },
+      {
+        "id": "97000016",
+        "name": "Alma Davidson",
+        "team": "Misfit Q's"
+      },
+      {
+        "id": "97004026",
+        "name": "Ryan Hall",
+        "team": "Misfit Q's"
+      },
+      {
+        "id": "97000203",
+        "name": "Jeremy Arnold",
+        "team": "Misfit Q's"
+      }
+    ]
+  },
+  "weeks": [
+    {
+      "weekNumber": 1,
+      "bounties": []
+    },
+    {
+      "weekNumber": 2,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000308",
+            "name": "Anthony Hoggard",
+            "team": "Bull Elk"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 100
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97000048",
+            "name": "Brian Flannery",
+            "team": "Pocket Pounders"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 100
+        }
+      ]
+    }
+  ]
+};
 
 // Initialize Application
 document.addEventListener("DOMContentLoaded", () => {
@@ -4087,7 +4582,20 @@ function renderBountiesTab() {
             });
 
             card.querySelector(".wanted-poster-btn").addEventListener("click", () => {
-                triggerWantedPosterModal(bounty);
+                const wantedTabButton = document.querySelector('.nav-tab[data-tab="tab-wanted"]');
+                if (wantedTabButton) {
+                    wantedTabButton.click();
+                    setTimeout(() => {
+                        const posterEl = document.getElementById(`poster-red-holo-page-${index}`);
+                        if (posterEl) {
+                            posterEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            posterEl.classList.add('poster-highlight-glow');
+                            setTimeout(() => {
+                                posterEl.classList.remove('poster-highlight-glow');
+                            }, 2500);
+                        }
+                    }, 150);
+                }
             });
 
             card.querySelector(".reroll-single-btn").addEventListener("click", () => {
@@ -5176,7 +5684,7 @@ function renderWantedTab() {
             <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; width: 100%;">
                 <!-- Poster B (Web Portrait) -->
                 <div class="poster-preview-card" style="width: 360px;">
-                    <div id="poster-red-holo-page-${index}" class="wanted-poster-box poster-red-holo" style="transform: scale(0.9); margin-bottom: -20px; margin-top: -20px;">
+                    <div id="poster-red-holo-page-${index}" class="wanted-poster-box poster-red-holo tab-wanted-poster-box">
                         <div class="poster-red-holo-grid"></div>
                         <div class="poster-red-holo-border-accents"></div>
                         <div class="poster-red-holo-header">
