@@ -2319,3 +2319,58 @@ body.hide-nav .app-main {
     animation: wanted-poster-highlight 2.5s ease-out forwards;
 }
 
+/* Branding styles */
+.branding-logo-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.app-branding-logo {
+    max-height: 55px;
+    max-width: 100%;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6));
+}
+
+@media (max-width: 900px) {
+    .app-branding-logo {
+        max-height: 42px;
+    }
+}
+
+.poster-brand-logo {
+    max-height: 28px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 0.2rem;
+    filter: drop-shadow(0 0 5px rgba(255, 51, 85, 0.5));
+}
+
+.share-brand-logo {
+    max-height: 42px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.5));
+}
+
+.embedded-branding-header {
+    display: none;
+    justify-content: center;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+}
+
+body.hide-nav .embedded-branding-header {
+    display: flex;
+}
+
+.embedded-brand-logo {
+    max-height: 60px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.4));
+}
+
