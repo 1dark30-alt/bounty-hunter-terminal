@@ -423,7 +423,30 @@
   "weeks": [
     {
       "weekNumber": 1,
-      "bounties": []
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000137",
+            "name": "Bill Ewan",
+            "team": "Friends"
+          },
+          "status": "claimed",
+          "claimedBy": "Din DjarinBoba Fett",
+          "reward": 80000
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97000057",
+            "name": "Margaret Moen",
+            "team": "One More Shot"
+          },
+          "status": "not_found",
+          "claimedBy": "",
+          "reward": 80000
+        }
+      ]
     }
   ]
 }
