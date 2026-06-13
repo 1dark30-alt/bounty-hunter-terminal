@@ -423,37 +423,6 @@
   "weeks": [
     {
       "weekNumber": 1,
-      "bounties": []
-    },
-    {
-      "weekNumber": 2,
-      "bounties": [
-        {
-          "division": "Lower Columbia",
-          "target": {
-            "id": "97000194",
-            "name": "Ryan Applebee",
-            "team": "Hondo’s"
-          },
-          "status": "not_found",
-          "claimedBy": "",
-          "reward": 8000
-        },
-        {
-          "division": "St Helens &",
-          "target": {
-            "id": "97000048",
-            "name": "Brian Flannery",
-            "team": "Pocket Pounders"
-          },
-          "status": "escaped",
-          "claimedBy": "",
-          "reward": 8000
-        }
-      ]
-    },
-    {
-      "weekNumber": 3,
       "bounties": [
         {
           "division": "Lower Columbia",
@@ -462,20 +431,20 @@
             "name": "Bill Ewan",
             "team": "Friends"
           },
-          "status": "pending",
-          "claimedBy": null,
-          "reward": 8000
+          "status": "claimed",
+          "claimedBy": "Din DjarinBoba Fett",
+          "reward": 80000
         },
         {
           "division": "St Helens &",
           "target": {
-            "id": "97000110",
-            "name": "Jake Trenton",
-            "team": "Rack Wreckers"
+            "id": "97000057",
+            "name": "Margaret Moen",
+            "team": "One More Shot"
           },
-          "status": "pending",
-          "claimedBy": null,
-          "reward": 8000
+          "status": "claimed",
+          "claimedBy": "Fennec Shand",
+          "reward": 80000
         }
       ]
     }
