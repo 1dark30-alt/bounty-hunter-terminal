@@ -1915,109 +1915,101 @@ input:focus, select:focus {
 }
 
 /* 2. Red Security Hologram Poster (3:4 Vertical) */
+/* 2. Western Parchment Wanted Poster (3:4 Vertical) */
 .poster-red-holo {
     width: 360px;
     height: 480px;
-    background-color: #0d0404;
-    border: 2px solid var(--accent-pink);
+    background-color: #ebdcb9; /* Warm parchment paper */
+    background-image: 
+        radial-gradient(circle at center, transparent 0%, rgba(139, 90, 43, 0.15) 100%),
+        repeating-linear-gradient(45deg, rgba(139, 90, 43, 0.02) 0px, rgba(139, 90, 43, 0.02) 2px, transparent 2px, transparent 10px);
+    border: 3px double #3e2819;
     padding: 1.8rem;
+    display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    box-shadow: 0 0 20px rgba(var(--accent-pink-rgb), 0.2), inset 0 0 15px rgba(var(--accent-pink-rgb), 0.1);
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.5), 
+        inset 0 0 40px rgba(139, 90, 43, 0.25);
+    position: relative;
+    overflow: hidden;
+    color: #3e2819;
 }
 
 .poster-red-holo-grid {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-        linear-gradient(rgba(255, 51, 85, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 51, 85, 0.02) 1px, transparent 1px);
-    background-size: 20px 20px;
-    pointer-events: none;
+    display: none;
 }
 
-.poster-red-holo-border-accents::before, .poster-red-holo-border-accents::after {
-    content: '';
-    position: absolute;
-    width: 15px;
-    height: 15px;
-    border: 2px solid var(--accent-pink);
-    pointer-events: none;
-}
-.poster-red-holo-border-accents::before {
-    top: 6px;
-    left: 6px;
-    border-right: none;
-    border-bottom: none;
-}
-.poster-red-holo-border-accents::after {
-    bottom: 6px;
-    right: 6px;
-    border-left: none;
-    border-top: none;
+.poster-red-holo-border-accents {
+    display: none;
 }
 
 .poster-red-holo-header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-bottom: 1px solid rgba(var(--accent-pink-rgb), 0.3);
+    border-bottom: 2px solid #3e2819;
     padding-bottom: 0.5rem;
-}
-
-.poster-red-holo-header .agency-label-red {
-    font-family: var(--font-display);
-    font-size: 0.55rem;
-    color: var(--text-muted);
-    letter-spacing: 0.15em;
+    width: 100%;
 }
 
 .poster-red-holo-header .alert-label-red {
-    font-family: var(--font-primary);
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--accent-pink);
-    letter-spacing: 0.06em;
-    text-shadow: 0 0 8px rgba(var(--accent-pink-rgb), 0.6);
+    font-family: 'Rye', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: normal;
+    color: #3e2819;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4);
+    margin-top: 0.3rem;
 }
 
 .poster-red-holo-photo-container {
-    height: 140px;
-    width: 130px;
-    border: 1px solid rgba(var(--accent-pink-rgb), 0.4);
-    background-color: rgba(var(--accent-pink-rgb), 0.03);
+    height: 150px;
+    width: 140px;
+    border: 2px solid #3e2819;
+    background-color: #f5edd6;
     align-self: center;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
 }
 
 .photo-reticle-red {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-}
-
-.reticle-svg-red {
-    animation: pulse-reticle-red 2.5s ease-in-out infinite alternate;
-}
-
-@keyframes pulse-reticle-red {
-    0% { transform: scale(0.95); opacity: 0.7; }
-    100% { transform: scale(1.05); opacity: 1; }
+    display: none;
 }
 
 .poster-avatar-placeholder-red {
-    width: 70px;
-    height: 70px;
-    filter: drop-shadow(0 0 5px rgba(var(--accent-pink-rgb), 0.4));
+    width: 90px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hologram-avatar-sprite {
+    width: 100%;
+    height: 100%;
+    background-size: 2400% 800%;
+    background-repeat: no-repeat;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    border-radius: 50%;
+    overflow: hidden;
+    filter: grayscale(100%) contrast(160%) brightness(95%) sepia(100%) hue-rotate(-55deg) saturate(380%);
+    box-shadow: 0 0 15px rgba(255, 51, 85, 0.4);
+    border: 2px solid rgba(255, 51, 85, 0.5);
+    transition: filter 0.3s ease;
+}
+
+/* Custom sketch override inside western poster */
+.poster-red-holo .hologram-avatar-sprite {
+    border-radius: 4px;
+    border: 2px solid #3e2819;
+    filter: grayscale(100%) contrast(280%) brightness(105%) sepia(35%) saturate(140%);
+    box-shadow: none;
 }
 
 .poster-red-holo-info {
@@ -2025,73 +2017,77 @@ input:focus, select:focus {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
+    color: #3e2819;
 }
 
 .poster-red-holo-info .w-label-red {
-    font-family: var(--font-display);
-    font-size: 0.55rem;
-    color: var(--accent-gold);
-    letter-spacing: 0.1em;
+    font-family: Georgia, serif;
+    font-size: 0.65rem;
+    color: #5e4331;
+    font-weight: bold;
+    letter-spacing: 0.05em;
 }
 
 .poster-red-holo-name {
-    font-family: var(--font-primary);
+    font-family: 'Rye', Georgia, serif;
     font-size: 1.8rem;
-    color: var(--text-primary);
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+    color: #2b1b11;
+    font-weight: normal;
+    text-transform: uppercase;
+    margin: 0.2rem 0;
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4);
 }
 
 .poster-red-holo-sub {
-    font-family: var(--font-primary);
+    font-family: Georgia, serif;
     font-size: 0.8rem;
-    color: var(--text-secondary);
-    font-weight: 600;
+    color: #4e3524;
+    font-weight: bold;
 }
 
 .poster-red-holo-team {
-    color: var(--accent-pink);
+    color: #8b5a2b;
 }
 
 .poster-red-holo-div-tag {
-    font-family: var(--font-display);
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    letter-spacing: 0.05em;
+    font-family: Georgia, serif;
+    font-size: 0.75rem;
+    color: #5e4331;
     font-weight: bold;
 }
 
 .poster-red-holo-division {
-    color: var(--accent-pink);
+    color: #8b5a2b;
 }
 
 .poster-red-holo-crime-box {
-    background-color: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(var(--accent-pink-rgb), 0.15);
+    background-color: rgba(139, 90, 43, 0.08);
+    border: 1px dashed #3e2819;
     padding: 0.5rem 0.8rem;
-    border-radius: 4px;
+    border-radius: 2px;
 }
 
 .crime-header-red {
-    font-family: var(--font-display);
+    font-family: 'Rye', Georgia, serif;
     font-size: 0.6rem;
-    color: var(--accent-gold);
-    font-weight: 700;
+    color: #3e2819;
+    font-weight: normal;
+    text-transform: uppercase;
     display: block;
     margin-bottom: 0.2rem;
     text-align: left;
 }
 
 .poster-red-holo-crime {
-    font-family: var(--font-primary);
+    font-family: Georgia, serif;
     font-size: 0.75rem;
-    color: var(--text-secondary);
+    color: #4e3524;
+    font-style: italic;
     line-height: 1.35;
 }
 
 .poster-red-holo-footer {
-    border-top: 1px dashed rgba(var(--accent-pink-rgb), 0.3);
+    border-top: 1px dashed #3e2819;
     padding-top: 0.6rem;
     display: flex;
     flex-direction: column;
@@ -2100,27 +2096,29 @@ input:focus, select:focus {
 }
 
 .p-reward-title-red {
-    font-family: var(--font-display);
-    font-size: 0.55rem;
-    color: var(--text-muted);
-    letter-spacing: 0.05em;
+    font-family: Georgia, serif;
+    font-size: 0.65rem;
+    color: #5e4331;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 .p-reward-amount-red {
-    font-family: var(--font-display);
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--accent-gold);
-    text-shadow: 0 0 8px rgba(var(--accent-gold-rgb), 0.4);
+    font-family: 'Rye', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: normal;
+    color: #8b5a2b;
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4);
 }
 
 .p-disclaimer-red {
-    font-family: var(--font-display);
-    font-size: 0.48rem;
-    color: var(--text-muted);
-    letter-spacing: 0.01em;
-    line-height: 1.25;
+    font-family: Georgia, serif;
+    font-size: 0.5rem;
+    color: #5e4331;
+    font-weight: bold;
     text-align: center;
+    letter-spacing: 0.02em;
+    line-height: 1.25;
 }
 
 /* Google Sites Public Mode overrides */
@@ -2289,29 +2287,29 @@ body.hide-nav .app-main {
 /* Custom wanted poster scroll highlight */
 @keyframes wanted-poster-highlight {
     0% {
-        box-shadow: 0 0 20px rgba(255, 51, 85, 0.2), inset 0 0 15px rgba(255, 51, 85, 0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 40px rgba(139, 90, 43, 0.2);
         transform: scale(0.9);
-        border-color: rgba(255, 51, 85, 0.5);
+        border-color: #3e2819;
     }
     15% {
-        box-shadow: 0 0 45px rgba(255, 51, 85, 1), 0 0 25px rgba(255, 51, 85, 0.8), inset 0 0 25px rgba(255, 51, 85, 0.5);
+        box-shadow: 0 0 50px rgba(223, 150, 43, 0.8), 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(223, 150, 43, 0.4);
         transform: scale(0.96);
-        border-color: rgba(255, 51, 85, 1);
+        border-color: #8b5a2b;
     }
     30% {
-        box-shadow: 0 0 20px rgba(255, 51, 85, 0.2), inset 0 0 15px rgba(255, 51, 85, 0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 40px rgba(139, 90, 43, 0.2);
         transform: scale(0.9);
-        border-color: rgba(255, 51, 85, 0.5);
+        border-color: #3e2819;
     }
     45% {
-        box-shadow: 0 0 45px rgba(255, 51, 85, 1), 0 0 25px rgba(255, 51, 85, 0.8), inset 0 0 25px rgba(255, 51, 85, 0.5);
+        box-shadow: 0 0 50px rgba(223, 150, 43, 0.8), 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(223, 150, 43, 0.4);
         transform: scale(0.96);
-        border-color: rgba(255, 51, 85, 1);
+        border-color: #8b5a2b;
     }
     100% {
-        box-shadow: 0 0 20px rgba(255, 51, 85, 0.2), inset 0 0 15px rgba(255, 51, 85, 0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 40px rgba(139, 90, 43, 0.2);
         transform: scale(0.9);
-        border-color: rgba(255, 51, 85, 0.5);
+        border-color: #3e2819;
     }
 }
 

@@ -2034,19 +2034,8 @@ function getCharacterAvatar(name) {
     
     return `
         <div class="hologram-avatar-sprite" style="
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            overflow: hidden;
             background-image: url('${CHARACTER_GRID_BASE64}');
-            background-size: 2400% 800%;
             background-position: ${xPct}% ${yPct}%;
-            background-repeat: no-repeat;
-            filter: grayscale(100%) contrast(160%) brightness(95%) sepia(100%) hue-rotate(-55deg) saturate(380%);
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-            box-shadow: 0 0 15px rgba(255, 51, 85, 0.4);
-            border: 2px solid rgba(255, 51, 85, 0.5);
         "></div>
     `;
 }
