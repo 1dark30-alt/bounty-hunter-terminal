@@ -431,8 +431,8 @@
             "name": "Bill Ewan",
             "team": "Friends"
           },
-          "status": "not_found",
-          "claimedBy": "",
+          "status": "claimed",
+          "claimedBy": "Din Djarin",
           "reward": 80000
         },
         {
