@@ -485,8 +485,8 @@
             "name": "John Nichols",
             "team": "Friends"
           },
-          "status": "pending",
-          "claimedBy": null,
+          "status": "claimed",
+          "claimedBy": "97000345",
           "reward": 80000
         },
         {
