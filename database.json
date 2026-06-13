@@ -446,8 +446,8 @@
             "name": "Brian Flannery",
             "team": "Pocket Pounders"
           },
-          "status": "pending",
-          "claimedBy": null,
+          "status": "escaped",
+          "claimedBy": "",
           "reward": 8000
         }
       ]
