@@ -2329,7 +2329,7 @@ body.hide-nav .app-main {
     max-width: 100%;
     width: auto;
     object-fit: contain;
-    filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6));
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
 }
 
 @media (max-width: 900px) {
@@ -2343,14 +2343,14 @@ body.hide-nav .app-main {
     width: auto;
     object-fit: contain;
     margin-bottom: 0.2rem;
-    filter: drop-shadow(0 0 5px rgba(255, 51, 85, 0.5));
+    filter: brightness(0);
 }
 
 .share-brand-logo {
     max-height: 42px;
     width: auto;
     object-fit: contain;
-    filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.5));
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
 }
 
 .embedded-branding-header {
@@ -2369,6 +2369,6 @@ body.hide-nav .embedded-branding-header {
     max-height: 60px;
     width: auto;
     object-fit: contain;
-    filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.4));
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
 }
 
