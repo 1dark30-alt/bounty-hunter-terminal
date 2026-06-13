@@ -424,6 +424,33 @@
     {
       "weekNumber": 1,
       "bounties": []
+    },
+    {
+      "weekNumber": 2,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000194",
+            "name": "Ryan Applebee",
+            "team": "Hondo’s"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 80000
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97000048",
+            "name": "Brian Flannery",
+            "team": "Pocket Pounders"
+          },
+          "status": "escaped",
+          "claimedBy": "",
+          "reward": 80000
+        }
+      ]
     }
   ]
 }
