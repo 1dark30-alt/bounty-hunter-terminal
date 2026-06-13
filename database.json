@@ -423,13 +423,17 @@
   "weeks": [
     {
       "weekNumber": 1,
+      "bounties": []
+    },
+    {
+      "weekNumber": 2,
       "bounties": [
         {
           "division": "Lower Columbia",
           "target": {
-            "id": "97000137",
-            "name": "Bill Ewan",
-            "team": "Friends"
+            "id": "97000194",
+            "name": "Ryan Applebee",
+            "team": "Hondo’s"
           },
           "status": "not_found",
           "claimedBy": "",
@@ -438,12 +442,12 @@
         {
           "division": "St Helens &",
           "target": {
-            "id": "97000057",
-            "name": "Margaret Moen",
-            "team": "One More Shot"
+            "id": "97000048",
+            "name": "Brian Flannery",
+            "team": "Pocket Pounders"
           },
-          "status": "pending",
-          "claimedBy": null,
+          "status": "escaped",
+          "claimedBy": "",
           "reward": 80000
         }
       ]
