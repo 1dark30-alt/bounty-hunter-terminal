@@ -442,8 +442,8 @@
             "name": "Margaret Moen",
             "team": "One More Shot"
           },
-          "status": "claimed",
-          "claimedBy": "Boba Fett",
+          "status": "not_found",
+          "claimedBy": "",
           "reward": 80000
         }
       ]
