@@ -462,8 +462,8 @@
             "name": "Bill Ewan",
             "team": "Friends"
           },
-          "status": "pending",
-          "claimedBy": null,
+          "status": "claimed",
+          "claimedBy": "Denver Hall",
           "reward": 8000
         },
         {
@@ -473,7 +473,7 @@
             "name": "Jake Trenton",
             "team": "Rack Wreckers"
           },
-          "status": "pending",
+          "status": "escaped",
           "claimedBy": null,
           "reward": 8000
         }
