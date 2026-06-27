@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8080;
 
 // MIME types dictionary for static file serving
 const MIME_TYPES = {
