@@ -423,37 +423,6 @@
   "weeks": [
     {
       "weekNumber": 1,
-      "bounties": []
-    },
-    {
-      "weekNumber": 2,
-      "bounties": [
-        {
-          "division": "Lower Columbia",
-          "target": {
-            "id": "97000194",
-            "name": "Ryan Applebee",
-            "team": "Hondo’s"
-          },
-          "status": "not_found",
-          "claimedBy": "",
-          "reward": 8000
-        },
-        {
-          "division": "St Helens &",
-          "target": {
-            "id": "97000048",
-            "name": "Brian Flannery",
-            "team": "Pocket Pounders"
-          },
-          "status": "escaped",
-          "claimedBy": "",
-          "reward": 8000
-        }
-      ]
-    },
-    {
-      "weekNumber": 3,
       "bounties": [
         {
           "division": "Lower Columbia",
@@ -463,17 +432,129 @@
             "team": "Friends"
           },
           "status": "claimed",
-          "claimedBy": "Denver Hall",
+          "claimedBy": "97010394",
+          "reward": 100
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97000847",
+            "name": "Alicia Lease",
+            "team": "Wrong Hole"
+          },
+          "status": "escaped",
+          "claimedBy": null,
+          "reward": 120
+        }
+      ]
+    },
+    {
+      "weekNumber": 2,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000221",
+            "name": "Daniel Messing",
+            "team": "Paw Patrol"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 100
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97000101",
+            "name": "Chris Johnston",
+            "team": "Pocket Pounders"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 100
+        }
+      ]
+    },
+    {
+      "weekNumber": 3,
+      "bounties": []
+    },
+    {
+      "weekNumber": 4,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000213",
+            "name": "Mistee Messing",
+            "team": "Paw Patrol"
+          },
+          "status": "not_found",
+          "claimedBy": null,
           "reward": 8000
         },
         {
           "division": "St Helens &",
           "target": {
-            "id": "97000110",
-            "name": "Jake Trenton",
-            "team": "Rack Wreckers"
+            "id": "97000307",
+            "name": "Colin Flanagan",
+            "team": "One More Shot"
           },
-          "status": "escaped",
+          "status": "claimed",
+          "claimedBy": "97000142",
+          "reward": 8000
+        }
+      ]
+    },
+    {
+      "weekNumber": 5,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000040",
+            "name": "Michael Wylie",
+            "team": "Legion of Doom"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 8000
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97000332",
+            "name": "David Gastley",
+            "team": "Unacceptable"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 8000
+        }
+      ]
+    },
+    {
+      "weekNumber": 6,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000168",
+            "name": "Garrett Danel",
+            "team": "Legion of Doom"
+          },
+          "status": "pending",
+          "claimedBy": null,
+          "reward": 8000
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97000312",
+            "name": "Clint Petty",
+            "team": "One More Shot"
+          },
+          "status": "pending",
           "claimedBy": null,
           "reward": 8000
         }
