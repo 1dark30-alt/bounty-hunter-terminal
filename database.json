@@ -516,8 +516,8 @@
             "name": "Michael Wylie",
             "team": "Legion of Doom"
           },
-          "status": "pending",
-          "claimedBy": null,
+          "status": "claimed",
+          "claimedBy": "97000174",
           "reward": 8000
         },
         {
@@ -527,7 +527,7 @@
             "name": "David Gastley",
             "team": "Unacceptable"
           },
-          "status": "pending",
+          "status": "not_found",
           "claimedBy": null,
           "reward": 8000
         }
