@@ -528,7 +528,7 @@
             "team": "Unacceptable"
           },
           "status": "not_found",
-          "claimedBy": null,
+          "claimedBy": "",
           "reward": 8000
         }
       ]
@@ -543,8 +543,8 @@
             "name": "Garrett Danel",
             "team": "Legion of Doom"
           },
-          "status": "pending",
-          "claimedBy": null,
+          "status": "claimed",
+          "claimedBy": "97000328",
           "reward": 8000
         },
         {
@@ -554,8 +554,143 @@
             "name": "Clint Petty",
             "team": "One More Shot"
           },
-          "status": "pending",
+          "status": "escaped",
           "claimedBy": null,
+          "reward": 8000
+        }
+      ]
+    },
+    {
+      "weekNumber": 7,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000190",
+            "name": "Christian Paniagua",
+            "team": "Legion of Doom"
+          },
+          "status": "not_found",
+          "claimedBy": null,
+          "reward": 8000
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97000092",
+            "name": "Robert Montgomery",
+            "team": "One More Shot"
+          },
+          "status": "not_found",
+          "claimedBy": null,
+          "reward": 8000
+        }
+      ]
+    },
+    {
+      "weekNumber": 8,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97010394",
+            "name": "David Berkman",
+            "team": "Paw Patrol"
+          },
+          "status": "escaped",
+          "claimedBy": null,
+          "reward": 8000
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97000171",
+            "name": "Shawn Etheredge",
+            "team": "Wrong Hole"
+          },
+          "status": "claimed",
+          "claimedBy": "Steven Marshall",
+          "reward": 8000
+        }
+      ]
+    },
+    {
+      "weekNumber": 9,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000159",
+            "name": "Joseph Manchester",
+            "team": "Paw Patrol"
+          },
+          "status": "claimed",
+          "claimedBy": "97000328",
+          "reward": 8000
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97000138",
+            "name": "Harold Jennings",
+            "team": "Rack Wreckers"
+          },
+          "status": "not_found",
+          "claimedBy": null,
+          "reward": 8000
+        }
+      ]
+    },
+    {
+      "weekNumber": 10,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000205",
+            "name": "Bonnie Russell",
+            "team": "Paw Patrol"
+          },
+          "status": "claimed",
+          "claimedBy": "97000182",
+          "reward": 8000
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97023367",
+            "name": "Kevin Long",
+            "team": "Chalk is Cheap"
+          },
+          "status": "escaped",
+          "claimedBy": null,
+          "reward": 8000
+        }
+      ]
+    },
+    {
+      "weekNumber": 11,
+      "bounties": [
+        {
+          "division": "Lower Columbia",
+          "target": {
+            "id": "97000253",
+            "name": "Blake Mowrey",
+            "team": "Hondo’s"
+          },
+          "status": "escaped",
+          "claimedBy": "",
+          "reward": 8000
+        },
+        {
+          "division": "St Helens &",
+          "target": {
+            "id": "97000101",
+            "name": "Chris Johnston",
+            "team": "Pocket Pounders"
+          },
+          "status": "claimed",
+          "claimedBy": "97019743",
           "reward": 8000
         }
       ]
