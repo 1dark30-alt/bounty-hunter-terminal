@@ -281,6 +281,40 @@
                     </div>
                 </div>
 
+                <div class="card settings-card" style="margin-bottom: 1.5rem;">
+                    <h3>Next Session Roster</h3>
+                    <p>Recommended PDF report: <strong>Division Roster Worksheet</strong>. Upload the text-based report to extract each player's division, team and name.</p>
+                    <p>Upload a PDF roster, a CSV with Division, Name, ID and Team columns (ID and Team are optional), or a JSON database/roster. Preview your list before starting a fresh session. Current rosters and results are archived in your database backup.</p>
+                    <div class="form-group">
+                        <label for="next-session-file">New player list (PDF up to 10 MB; CSV/JSON up to 2 MB)</label>
+                        <input type="file" id="next-session-file" accept=".pdf,.csv,.json">
+                    </div>
+                    <div id="pdf-roster-review" class="hidden">
+                        <p>Review every player below. PDF layouts vary: check division, name, ID and team before continuing. Text PDFs are supported; scanned images need OCR first. The PDF reader requires an internet connection.</p>
+                        <details>
+                            <summary>View extracted PDF text</summary>
+                            <pre id="pdf-roster-text" style="white-space: pre-wrap; max-height: 16rem; overflow: auto;"></pre>
+                        </details>
+                        <div class="form-group">
+                            <label for="pdf-roster-csv">Roster to import (editable CSV)</label>
+                            <textarea id="pdf-roster-csv" rows="10" spellcheck="false" style="width: 100%; font-family: monospace;" placeholder="Division,Name,ID,Team"></textarea>
+                        </div>
+                        <button id="validate-pdf-roster" class="btn btn-secondary">Preview Reviewed Roster</button>
+                    </div>
+                    <p id="next-session-preview" role="status" aria-live="polite">No new list selected.</p>
+                    <div id="roster-review-table" class="hidden" style="max-height: 24rem; overflow: auto; margin-bottom: 1rem;">
+                        <table style="width: 100%; text-align: left;">
+                            <caption>Players in the new session</caption>
+                            <thead><tr><th>Division</th><th>Team</th><th>Player</th><th>Member ID</th></tr></thead>
+                            <tbody id="roster-review-rows"></tbody>
+                        </table>
+                    </div>
+                    <div class="settings-actions">
+                        <button id="start-next-session" class="btn btn-primary" disabled>Start Next Session</button>
+                        <button id="cancel-next-session" class="btn btn-secondary" disabled>Cancel Upload</button>
+                    </div>
+                </div>
+
                 <div class="rosters-layout">
                     <!-- Left Panel: Divisions list -->
                     <div class="divisions-sidebar card">

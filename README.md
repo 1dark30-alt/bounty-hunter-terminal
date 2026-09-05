@@ -75,3 +75,26 @@ For full browser compatibility, easy sharing, and robust file downloads, it is h
 3. Copy your live page URL (e.g. `https://yourusername.github.io/your-repository/`).
 4. In Google Sites, click **Embed**, choose the **By URL** tab, paste the link, and click **Insert**.
 
+
+## Start the next session from a new roster
+
+Recommended PDF report: **Division Roster Worksheet**. Export the text-based report, upload it under **Next Session Roster**, and review the extracted division, team and player assignments before starting.
+
+In **Sector Registry**, use **Next Session Roster** to upload a PDF (up to 10 MB / 100 pages) or CSV/JSON (up to 2 MB), with a maximum of 10,000 players. CSV files need `Division` and `Name` headers; `ID` and `Team` are optional. Export an Excel sheet as CSV first. Example:
+
+```csv
+Division,Name,ID,Team
+North,Jane Doe,001,Friends
+North,John Smith,002,Friends
+South,Sam Jones,003,Independent
+```
+
+JSON accepts the existing database format's `divisions` object, with player objects containing `id`, `name`, and `team`; legacy string player names also work. Weekly history from the uploaded file is ignored.
+
+PDF uploads extract selectable text locally using [Mozilla PDF.js](https://mozilla.github.io/pdf.js/), loaded on demand from a pinned CDN version (internet required). Files are not sent to a conversion service. Tables with Name/Player Name, Division, ID/Player ID and Team headings produce suggested CSV rows; `Division: ...` and `Team: ...` section headings are also recognized. Other layouts may need manual transcription into the editable CSV. Expand **View extracted PDF text**, review every row and add any missing players, then click **Preview Reviewed Roster**. Editing again disables Start until the roster is revalidated. Scanned/image-only pages need OCR first; password-protected PDFs need an unlocked copy.
+
+Review the counts, then click **Start Next Session** and confirm. The app archives the current roster and weeks in `archivedSessions`, replaces the active roster, and starts Week 1 with fresh standings and target eligibility. Archives are included in **Export Data (JSON)** backups. Uploading or cancelling alone never changes the active session. A browser storage failure prevents the switch. Use the existing publishing controls to publish when ready.
+
+Division roster sheets with `Division # 838 - Lower Columbia` headings and multiple team boxes per page are supported. The importer tracks each box separately, reads the member number and player name beneath it, skips empty Bye boxes, and converts `Last, First` names to `First Last`. The preview lists **Division, Team, Player, Member ID** so assignments can be checked before starting. Member numbers retain their printed leading zeros; no league prefix is invented.
+
+Validation: run `node --test session-upload.test.js`. Rebuild the Google Sites embed with `node compile_inline.js` after edits.
